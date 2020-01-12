@@ -9,8 +9,6 @@
  * @sa 単方向リスト CommonDataList.c
  * $Revision: 1.1 $
  *****************************************************************************/
-#include"stdafx.h"
-
 #include<stdlib.h>
 #include<string.h>
 

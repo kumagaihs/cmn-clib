@@ -3,7 +3,7 @@
  *
  *  日付/時刻系共通関数を使用するためのI/Fヘッダファイル。<br>
  *  日付/時刻系の共通関数を使用する場合は、このヘッダファイルを読み込むこと
- * 
+ *
  * @author H.Kumagai
  * @date   2004-06-04
  * $Revision: 1.2 $
@@ -31,20 +31,6 @@ enum {
 #define CMN_TIME_FORMAT_SIZE_DATE_SHORT		( 8 + 1)	/**< 形式：yyyymmdd */
 #define CMN_TIME_FORMAT_SIZE_TIME			( 8 + 1)	/**< 形式：hh:mm:ss */
 #define CMN_TIME_FORMAT_SIZE_TIME_SHORT		( 6 + 1)	/**< 形式：hhmmss */
-
-/* DLL使用かLIB使用かによるプロトタイプ切り替え */
-#ifdef _USRDLL
-  /* DLL作成 */
-  #define D_EXTERN extern __declspec(dllexport)
-#else
-  #ifdef COMMON_DLL_IMPORT
-    /* DLL使用 */
-    #define D_EXTERN extern __declspec(dllimport)
-  #else
-    /* LIB使用 */
-    #define D_EXTERN extern
-  #endif
-#endif
 
 /* --- CommonTime.c --- */
 /* 現在時刻文字列生成 */

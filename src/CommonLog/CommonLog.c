@@ -25,8 +25,6 @@
  * @date   2004-06-06
  * $Revision: 1.2 $
  *****************************************************************************/
-#include"stdafx.h"
-
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -145,18 +143,18 @@ CmnLog_LogMessage *cmnLog_CreateLogMessageList(const char *msgFile)
 		*msg_pos = '\0';
 		msg_pos++ ;
 		code_pos = buf;
-		
+
 		/* 改行コードを除去 */
 		if (msg_pos[strlen(msg_pos) - 1] == '\n') {
 			msg_pos[strlen(msg_pos) - 1] = '\0';
 		}
-		
+
 		/* コードとメッセージの領域を確保 */
 		code_buf = malloc(strlen(code_pos) + 1);
 		strcpy(code_buf, CmnString_Trim(code_pos));
 		msg_buf = malloc(strlen(msg_pos) + 1);
 		strcpy(msg_buf, CmnString_Trim(msg_pos));
-		
+
 		/* 最初のリストを作成 */
 		if (list == NULL) {
 			list = (CmnLog_LogMessage *)calloc(1, sizeof(CmnLog_LogMessage));
@@ -207,7 +205,7 @@ void cmnLog_ReleaseLogMessageList(CmnLog_LogMessage *list)
 {
 	CmnLog_LogMessage *p;
 	CmnLog_LogMessage *tmp;
-	
+
 	if (list == NULL) {
 		return;
 	}
@@ -245,7 +243,7 @@ void CmnLog_Put(int level, const char *msgCode, ...)
 	if (gList == NULL) return ;
 
 	/* ログレベルチェック */
-	if (level > gLevel) return; 
+	if (level > gLevel) return;
 
 	/* 書式フォーマットされた現在時刻文字列を取得 */
 	CmnTime_GetFormatTime(CMN_TIME_FORMAT_ALL, str_date);

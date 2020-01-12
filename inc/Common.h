@@ -25,5 +25,19 @@
 /** 配列サイズを取得 */
 #define GET_LENGTH(x)  (sizeof(x) / sizeof(*x))
 
+/* DLL使用かLIB使用かによるプロトタイプ切り替え */
+#ifdef _USRDLL
+  /* DLL作成 */
+  #define D_EXTERN extern __declspec(dllexport)
+#else
+  #ifdef COMMON_DLL_IMPORT
+    /* DLL使用 */
+    #define D_EXTERN extern __declspec(dllimport)
+  #else
+    /* LIB使用 */
+    #define D_EXTERN extern
+  #endif
+#endif
+
 #endif /* _COMMON_H */
 

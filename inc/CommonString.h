@@ -3,7 +3,7 @@
  *
  *  文字列系共通関数を使用するためのI/Fヘッダファイル。<br>
  *  文字列系の共通関数を使用する場合は、このヘッダファイルを読み込むこと
- * 
+ *
  * @author H.Kumagai
  * @date   2004-06-05
  * $Revision: 1.3 $
@@ -22,20 +22,6 @@ typedef CmnData_List CmnString_List;
 
 /** 文字列一致(strcmp関数用) */
 #define EQUAL 0
-
-/* DLL使用かLIB使用かによるプロトタイプ切り替え */
-#ifdef _USRDLL
-  /* DLL作成 */
-  #define D_EXTERN extern __declspec(dllexport)
-#else
-  #ifdef COMMON_DLL_IMPORT
-    /* DLL使用 */
-    #define D_EXTERN extern __declspec(dllimport)
-  #else
-    /* LIB使用 */
-    #define D_EXTERN extern
-  #endif
-#endif
 
 /* --- CommonString.c --- */
 /* 右側トリム*/

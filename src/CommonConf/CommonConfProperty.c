@@ -20,13 +20,11 @@
  *      ・無効な書式での定義は無視される。（プロパティとして読み込まない）<BR>
  *      ・プロパティに重複があった場合は、より前に定義されているものが優先される<BR>
  *      ・一行に記述できる最大文字列長は4096Byteまで。<BR>
- * 
+ *
  * @author H.Kumagai
  * @date   2004-06-10
  * $Revision: 1.2 $
  *****************************************************************************/
-#include"stdafx.h"
-
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
@@ -69,7 +67,7 @@ CmnConf_PropertyList *CmnConf_GetPropertyList(const char *file)
 	FILE *prop_fp;
 	CmnConf_PropertyList *list = NULL;
 	CmnConf_PropertyList *tmp;
-	
+
 	prop_fp = fopen(file, "r");
 	if (prop_fp == NULL) {
 		return NULL;
@@ -101,13 +99,13 @@ CmnConf_PropertyList *CmnConf_GetPropertyList(const char *file)
 		*value_pos = '\0';
 		value_pos++ ;
 		name_pos = buf;
-		
+
 		/* コードとメッセージの領域を確保 */
 		name_buf = malloc(strlen(CmnString_Trim(name_pos)) + 1);
 		strcpy(name_buf, CmnString_Trim(name_pos));
 		value_buf = malloc(strlen(CmnString_Trim(value_pos)) + 1);
 		strcpy(value_buf, CmnString_Trim(value_pos));
-		
+
 		/* 最初のリストを作成 */
 		if (list == NULL) {
 			list = (CmnConf_PropertyList *)calloc(1, sizeof(CmnConf_PropertyList));
@@ -144,7 +142,7 @@ void CmnConf_FreePropertyList(CmnConf_PropertyList *list)
 {
 	CmnConf_PropertyList *p;
 	CmnConf_PropertyList *tmp;
-	
+
 	if (list == NULL) {
 		return;
 	}

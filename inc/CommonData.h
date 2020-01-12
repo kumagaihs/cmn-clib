@@ -3,7 +3,7 @@
  *
  *  構造化データ操作系共通関数を使用するためのI/Fヘッダファイル。<br>
  *  構造化データ操作系の共通関数を使用する場合は、このヘッダファイルを読み込むこと
- * 
+ *
  * @author H.Kumagai
  * @date   2004-06-12
  * $Revision: 1.1 $
@@ -25,21 +25,6 @@ typedef struct tag_CmnData_List {
 	int size;					/**< リストのサイズ(要素数) */
 	CmnData_ListItem *first;	/**< リスト内の最初の要素へのポインタ */
 } CmnData_List;
-
-
-/* DLL使用かLIB使用かによるプロトタイプ切り替え */
-#ifdef _USRDLL
-  /* DLL作成 */
-  #define D_EXTERN extern __declspec(dllexport)
-#else
-  #ifdef COMMON_DLL_IMPORT
-    /* DLL使用 */
-    #define D_EXTERN extern __declspec(dllimport)
-  #else
-    /* LIB使用 */
-    #define D_EXTERN extern
-  #endif
-#endif
 
 /* --- CommonDataList.c --- */
 /* 環境変数取得 */

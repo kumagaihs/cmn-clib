@@ -3,7 +3,7 @@
  *
  *  ログ出力系共通関数を使用するためのI/Fヘッダファイル。<br>
  *  ログ出力系の共通関数を使用する場合は、このヘッダファイルを読み込むこと
- * 
+ *
  * @author H.Kumagai
  * @date   2004-06-07
  * $Revision: 1.2 $
@@ -37,21 +37,6 @@ enum {
 	CMN_LOG_LEVEL_DEBUG,       /**< デバッグレベル（全てのログを出力） */
 	CMN_LOG_LEVEL_MAX = CMN_LOG_LEVEL_DEBUG  /**< ログレベルに指定できる最大値 */
 };
-
-
-/* DLL使用かLIB使用かによるプロトタイプ切り替え */
-#ifdef _USRDLL
-  /* DLL作成 */
-  #define D_EXTERN extern __declspec(dllexport)
-#else
-  #ifdef COMMON_DLL_IMPORT
-    /* DLL使用 */
-    #define D_EXTERN extern __declspec(dllimport)
-  #else
-    /* LIB使用 */
-    #define D_EXTERN extern
-  #endif
-#endif
 
 /* --- CommonLog.c --- */
 /* 標準ログ出力関数初期化処理 */

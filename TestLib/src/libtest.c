@@ -4,8 +4,6 @@
  * @date 2004-06-04
  * $Revision: 1.5 $
  */
-#include"stdafx.h"
-
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>

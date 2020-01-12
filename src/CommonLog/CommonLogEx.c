@@ -27,8 +27,6 @@
  * @date   2004-06-07
  * $Revision: 1.2 $
  *****************************************************************************/
-#include"stdafx.h"
-
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>

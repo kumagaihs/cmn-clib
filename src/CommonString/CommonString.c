@@ -2,13 +2,11 @@
  * @brief 文字列操作 共通関数
  *
  *  文字列操作系共通関数のうち、特に汎用的な関数郡が実装されている。
- * 
+ *
  * @author H.Kumagai
  * @date   2004-06-05
  * $Revision: 1.3 $
  *****************************************************************************/
-#include"stdafx.h"
-
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>

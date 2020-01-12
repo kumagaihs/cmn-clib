@@ -3,7 +3,7 @@
  *
  *  設定値操作系共通関数を使用するためのI/Fヘッダファイル。<br>
  *  設定値操作系の共通関数を使用する場合は、このヘッダファイルを読み込むこと
- * 
+ *
  * @author H.Kumagai
  * @date   2004-06-04
  * $Revision: 1.1 $
@@ -20,20 +20,6 @@ typedef struct tag_CmnConf_PropertyList {
 	char *value;				/* プロパティ値      */
 	struct tag_CmnConf_PropertyList *next;			/* リストのNextポインタ */
 } CmnConf_PropertyList;
-
-/* DLL使用かLIB使用かによるプロトタイプ切り替え */
-#ifdef _USRDLL
-  /* DLL作成 */
-  #define D_EXTERN extern __declspec(dllexport)
-#else
-  #ifdef COMMON_DLL_IMPORT
-    /* DLL使用 */
-    #define D_EXTERN extern __declspec(dllimport)
-  #else
-    /* LIB使用 */
-    #define D_EXTERN extern
-  #endif
-#endif
 
 /* --- CommonConf.c --- */
 /* 環境変数取得 */
