@@ -17,7 +17,7 @@
 #include"CommonConf.h"
 #include"CommonData.h"
 
-static void test();
+static int test();
 
 int main(int argc, char **argv)
 {
@@ -27,7 +27,7 @@ int main(int argc, char **argv)
 	getchar();
 }
 
-void test()
+int test()
 {
 	char trimstr[] = "  a b c  ";
 	char str[256] = "";
@@ -54,7 +54,7 @@ void test()
 	CmnString_FreeList(strList);
 
 	/* CommonLog test */
-	if ( ! CmnLog_Init("..\\TestConf\\message.conf", CMN_LOG_LEVEL_DETAIL)) {
+	if ( ! CmnLog_Init("TestConf\\message.conf", CMN_LOG_LEVEL_DETAIL)) {
 		printf("標準ログ初期化失敗\n");
 		return 0;
 	}
@@ -63,7 +63,7 @@ void test()
 	CmnLog_Put(CMN_LOG_LEVEL_DEBUG, "TEST01", "です");
 	CmnLog_End();
 
-	logex = CmnLog_InitEx("..\\TestConf\\message.conf", CMN_LOG_LEVEL_DETAIL, "test.log");
+	logex = CmnLog_InitEx("TestConf\\message.conf", CMN_LOG_LEVEL_DETAIL, "test.log");
 	if (logex == NULL) {
 		printf("拡張ログ初期化失敗\n");
 		return 0;
@@ -74,7 +74,7 @@ void test()
 	CmnLog_EndEx(logex);
 
 	/* CommonConf test */
-	prop = CmnConf_GetPropertyList("..\\TestConf\\property.conf");
+	prop = CmnConf_GetPropertyList("TestConf\\property.conf");
 	if (prop == NULL) {
 		printf("プロパティファイル読み込み失敗\n");
 		return 0;
@@ -125,5 +125,5 @@ void test()
 
 	printf("\n\\(^o^)/ SUCCESS!!\n\n");
 
-	return 0; 
+	return 0;
 }
