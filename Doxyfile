@@ -3,12 +3,12 @@
 #---------------------------------------------------------------------------
 # Project related configuration options
 #---------------------------------------------------------------------------
-DOXYFILE_ENCODING      = cp932
-PROJECT_NAME           = CommonLibraryForC
+DOXYFILE_ENCODING      = UTF-8
+PROJECT_NAME           = cmn-clib(CommonLibraryForC)
 PROJECT_NUMBER         = 
-PROJECT_BRIEF          = CŒ¾Œê—p‹¤’Êƒ‰ƒCƒuƒ‰ƒŠ
+PROJECT_BRIEF          = Cè¨€èªžå…±é€šãƒ©ã‚¤ãƒ–ãƒ©ãƒª
 PROJECT_LOGO           = 
-OUTPUT_DIRECTORY       = .\doc
+OUTPUT_DIRECTORY       = ./doc
 CREATE_SUBDIRS         = NO
 ALLOW_UNICODE_NAMES    = NO
 OUTPUT_LANGUAGE        = Japanese
@@ -112,8 +112,8 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # Configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = .\src .\inc
-INPUT_ENCODING         = cp932
+INPUT                  = ./src ./inc
+INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.c \
                          *.cc \
                          *.cxx \

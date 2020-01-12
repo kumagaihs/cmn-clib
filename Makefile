@@ -1,8 +1,8 @@
-PROGNAME := CommonLibraryForC
+PROGNAME := cmn-clib
 INCDIR := inc
 SRCDIR := src
 LIBDIR := lib
-OUTDIR := linux_build
+OUTDIR := build
 LIB_TARGET := $(OUTDIR)/$(PROGNAME).a
 SRCS := $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/CommonConf/*.c) $(wildcard $(SRCDIR)/CommonData/*.c) $(wildcard $(SRCDIR)/CommonLog/*.c) $(wildcard $(SRCDIR)/CommonString/*.c) $(wildcard $(SRCDIR)/CommonTime/*.c)
 OBJS := $(addprefix $(OUTDIR)/,$(patsubst %.c,%.o,$(SRCS)))
