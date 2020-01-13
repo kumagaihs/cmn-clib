@@ -6,7 +6,7 @@ OUTDIR := build
 LIB_TARGET := $(OUTDIR)/$(PROGNAME).a
 SRCS := $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/CommonConf/*.c) $(wildcard $(SRCDIR)/CommonData/*.c) $(wildcard $(SRCDIR)/CommonLog/*.c) $(wildcard $(SRCDIR)/CommonString/*.c) $(wildcard $(SRCDIR)/CommonTime/*.c)
 OBJS := $(addprefix $(OUTDIR)/,$(patsubst %.c,%.o,$(SRCS)))
-TEST_TARGET := $(OUTDIR)/test
+TEST_TARGET := $(OUTDIR)/test_main
 TEST_SRCS := $(wildcard test/src/*.c)
 TEST_OBJS := $(addprefix $(OUTDIR)/,$(patsubst %.c,%.o,$(TEST_SRCS)))
 #$(warning $(OBJS))

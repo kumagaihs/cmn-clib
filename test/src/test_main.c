@@ -40,7 +40,7 @@ int test()
 	if (IS_PRATFORM_WINDOWS()) {
 		printf("Pratform is windows\n");
 	}
-	else if (IS_PRATFORM_Linux()) {
+	else if (IS_PRATFORM_LINUX()) {
 		printf("Pratform is linux\n");
 	}
 
