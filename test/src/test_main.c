@@ -34,9 +34,17 @@ int test()
 	CmnConf_PropertyList *prop;
 	CmnData_List *list;
 	char *p;
+	char buf[CMN_TIME_FORMAT_SIZE_ALL];
+
+	/* Common test */
+	if (IS_PRATFORM_WINDOWS()) {
+		printf("Pratform is windows\n");
+	}
+	else if (IS_PRATFORM_Linux()) {
+		printf("Pratform is linux\n");
+	}
 
 	/* CommonTime test */
-	char buf[CMN_TIME_FORMAT_SIZE_ALL];
 	printf("%s\n", CmnTime_GetFormatTime(CMN_TIME_FORMAT_ALL, buf));
 
 	/* CommonString test */
@@ -52,7 +60,7 @@ int test()
 	CmnString_FreeList(strList);
 
 	/* CommonLog test */
-	if ( ! CmnLog_Init("TestConf\\message.conf", CMN_LOG_LEVEL_DETAIL)) {
+	if ( ! CmnLog_Init("test/conf/message.conf", CMN_LOG_LEVEL_DETAIL)) {
 		printf("標準ログ初期化失敗\n");
 		return 0;
 	}
@@ -61,7 +69,7 @@ int test()
 	CmnLog_Put(CMN_LOG_LEVEL_DEBUG, "TEST01", "です");
 	CmnLog_End();
 
-	logex = CmnLog_InitEx("TestConf\\message.conf", CMN_LOG_LEVEL_DETAIL, "test.log");
+	logex = CmnLog_InitEx("test/conf/message.conf", CMN_LOG_LEVEL_DETAIL, "test.log");
 	if (logex == NULL) {
 		printf("拡張ログ初期化失敗\n");
 		return 0;
@@ -72,7 +80,7 @@ int test()
 	CmnLog_EndEx(logex);
 
 	/* CommonConf test */
-	prop = CmnConf_GetPropertyList("TestConf\\property.conf");
+	prop = CmnConf_GetPropertyList("test/conf/property.conf");
 	if (prop == NULL) {
 		printf("プロパティファイル読み込み失敗\n");
 		return 0;

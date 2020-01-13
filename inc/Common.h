@@ -25,6 +25,20 @@
 /** 配列サイズを取得 */
 #define GET_LENGTH(x)  (sizeof(x) / sizeof(*x))
 
+/* OS識別 */
+#define PRATFORM_WINDOWS 1
+#define PRATFORM_LINUX   2
+#ifdef _WIN32
+  #define PRATFORM   PRATFORM_WINDOWS
+#else
+  #define PRATFORM   PRATFORM_LINUX
+#endif
+
+/** OSがWindowsかを判定（Windowsの場合：True */
+#define IS_PRATFORM_WINDOWS()  (PRATFORM == PRATFORM_WINDOWS)
+/** OSがLinuxかを判定（Linuxの場合：True */
+#define IS_PRATFORM_LINUX()    (PRATFORM == PRATFORM_LINUX)
+
 /* DLL使用かLIB使用かによるプロトタイプ切り替え */
 #ifdef _USRDLL
   /* DLL作成 */
