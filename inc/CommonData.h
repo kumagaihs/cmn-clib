@@ -26,12 +26,31 @@ typedef struct tag_CmnData_List {
 	CmnData_ListItem *first;	/**< リスト内の最初の要素へのポインタ */
 } CmnData_List;
 
+/** スタックの要素 */
+typedef struct _tag_CmnData_StackItem {
+	struct _tag_CmnData_StackItem *prev;	/**< 前の要素へのポインタ */
+	struct _tag_CmnData_StackItem *next;	/**< 次の要素へのポインタ */
+	void *data;								/**< この要素が保持するデータへのポインタ */
+} CmnData_StackItem;
+
+/** スタック */
+typedef struct _tag_CmnData_Stack {
+	CmnData_StackItem *first;		/**< スタックの最初の要素へのポインタ */
+	CmnData_StackItem *last;		/**< スタックの最後の要素へのポインタ */
+	unsigned long size;			/**< スタックのサイズ(要素数) */
+} CmnData_Stack;
+
 /* --- CommonDataList.c --- */
-/* 環境変数取得 */
 D_EXTERN CmnData_List *CmnData_CreateList();
 D_EXTERN void CmnData_FreeList(CmnData_List *list, void *method);
 D_EXTERN void CmnData_ListAddItem(CmnData_List *list, void *data);
 D_EXTERN void *CmnData_ListGetItem(CmnData_List *list, int index);
+
+/* --- CommonDataStack.c --- */
+D_EXTERN CmnData_Stack* CmnData_CreateStack();
+D_EXTERN void CmnData_FreeStack(CmnData_Stack *stack, void *method);
+D_EXTERN void CmnData_PushStack(CmnData_Stack *stack, void *data);
+D_EXTERN void* CmnData_PopStack(CmnData_Stack *stack);
 
 #endif /* _COMMON_DATA_H */
 
