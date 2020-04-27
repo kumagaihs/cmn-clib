@@ -30,6 +30,13 @@ D_EXTERN char *CmnString_RTrim(char *str);
 D_EXTERN char *CmnString_LTrim(char *str);
 /* 両側トリム*/
 D_EXTERN char *CmnString_Trim(char *str);
+/* 文字列置換 */
+D_EXTERN char* CmnString_Replace(const char *src, const char *old, const char *new, char *dest);
+/* 文字列置換（動的メモリ確保） */
+D_EXTERN char* CmnString_ReplaceNew(const char *src, const char *old, const char *new);
+/* 文字列連結（動的メモリ確保） */
+D_EXTERN char* CmnString_StrcatNew(const char *left, const char *right);
+
 
 /* --- CommonStringList.c --- */
 /* 文字列リスト作成 */
