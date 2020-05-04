@@ -164,3 +164,70 @@ char* CmnString_StrcatNew(const char *left, const char *right)
 	return strcat(strcat(buf, left), right);
 }
 
+/**
+ * @brief 文字列分割（into配列）
+ *
+ *  strをdelimで分割してbufに格納する。
+ *  bufには十分なサイズを確保しておくこと。
+ *
+ * @param buf 分割後の文字列を格納する2次元配列。例：最大100文字の文字列を最大10個格納可能とする場合 -> cahr[10][100]
+ * @param rowlen bufの配列要素数。例の場合は10
+ * @param collen buf1要素あたりのの最大文字数。例の場合は100
+ * @param str 分割対象の文字列
+ * @param delim 区切り文字(列)
+ * @return 分割した文字列数
+ */
+int CmnString_Split(char *buf, size_t rowlen, size_t collen, char *str, char *delim)
+{
+	char *pos = str;
+	size_t delimlen;
+	size_t row = 0;
+
+	delimlen = strlen(delim);
+
+	while (*str != '\0') {
+		char *tmp = buf + (row * collen);
+
+		pos = strstr(str, delim);
+		if (pos == NULL) {
+			strcpy(tmp, str);
+			row++;
+			break;
+		}
+
+		strncpy(tmp, str, pos - str);
+		tmp[pos - str] = '\0';
+
+		str = pos + delimlen;
+		row++;
+	}
+
+	return row;
+}
+
+/**
+ * @brief 文字列の左側パディング
+ * @param buf パディング後の文字列を格納するバッファ
+ * @param str 元文字列
+ * @param padch パディングする文字
+ * @param digit パディング後何文字にするか
+ */
+char* CmnString_Lpad(char *buf, char *str, char padch, size_t digit)
+{
+	size_t stlen = 0;
+	size_t padlen = 0;
+
+	stlen = strlen(str);
+
+	/* padding */
+	if (stlen < digit) {
+		padlen = digit - stlen;
+		memset(buf, padch, padlen);
+	}
+
+	/* add str */
+	strcpy(buf + padlen, str);
+
+	return buf;
+}
+

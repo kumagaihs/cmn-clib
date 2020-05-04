@@ -36,7 +36,10 @@ D_EXTERN char* CmnString_Replace(const char *src, const char *old, const char *n
 D_EXTERN char* CmnString_ReplaceNew(const char *src, const char *old, const char *new);
 /* 文字列連結（動的メモリ確保） */
 D_EXTERN char* CmnString_StrcatNew(const char *left, const char *right);
-
+/* 文字列分割（into配列） */
+D_EXTERN int CmnString_Split(char *buf, size_t rowlen, size_t collen, char *str, char *delim);
+/* 左側パディング */
+D_EXTERN char* CmnString_Lpad(char *buf, char *str, char padch, size_t digit);
 
 /* --- CommonStringList.c --- */
 /* 文字列リスト作成 */
