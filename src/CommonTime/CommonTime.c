@@ -107,7 +107,7 @@ char *CmnTime_GetFormatTime(int type, char *buf)
 			break;
 
 		default:
-			memset(buf, '\0', sizeof(buf));
+			*buf = '\0';
 	}
 
 	return buf;

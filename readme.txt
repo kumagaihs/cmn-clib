@@ -24,7 +24,25 @@ cmn-clibのビルド方法や使い方、その他メモなど
 		・Doxyfile						# doxygen設定ファイル
 
 ■プロジェクトのビルド方法
-	//TODO
+	＜Windows＞
+		Eclipse（C/C++2019-12）用に設定済み。
+		gitチェックアウト後、Eclipseでプロジェクトのビルドを実行すればOK。
+		Windowsではtest_mainをエントリーポイントとした実行ファイルが生成される。
+		ライブラリを生成する場合はビルド設定を変更すること。
+
+	＜Linux＞
+		$ cd プロジェクトフォルダ
+		$ make
+
+■テスト実施方法
+	＜Windows＞
+		test_mainを実行
+	＜Linux＞
+		・テストビルド
+			$ cd プロジェクトフォルダ
+			$ make
+			$ cd build
+			$ ./test_main
 
 ■cmn-clibの利用方法（リンク方法）
 	//TODO

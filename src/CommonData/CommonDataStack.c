@@ -25,6 +25,7 @@ CmnData_Stack* CmnData_CreateStack()
 	ret->first = NULL;
 	ret->last = NULL;
 	ret->size = 0L;
+	return ret;
 }
 
 /**

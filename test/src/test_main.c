@@ -91,41 +91,41 @@ int test()
 
 	/* CommonData test */
 	list = CmnData_CreateList();
-	printf("size=[%d], data=[%s]\n", list->size, CmnData_ListGetItem(list, 0));
+	printf("size=[%d], data=[%s]\n", list->size, (char*)CmnData_ListGetItem(list, 0));
 
 	p = malloc(sizeof("data1"));
 	strcpy(p, "data1");
 	CmnData_ListAddItem(list, p);
-	printf("size=[%d], data=[%s]\n", list->size, CmnData_ListGetItem(list, 0));
+	printf("size=[%d], data=[%s]\n", list->size, (char*)CmnData_ListGetItem(list, 0));
 
 	p = malloc(sizeof("data2"));
 	strcpy(p, "data2");
 	CmnData_ListAddItem(list, p);
-	printf("size=[%d], data=[%s]\n", list->size, CmnData_ListGetItem(list, 1));
+	printf("size=[%d], data=[%s]\n", list->size, (char*)CmnData_ListGetItem(list, 1));
 
 	p = malloc(sizeof("data3"));
 	strcpy(p, "data3");
 	CmnData_ListAddItem(list, p);
-	printf("size=[%d], data=[%s]\n", list->size, CmnData_ListGetItem(list, 2));
+	printf("size=[%d], data=[%s]\n", list->size, (char*)CmnData_ListGetItem(list, 2));
 
 	p = malloc(sizeof("data4"));
 	strcpy(p, "data4");
 	CmnData_ListAddItem(list, p);
-	printf("size=[%d], data=[%s]\n", list->size, CmnData_ListGetItem(list, 3));
+	printf("size=[%d], data=[%s]\n", list->size, (char*)CmnData_ListGetItem(list, 3));
 
 	CmnData_FreeList(list, free);
 
 
 	list = CmnData_CreateList();
-	printf("size=[%d], data=[%s]\n", list->size, CmnData_ListGetItem(list, 0));
+	printf("size=[%d], data=[%s]\n", list->size, (char*)CmnData_ListGetItem(list, 0));
 	CmnData_ListAddItem(list, "string1");
-	printf("size=[%d], data=[%s]\n", list->size, CmnData_ListGetItem(list, 0));
+	printf("size=[%d], data=[%s]\n", list->size, (char*)CmnData_ListGetItem(list, 0));
 	CmnData_ListAddItem(list, "string2");
-	printf("size=[%d], data=[%s]\n", list->size, CmnData_ListGetItem(list, 1));
+	printf("size=[%d], data=[%s]\n", list->size, (char*)CmnData_ListGetItem(list, 1));
 	CmnData_ListAddItem(list, "string3");
-	printf("size=[%d], data=[%s]\n", list->size, CmnData_ListGetItem(list, 2));
+	printf("size=[%d], data=[%s]\n", list->size, (char*)CmnData_ListGetItem(list, 2));
 	CmnData_ListAddItem(list, "string4");
-	printf("size=[%d], data=[%s]\n", list->size, CmnData_ListGetItem(list, 3));
+	printf("size=[%d], data=[%s]\n", list->size, (char*)CmnData_ListGetItem(list, 3));
 
 	CmnData_FreeList(list, NULL);
 
