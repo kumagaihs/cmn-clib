@@ -57,7 +57,7 @@ void CmnData_FreeStack(CmnData_Stack *stack, void *method)
 		CmnData_StackItem *tmp = current;
 		current = current->next;
 		if (method != NULL) {
-			freeMethod(tmp->data);
+			freeMethod(tmp->data);		/* XXX:popではfreeしていないのに、ここでfreeするのは一貫性がない。 */
 		}
 		free(tmp);
 	}

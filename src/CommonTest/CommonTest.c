@@ -115,9 +115,9 @@ void CmnTest_Run(CmnTest_Plan *plan, _Bool realtimeReport)
 			/* Test NG */
 			sprintf(reportTmp,
 					"File[%-30s] Case[%-30s] NG\n"
-					"    +- Line    :%ld\n"
-					"    +- Expected:%s\n"
-					"    +- Actual  :%s\n",
+					"    +- Line    %ld\n"
+					"    +- Expected[%s]\n"
+					"    +- Actual  [%s]\n",
 					testCase->testFileName, testCase->testCaseName,
 					testCase->lineOfNg,
 					testCase->expected,
@@ -159,6 +159,35 @@ void CmnTest_DestroyTest(CmnTest_Plan *plan)
 }
 
 /*
+ * @brief 整数値を検証する
+ * @param testCase テストケース
+ * @param line 検証処理を記述している行番号（__LINE__を指定する）
+ * @param actual 実測値
+ * @param expected 期待値
+ * @return 検証OK：True、検証NG：False
+ */
+_Bool CmnTest_AssertNumber(CmnTest_Case *testCase, long line, long actual, long expected)
+{
+	/* すでに検証NGの場合は検証しない */
+	if ( ! testCase->result) {
+		return False;
+	}
+
+	if (actual != expected) {
+		char buf[64];
+		testCase->result = False;
+		testCase->lineOfNg = line;
+		sprintf(buf, "%ld", actual);
+		testCase->actual = CmnString_StrcatNew(buf, "");
+		sprintf(buf, "%ld", expected);
+		testCase->expected = CmnString_StrcatNew(buf, "");
+		return False;
+	}
+
+	return True;
+}
+
+/*
  * @brief 文字列を検証する
  * @param testCase テストケース
  * @param line 検証処理を記述している行番号（__LINE__を指定する）
@@ -175,6 +204,7 @@ _Bool CmnTest_AssertString(CmnTest_Case *testCase, long line, char *actual, char
 
 	if (strcmp(actual, expected) != 0) {
 		testCase->result = False;
+		testCase->lineOfNg = line;
 		testCase->actual = CmnString_StrcatNew(actual, "");
 		testCase->expected = CmnString_StrcatNew(expected, "");
 		return False;
@@ -208,9 +238,10 @@ char* toHexString(void *data, size_t len)
 	int i;
 	char *ret;
 	char *chData = data;
-	ret = malloc((len * 2) + 1);
+	ret = malloc((len * 3) + 1);
 	for (i = 0; i < len; i++) {
-		tohex8(&ret[i * 2], chData[i]);
+		tohex8(&ret[i * 3], chData[i]);
+		ret[(i * 3) + 2] = ' ';
 	}
 	ret[len * 2] = '\0';
 	return ret;
@@ -236,11 +267,32 @@ _Bool CmnTest_AssertData(CmnTest_Case *testCase, long line, void *actual, void *
 
 	if (memcmp(actual, expected, dataLen) != 0) {
 		testCase->result = False;
+		testCase->lineOfNg = line;
 		testCase->actual = toHexString(actual, dataLen);
 		testCase->expected = toHexString(expected, dataLen);
 		return False;
 	}
 	testCase->result = False;
+	return False;
+}
+
+/*
+ * @brief 検証NGを記録する
+ * @param testCase テストケース
+ * @param line 検証処理を記述している行番号（__LINE__を指定する）
+ * @return 常にFalse
+ */
+_Bool CmnTest_AssertNG(CmnTest_Case *testCase, long line)
+{
+	/* すでに検証NGの場合は検証しない */
+	if ( ! testCase->result) {
+		return False;
+	}
+
+	testCase->result = False;
+	testCase->lineOfNg = line;
+	testCase->actual = CmnString_StrcatNew("no data", "");
+	testCase->expected = CmnString_StrcatNew("no data", "");
 	return False;
 }
 
