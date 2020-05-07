@@ -17,11 +17,175 @@
 
 
 /* 年月日情報の調整値 */
-#define PLUS_YEAR  1900		/* 年数調整用の値。localtime()では、                  */
-							/* tm構造体のtm_yearには(現在年-1900)がセットされる為 */
-#define PLUS_MON      1		/* 月調整用の値。tm_monは0～11月で表される */
+static const int BASE_YEAR = 1900;	/* 年数調整用の値。localtime()では、                  */
+										/* tm構造体のtm_yearには(現在年-1900)がセットされる為 */
+static const int BASE_MON = 1;		/* 月調整用の値。tm_monは0～11月で表される為 */
 
+/**
+ * @brief tm構造体の内容をCmnTime_DateTimeにコピーする
+ * @param time コピー元
+ * @param datetime コピー先
+ */
+static void tmToDateTime(struct tm *time, CmnTime_DateTime *datetime)
+{
+	datetime->year = time->tm_year + BASE_YEAR;
+	datetime->month = time->tm_mon + BASE_MON;
+	datetime->dayOfMonth = time->tm_mday;
+	datetime->dayOfWeek = time->tm_wday;
+	datetime->dayOfYear = time->tm_yday;
+	datetime->hour = time->tm_hour;
+	datetime->minute = time->tm_min;
+	datetime->second = time->tm_sec;
+	datetime->isdst = time->tm_isdst;
+}
 
+/**
+ * @brief CmnTime_DateTimeの内容をtm構造体にコピーする
+ * @param datetime コピー元
+ * @param time コピー先
+ */
+static void dateTimeToTm(CmnTime_DateTime *datetime, struct tm *time)
+{
+	time->tm_year = datetime->year - BASE_YEAR;
+	time->tm_mon = datetime->month - BASE_MON;
+	time->tm_mday = datetime->dayOfMonth;
+	time->tm_wday = datetime->dayOfWeek;
+	time->tm_yday = datetime->dayOfYear;
+	time->tm_hour = datetime->hour;
+	time->tm_min = datetime->minute;
+	time->tm_sec = datetime->second;
+	time->tm_isdst = datetime->isdst;
+}
+
+/**
+ * @brief 現在日時を取得する
+ *
+ *  現在日時をdatetimeに設定する。
+ *
+ * @param datetime 日時を設定する先
+ * @return datetimeを返却する
+ */
+CmnTime_DateTime* CmnTime_DateTimeSetNow(CmnTime_DateTime *datetime)
+{
+	return CmnTime_DateTimeSetByTime(datetime, time(NULL));
+}
+
+/**
+ * @brief 日時情報を設定する
+ *
+ *  引数で指定された日時をdatetimeに設定する
+ *
+ * @param datetime 日時を設定する先
+ * @param year 西暦年
+ * @param month 月(1 - 12)
+ * @param day 日(1 - 31)
+ * @param hour 時(0 - 23)
+ * @param minute 分(0 - 59)
+ * @param second 秒(0 - 59)
+ * @param isdst 夏時間（夏時間の場合は1、そうでなければ0、不明の場合は-1）
+ * @return datetimeを返却する
+ */
+CmnTime_DateTime* CmnTime_DateTimeSet(CmnTime_DateTime *datetime, int year, int month, int day, int hour, int minute, int second, int isdst)
+{
+	struct tm tmptm;
+	time_t time;
+
+	/* time_tを取得 */
+	tmptm.tm_year = year - BASE_YEAR;
+	tmptm.tm_mon = month - BASE_MON;
+	tmptm.tm_mday = day;
+	tmptm.tm_hour = hour;
+	tmptm.tm_min = minute;
+	tmptm.tm_sec = second;
+	tmptm.tm_isdst = isdst;
+	time = mktime(&tmptm);
+
+	/* DateTimeを作成 */
+	return CmnTime_DateTimeSetByTime(datetime, time);
+}
+
+/**
+ * @brief 日時情報を設定する
+ *
+ *  引数で指定された日時をdatetimeに設定する
+ *
+ * @param datetime 日時を設定する先
+ * @param time 1970/01/01 00:00:00 をゼロとした経過秒
+ * @return datetimeを返却する
+ */
+CmnTime_DateTime* CmnTime_DateTimeSetByTime(CmnTime_DateTime *datetime, time_t time)
+{
+	struct tm tmptm;
+
+	/* tm取得 */
+#if IS_PRATFORM_WINDOWS()
+		localtime_s(&tmptm, &time);
+#else
+		localtime_r(&time, &tmptm);
+#endif
+
+	/* 戻り値に移し替え */
+	tmToDateTime(&tmptm, datetime);
+	datetime->time = time;
+	datetime->timezone = 0;		/* タイムゾーン設定処理を実装すること */
+
+	return datetime;
+}
+
+/**
+ * @brief 日時情報を設定する
+ *
+ *  引数で指定された日時をdatetimeに設定する。<br>
+ *  加減算する値（year～second）には通常の時刻表記の上限を超えて設定可能。<br>
+ *  <br>
+ *  例：monthに12を超える数字、dayに31を超える数字を指定可能。<br>
+ *  　　2020/11/1 にday=40を加算した場合、datetimeは2020/12/10となる。
+ *
+ * @param datetime 計算元となる日時
+ * @param year 加減算する西暦年
+ * @param month 加減算する月
+ * @param day 加減算する日
+ * @param hour 加減算する時
+ * @param minute 加減算する分
+ * @param second 加減算する秒
+ * @return datetimeを返却する
+ */
+CmnTime_DateTime* CmnTime_DateTimeAdd(CmnTime_DateTime *datetime, int year, int month, int day, int hour, int minute, int second)
+{
+	struct tm tmptm;
+	time_t time;
+
+	/* struct tmに変換 */
+	dateTimeToTm(datetime, &tmptm);
+
+	/* 日付の加減算 */
+	tmptm.tm_year += year;
+	tmptm.tm_mon += month;
+	tmptm.tm_mday += day;
+	tmptm.tm_hour += hour;
+	tmptm.tm_min += minute;
+	tmptm.tm_sec += second;
+
+	/* 変換 */
+	time = mktime(&tmptm);
+	return CmnTime_DateTimeSetByTime(datetime, time);
+}
+
+/**
+ * @brief 日時情報を設定する
+ *
+ *  引数で指定されたtimeをdatetimeに設定する。<br>
+ *
+ * @param datetime 計算元となる日時
+ * @param time 加減算する時間（1970/01/01 00:00:00 をゼロとした経過秒）
+ * @return datetimeを返却する
+ */
+CmnTime_DateTime* CmnTime_DateTimeAddByTime(CmnTime_DateTime *datetime, time_t time)
+{
+	return CmnTime_DateTimeSetByTime(datetime, datetime->time + time);
+}
+
+/* TODO : CmnTime_DateTimeを渡して任意の時間の文字列を生成できるよう修正 */
 /**
  * @brief 現在時刻文字列生成
  *
@@ -63,8 +227,8 @@ char *CmnTime_GetFormatTime(int type, char *buf)
 	ptime = localtime(&now);
 
 	/* 年、月情報の修正 */
-	ptime->tm_year += PLUS_YEAR;
-	ptime->tm_mon  += PLUS_MON;
+	ptime->tm_year += BASE_YEAR;
+	ptime->tm_mon  += BASE_MON;
 
 	/* TODO 暇があったら、この部分を外出しする */
 	switch (type) {

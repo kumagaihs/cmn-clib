@@ -177,9 +177,9 @@ char* CmnString_StrcatNew(const char *left, const char *right)
  * @param delim 区切り文字(列)
  * @return 分割した文字列数
  */
-int CmnString_Split(char *buf, size_t rowlen, size_t collen, char *str, char *delim)
+int CmnString_Split(char *buf, size_t rowlen, size_t collen, const char *str, const char *delim)
 {
-	char *pos = str;
+	const char *pos = str;
 	size_t delimlen;
 	size_t row = 0;
 
@@ -200,6 +200,13 @@ int CmnString_Split(char *buf, size_t rowlen, size_t collen, char *str, char *de
 
 		str = pos + delimlen;
 		row++;
+
+		/* 最後がdelimで終わっている場合は末尾に空文字列の要素を補充 */
+		if (*str == '\0') {
+			tmp = buf + (row * collen);
+			tmp[0] = '\0';
+			row++;
+		}
 	}
 
 	return row;
@@ -211,8 +218,9 @@ int CmnString_Split(char *buf, size_t rowlen, size_t collen, char *str, char *de
  * @param str 元文字列
  * @param padch パディングする文字
  * @param digit パディング後何文字にするか
+ * @return bufを返す
  */
-char* CmnString_Lpad(char *buf, char *str, char padch, size_t digit)
+char* CmnString_Lpad(char *buf, const char *str, const char padch, size_t digit)
 {
 	size_t stlen = 0;
 	size_t padlen = 0;
