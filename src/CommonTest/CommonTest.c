@@ -49,7 +49,10 @@
 #include "CommonTime.h"
 #include "CommonString.h"
 
-static const size_t REPORT_BUF_SIZE_OF_ONE_CALSE = 1024;
+static const size_t REPORT_BUF_SIZE_OF_DUMP = 1024;
+static const size_t REPORT_BUF_SIZE_OF_ONE_CALSE = (REPORT_BUF_SIZE_OF_DUMP * 2) + 1024;
+
+static void cutAndCopyDumpText(char *buf, const char *str, size_t bufSize);
 
 /**
  * @brief テストプランを作成する
@@ -91,6 +94,8 @@ void CmnTest_Run(CmnTest_Plan *plan, _Bool realtimeReport)
 {
 	CmnTest_Case *testCase;
 	char reportTmp[REPORT_BUF_SIZE_OF_ONE_CALSE];
+	char expectedTmp[REPORT_BUF_SIZE_OF_DUMP];
+	char actualTmp[REPORT_BUF_SIZE_OF_DUMP];
 	int i = 0;
 
 	/* レポートの初期化 */
@@ -113,6 +118,8 @@ void CmnTest_Run(CmnTest_Plan *plan, _Bool realtimeReport)
 		}
 		else {
 			/* Test NG */
+			cutAndCopyDumpText(expectedTmp, testCase->expected, REPORT_BUF_SIZE_OF_DUMP);
+			cutAndCopyDumpText(actualTmp, testCase->actual, REPORT_BUF_SIZE_OF_DUMP);
 			sprintf(reportTmp,
 					"File[%-30s] Case[%-30s] NG\n"
 					"    +- Line    %ld\n"
@@ -120,8 +127,8 @@ void CmnTest_Run(CmnTest_Plan *plan, _Bool realtimeReport)
 					"    +- Actual  [%s]\n",
 					testCase->testFileName, testCase->testCaseName,
 					testCase->lineOfNg,
-					testCase->expected,
-					testCase->actual);
+					expectedTmp,
+					actualTmp);
 		}
 		strcat(plan->report, reportTmp);
 
@@ -243,7 +250,7 @@ char* toHexString(void *data, size_t len)
 		tohex8(&ret[i * 3], chData[i]);
 		ret[(i * 3) + 2] = ' ';
 	}
-	ret[len * 2] = '\0';
+	ret[len * 3] = '\0';
 	return ret;
 }
 /*===========================================
@@ -272,8 +279,8 @@ _Bool CmnTest_AssertData(CmnTest_Case *testCase, long line, void *actual, void *
 		testCase->expected = toHexString(expected, dataLen);
 		return False;
 	}
-	testCase->result = False;
-	return False;
+
+	return True;
 }
 
 /*
@@ -294,5 +301,20 @@ _Bool CmnTest_AssertNG(CmnTest_Case *testCase, long line)
 	testCase->actual = CmnString_StrcatNew("no data", "");
 	testCase->expected = CmnString_StrcatNew("no data", "");
 	return False;
+}
+
+static void cutAndCopyDumpText(char *buf, const char *str, size_t bufSize)
+{
+	char omitMark[] = "...";
+
+	if (strlen(str) > (bufSize - 1)) {
+		size_t omitStart = bufSize - (strlen(omitMark) + 1);
+		strncpy(buf, str, omitStart);
+		buf[omitStart] = '\0';
+		strcpy(buf + omitStart, omitMark);
+	}
+	else {
+		strcpy(buf, str);
+	}
 }
 

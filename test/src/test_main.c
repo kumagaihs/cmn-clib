@@ -10,6 +10,7 @@
 
 extern void test_CommonConf_AddCase(CmnTest_Plan *plan);
 extern void test_CommonData_AddCase(CmnTest_Plan *plan);
+extern void test_CommonFile_AddCase(CmnTest_Plan *plan);
 extern void test_CommonLog_AddCase(CmnTest_Plan *plan);
 extern void test_CommonString_AddCase(CmnTest_Plan *plan);
 extern void test_CommonTime_AddCase(CmnTest_Plan *plan);
@@ -26,6 +27,8 @@ int main(int argc, char **argv)
 	test_CommonConf_AddCase(&plan);
 	/* CommonData */
 	test_CommonData_AddCase(&plan);
+	/* CommonFile */
+	test_CommonFile_AddCase(&plan);
 	/* CommonLog */
 	test_CommonLog_AddCase(&plan);
 	/* CommonString */

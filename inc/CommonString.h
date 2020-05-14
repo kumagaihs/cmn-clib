@@ -23,33 +23,34 @@ typedef CmnData_List CmnString_List;
 /** 文字列一致(strcmp関数用) */
 #define EQUAL 0
 
+/** 自動領域拡張文字列バッファ */
+typedef struct _tag_CmnStringBuffer {
+	CmnDataBuffer *_buf;	/**< 自動領域拡張バッファへのポインタ。内部的な処理で使うため使用不可。 */
+	char *string;			/**< バッファへのポインタ。Append/Setによる領域拡張時にアドレスが変わる可能性があるため、利用側で保存せず、常に最新のポインタを参照すること。 */
+	size_t length;			/**< 文字数 */
+} CmnStringBuffer;
+
 /* --- CommonString.c --- */
-/* 右側トリム*/
 D_EXTERN char *CmnString_RTrim(char *str);
-/* 左側トリム*/
 D_EXTERN char *CmnString_LTrim(char *str);
-/* 両側トリム*/
 D_EXTERN char *CmnString_Trim(char *str);
-/* 文字列置換 */
 D_EXTERN char* CmnString_Replace(const char *src, const char *old, const char *new, char *dest);
-/* 文字列置換（動的メモリ確保） */
 D_EXTERN char* CmnString_ReplaceNew(const char *src, const char *old, const char *new);
-/* 文字列連結（動的メモリ確保） */
 D_EXTERN char* CmnString_StrcatNew(const char *left, const char *right);
-/* 文字列分割（into配列） */
 D_EXTERN int CmnString_Split(char *buf, size_t rowlen, size_t collen, const char *str, const char *delim);
-/* 左側パディング */
 D_EXTERN char* CmnString_Lpad(char *buf, const char *str, const char padch, size_t digit);
 
 /* --- CommonStringList.c --- */
-/* 文字列リスト作成 */
 D_EXTERN CmnString_List *CmnString_CreateList();
-/* 文字列リスト解放 */
 D_EXTERN void CmnString_FreeList(CmnString_List *list);
-/* 文字列リスト要素追加 */
 D_EXTERN void CmnString_ListAddItem(CmnString_List *list, const char *str);
-/* 文字列リスト要素取得 */
 D_EXTERN char *CmnString_ListGetItem(CmnString_List *list, int index);
+
+/* --- CommonStringBuffer.c --- */
+D_EXTERN CmnStringBuffer* CmnStringBuffer_Create(const char *str);
+D_EXTERN int CmnStringBuffer_Append(CmnStringBuffer *buf, const char *str);
+D_EXTERN int CmnStringBuffer_Set(CmnStringBuffer *buf, const char *str);
+D_EXTERN void CmnStringBuffer_Free(CmnStringBuffer *buf);
 
 
 #endif /* _COMMON_STRING_H */

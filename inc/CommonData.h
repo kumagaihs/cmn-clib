@@ -40,6 +40,13 @@ typedef struct _tag_CmnData_Stack {
 	unsigned long size;			/**< スタックのサイズ(要素数) */
 } CmnData_Stack;
 
+/** 自動領域拡張バッファ */
+typedef struct _tag_CmnDataBuffer {
+	void *data;			/**< バッファへのポインタ。Append/Setによる領域拡張時にアドレスが変わる可能性があるため、利用側で保存せず、常に最新のポインタを参照すること。 */
+	size_t bufSize;		/**< バッファ領域のサイズ */
+	size_t size;		/**< 有効なデータのサイズ */
+} CmnDataBuffer;
+
 /* --- CommonDataList.c --- */
 D_EXTERN CmnData_List *CmnData_CreateList();
 D_EXTERN void CmnData_FreeList(CmnData_List *list, void *method);
@@ -51,6 +58,13 @@ D_EXTERN CmnData_Stack* CmnData_CreateStack();
 D_EXTERN void CmnData_FreeStack(CmnData_Stack *stack, void *method);
 D_EXTERN void CmnData_PushStack(CmnData_Stack *stack, void *data);
 D_EXTERN void* CmnData_PopStack(CmnData_Stack *stack);
+
+/* --- CommonDataBuffer.c --- */
+D_EXTERN CmnDataBuffer* CmnDataBuffer_Create(size_t bufSize);
+D_EXTERN int CmnDataBuffer_Append(CmnDataBuffer *buf, const void *data, size_t len);
+D_EXTERN int CmnDataBuffer_Set(CmnDataBuffer *buf, const void *data, size_t len);
+D_EXTERN void CmnDataBuffer_Delete(CmnDataBuffer *buf, size_t len);
+D_EXTERN void CmnDataBuffer_Free(CmnDataBuffer *buf);
 
 #endif /* _COMMON_DATA_H */
 
