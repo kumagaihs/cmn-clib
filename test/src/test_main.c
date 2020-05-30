@@ -41,6 +41,8 @@ int main(int argc, char **argv)
 	CmnTest_DestroyTest(&plan);
 
 	printf("### End test ###\n");
+
+	return 0;
 }
 
 //int test()
