@@ -57,9 +57,9 @@ static void cutAndCopyDumpText(char *buf, const char *str, size_t bufSize);
 /**
  * @brief テストプランを作成する
  */
-void CmnTest_InitializeTestPlan(CmnTest_Plan *plan)
+void CmnTest_InitializeTestPlan(CmnTestPlan *plan)
 {
-	plan->caseList = CmnData_CreateList();
+	plan->caseList = CmnDataList_Create();
 }
 
 /**
@@ -73,16 +73,16 @@ void CmnTest_InitializeTestPlan(CmnTest_Plan *plan)
  * @param caseName テストケース名
  * @param testFunction テスト実施関数
  */
-void CmnTest_AddTestCase(CmnTest_Plan *plan, char *fileName, char *caseName, void (*testFunction)())
+void CmnTest_AddTestCase(CmnTestPlan *plan, char *fileName, char *caseName, void (*testFunction)())
 {
-	CmnTest_Case *testCase = calloc(1, sizeof(CmnTest_Case));
+	CmnTestCase *testCase = calloc(1, sizeof(CmnTestCase));
 	testCase->testFileName = fileName;
 	testCase->testCaseName = caseName;
 	testCase->testFunction = testFunction;
 	testCase->result = True;
 	testCase->actual = NULL;
 	testCase->expected = NULL;
-	CmnData_ListAddItem(plan->caseList, testCase);
+	CmnDataList_Add(plan->caseList, testCase);
 }
 
 /**
@@ -90,9 +90,9 @@ void CmnTest_AddTestCase(CmnTest_Plan *plan, char *fileName, char *caseName, voi
  * @param plan テストプラン
  * @param realtimeReport テスト実行時にテスト結果を順次標準出力に出力するか（True:出力する、False:出力しない）
  */
-void CmnTest_Run(CmnTest_Plan *plan, _Bool realtimeReport)
+void CmnTest_Run(CmnTestPlan *plan, _Bool realtimeReport)
 {
-	CmnTest_Case *testCase;
+	CmnTestCase *testCase;
 	char reportTmp[REPORT_BUF_SIZE_OF_ONE_CALSE];
 	char expectedTmp[REPORT_BUF_SIZE_OF_DUMP];
 	char actualTmp[REPORT_BUF_SIZE_OF_DUMP];
@@ -102,11 +102,11 @@ void CmnTest_Run(CmnTest_Plan *plan, _Bool realtimeReport)
 	plan->report = calloc(plan->caseList->size * REPORT_BUF_SIZE_OF_ONE_CALSE, sizeof(char));
 
 	/* テスト開始時間記録 */
-	CmnTime_DateTimeSetNow(&plan->startTime);
+	CmnTimeDateTime_SetNow(&plan->startTime);
 
 	for (i = 0; i < plan->caseList->size; i++) {
 		/* テスト実行 */
-		testCase = CmnData_ListGetItem(plan->caseList, i);
+		testCase = CmnDataList_Get(plan->caseList, i);
 		testCase->testFunction(testCase);
 
 		/* テスト実行結果作成 */
@@ -139,27 +139,27 @@ void CmnTest_Run(CmnTest_Plan *plan, _Bool realtimeReport)
 	}
 
 	/* テスト終了時間記録 */
-	CmnTime_DateTimeSetNow(&plan->endTime);
+	CmnTimeDateTime_SetNow(&plan->endTime);
 }
 
 /**
  * @brief テストプランを破棄する
  * @param plan テストプラン
  */
-void CmnTest_DestroyTest(CmnTest_Plan *plan)
+void CmnTest_DestroyTest(CmnTestPlan *plan)
 {
 	int i;
-	CmnTest_Case *testCase;
+	CmnTestCase *testCase;
 
 	/* 実測値、期待値を解放 */
 	for (i = 0; i < plan->caseList->size; i++) {
-		testCase = CmnData_ListGetItem(plan->caseList, i);
+		testCase = CmnDataList_Get(plan->caseList, i);
 		free(testCase->actual);
 		free(testCase->expected);
 	}
 
 	/* リストの解放 */
-	CmnData_FreeList(plan->caseList, free);
+	CmnDataList_Free(plan->caseList, free);
 
 	/* レポートの解放 */
 	free(plan->report);
@@ -173,7 +173,7 @@ void CmnTest_DestroyTest(CmnTest_Plan *plan)
  * @param expected 期待値
  * @return 検証OK：True、検証NG：False
  */
-_Bool CmnTest_AssertNumber(CmnTest_Case *testCase, long line, long actual, long expected)
+_Bool CmnTest_AssertNumber(CmnTestCase *testCase, long line, long actual, long expected)
 {
 	/* すでに検証NGの場合は検証しない */
 	if ( ! testCase->result) {
@@ -202,7 +202,7 @@ _Bool CmnTest_AssertNumber(CmnTest_Case *testCase, long line, long actual, long 
  * @param expected 期待値
  * @return 検証OK：True、検証NG：False
  */
-_Bool CmnTest_AssertString(CmnTest_Case *testCase, long line, char *actual, char *expected)
+_Bool CmnTest_AssertString(CmnTestCase *testCase, long line, char *actual, char *expected)
 {
 	/* すでに検証NGの場合は検証しない */
 	if ( ! testCase->result) {
@@ -265,7 +265,7 @@ char* toHexString(void *data, size_t len)
  * @param expected 期待値
  * @return 検証OK：True、検証NG：False
  */
-_Bool CmnTest_AssertData(CmnTest_Case *testCase, long line, void *actual, void *expected, size_t dataLen)
+_Bool CmnTest_AssertData(CmnTestCase *testCase, long line, void *actual, void *expected, size_t dataLen)
 {
 	/* すでに検証NGの場合は検証しない */
 	if ( ! testCase->result) {
@@ -289,7 +289,7 @@ _Bool CmnTest_AssertData(CmnTest_Case *testCase, long line, void *actual, void *
  * @param line 検証処理を記述している行番号（__LINE__を指定する）
  * @return 常にFalse
  */
-_Bool CmnTest_AssertNG(CmnTest_Case *testCase, long line)
+_Bool CmnTest_AssertNG(CmnTestCase *testCase, long line)
 {
 	/* すでに検証NGの場合は検証しない */
 	if ( ! testCase->result) {

@@ -25,9 +25,9 @@
  * @return 作成した文字列リストへのポインタ。作成に失敗した場合はNULLを返す。
  * @author H.Kumagai
  */
-CmnString_List *CmnString_CreateList()
+CmnStringList *CmnStringList_Create()
 {
-	return (CmnString_List *)CmnData_CreateList();
+	return (CmnStringList *)CmnDataList_Create();
 }
 
 
@@ -39,9 +39,9 @@ CmnString_List *CmnString_CreateList()
  * @param list     (I/O) 解放する文字列リストへのポインタ
  * @author H.Kumagai
  */
-void CmnString_FreeList(CmnString_List *list)
+void CmnStringList_Free(CmnStringList *list)
 {
-	CmnData_FreeList((CmnData_List *)list, free);
+	CmnDataList_Free((CmnDataList *)list, free);
 }
 
 
@@ -56,7 +56,7 @@ void CmnString_FreeList(CmnString_List *list)
  * @param str     (I)   追加する要素（文字列）
  * @author H.Kumagai
  */
-void CmnString_ListAddItem(CmnString_List *list, const char *str)
+void CmnStringList_Add(CmnStringList *list, const char *str)
 {
 	char *data;
 
@@ -64,7 +64,7 @@ void CmnString_ListAddItem(CmnString_List *list, const char *str)
 	if (data) {
 		strcpy(data, str);
 	}
-	CmnData_ListAddItem((CmnData_List *)list, data);
+	CmnDataList_Add((CmnDataList *)list, data);
 }
 
 
@@ -78,8 +78,8 @@ void CmnString_ListAddItem(CmnString_List *list, const char *str)
  * @return 取得した文字列へのポインタ（listやindexが不正な場合はNULLを返す）
  * @author H.Kumagai
  */
-char *CmnString_ListGetItem(CmnString_List *list, int index)
+char *CmnStringList_Get(CmnStringList *list, int index)
 {
-	return (char *)CmnData_ListGetItem((CmnData_List *)list, index);
+	return (char *)CmnDataList_Get((CmnDataList *)list, index);
 }
 

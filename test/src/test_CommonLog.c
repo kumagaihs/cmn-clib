@@ -9,12 +9,12 @@
 #include "CommonTest.h"
 #include "CommonLog.h"
 
-static void test_Xxx(CmnTest_Case *testCase)
+static void test_Xxx(CmnTestCase *testCase)
 {
 	/* TODO */
 }
 
-void test_CommonLog_AddCase(CmnTest_Plan *plan)
+void test_CommonLog_AddCase(CmnTestPlan *plan)
 {
 	CmnTest_AddTestCaseEasy(plan, test_Xxx);
 }

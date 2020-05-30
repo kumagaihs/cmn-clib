@@ -15,30 +15,30 @@
 #include "Common.h"
 
 /** 単方向リストの要素 */
-typedef struct tag_CmnData_ListItem {
+typedef struct tag_CmnDataListItem {
 	void *data;							/**< この要素が保持するデータへのポインタ */
-	struct tag_CmnData_ListItem *next;	/**< 次の要素へのポインタ */
-} CmnData_ListItem;
+	struct tag_CmnDataListItem *next;	/**< 次の要素へのポインタ */
+} CmnDataListItem;
 
 /** 単方向リスト（線状リスト） */
-typedef struct tag_CmnData_List {
+typedef struct tag_CmnDataList {
 	int size;					/**< リストのサイズ(要素数) */
-	CmnData_ListItem *first;	/**< リスト内の最初の要素へのポインタ */
-} CmnData_List;
+	CmnDataListItem *first;		/**< リスト内の最初の要素へのポインタ */
+} CmnDataList;
 
 /** スタックの要素 */
-typedef struct _tag_CmnData_StackItem {
-	struct _tag_CmnData_StackItem *prev;	/**< 前の要素へのポインタ */
-	struct _tag_CmnData_StackItem *next;	/**< 次の要素へのポインタ */
+typedef struct _tag_CmnDataStackItem {
+	struct _tag_CmnDataStackItem *prev;	/**< 前の要素へのポインタ */
+	struct _tag_CmnDataStackItem *next;	/**< 次の要素へのポインタ */
 	void *data;								/**< この要素が保持するデータへのポインタ */
-} CmnData_StackItem;
+} CmnDataStackItem;
 
 /** スタック */
-typedef struct _tag_CmnData_Stack {
-	CmnData_StackItem *first;		/**< スタックの最初の要素へのポインタ */
-	CmnData_StackItem *last;		/**< スタックの最後の要素へのポインタ */
+typedef struct _tag_CmnDataStack {
+	CmnDataStackItem *first;		/**< スタックの最初の要素へのポインタ */
+	CmnDataStackItem *last;		/**< スタックの最後の要素へのポインタ */
 	unsigned long size;			/**< スタックのサイズ(要素数) */
-} CmnData_Stack;
+} CmnDataStack;
 
 /** 自動領域拡張バッファ */
 typedef struct _tag_CmnDataBuffer {
@@ -48,16 +48,16 @@ typedef struct _tag_CmnDataBuffer {
 } CmnDataBuffer;
 
 /* --- CommonDataList.c --- */
-D_EXTERN CmnData_List *CmnData_CreateList();
-D_EXTERN void CmnData_FreeList(CmnData_List *list, void *method);
-D_EXTERN void CmnData_ListAddItem(CmnData_List *list, void *data);
-D_EXTERN void *CmnData_ListGetItem(CmnData_List *list, int index);
+D_EXTERN CmnDataList *CmnDataList_Create();
+D_EXTERN void CmnDataList_Free(CmnDataList *list, void *method);
+D_EXTERN void CmnDataList_Add(CmnDataList *list, void *data);
+D_EXTERN void *CmnDataList_Get(CmnDataList *list, int index);
 
 /* --- CommonDataStack.c --- */
-D_EXTERN CmnData_Stack* CmnData_CreateStack();
-D_EXTERN void CmnData_FreeStack(CmnData_Stack *stack, void *method);
-D_EXTERN void CmnData_PushStack(CmnData_Stack *stack, void *data);
-D_EXTERN void* CmnData_PopStack(CmnData_Stack *stack);
+D_EXTERN CmnDataStack* CmnDataStack_Create();
+D_EXTERN void CmnDataStack_Free(CmnDataStack *stack, void *method);
+D_EXTERN void CmnDataStack_Push(CmnDataStack *stack, void *data);
+D_EXTERN void* CmnDataStack_Pop(CmnDataStack *stack);
 
 /* --- CommonDataBuffer.c --- */
 D_EXTERN CmnDataBuffer* CmnDataBuffer_Create(size_t bufSize);

@@ -19,16 +19,16 @@ typedef struct tag_CmnConf_PropertyList {
 	char *name;					/* プロパティ名      */
 	char *value;				/* プロパティ値      */
 	struct tag_CmnConf_PropertyList *next;			/* リストのNextポインタ */
-} CmnConf_PropertyList;
+} CmnConfProperty;
 
 /* --- CommonConf.c --- */
 /* 環境変数取得 */
 D_EXTERN int CmnConf_GetEnv(char *buf, const char *envName);
 
 /* --- CommonConfProperty.c --- */
-D_EXTERN CmnConf_PropertyList *CmnConf_GetPropertyList(const char *name);
-D_EXTERN void CmnConf_FreePropertyList(CmnConf_PropertyList *list);
-D_EXTERN char *CmnConf_GetProperty(const CmnConf_PropertyList *list, const char *name );
+D_EXTERN CmnConfProperty *CmnConfProperty_Load(const char *file);
+D_EXTERN void CmnConfProperty_Free(CmnConfProperty *list);
+D_EXTERN char *CmnConfProperty_GetValue(const CmnConfProperty *list, const char *name );
 
 #endif /* _COMMON_CONF_H */
 

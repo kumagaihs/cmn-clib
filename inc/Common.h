@@ -12,8 +12,6 @@
 #ifndef _COMMON_H
 #define _COMMON_H
 
-#include "Common.h"
-
 /* 真偽値 */
 #ifndef True
   #define True      1  /**< 真 */
@@ -23,7 +21,7 @@
 #endif
 
 /** 配列サイズを取得 */
-#define GET_LENGTH(x)  (sizeof(x) / sizeof(*x))
+#define ARRAY_LENGTH(x)  (sizeof(x) / sizeof(*x))
 
 /* OS識別 */
 #define PRATFORM_WINDOWS 1

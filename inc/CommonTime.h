@@ -16,7 +16,7 @@
 #include "Common.h"
 
 /** 日付時刻情報 */
-typedef struct tag_CmnTime_DateTime {
+typedef struct tag_CmnTimeDateTime {
 	time_t time;			/**< 1970/01/01 00:00:00 をゼロとした経過秒 */
 	int year;				/**< 西暦年 */
 	int month;				/**< 月(1 - 12) */
@@ -28,11 +28,11 @@ typedef struct tag_CmnTime_DateTime {
 	int second;				/**< 秒(0 - 59) */
 	int isdst;				/**< 夏時間（夏時間の場合は1、そうでなければ0、不明の場合は-1） */
 	long timezone;			/**< タイムゾーン（UTCと現地時刻の差(秒単位)） */
-} CmnTime_DateTime;
+} CmnTimeDateTime;
 
 /** 現在時刻文字列のフォーマットタイプ */
 enum {
-	CMN_TIME_FORMAT_ALL,			/**< 形式：yyyy/mm/dd[hh:mm:ss] */
+	CMN_TIME_FORMAT_ALL,			/**< 形式：yyyy/mm/dd hh:mm:ss */
 	CMN_TIME_FORMAT_ALL_SHORT,		/**< 形式：yyyymmddhhmmss */
 	CMN_TIME_FORMAT_DATE,			/**< 形式：yyyy/mm/dd */
 	CMN_TIME_FORMAT_DATE_SHORT,		/**< 形式：yyyymmdd */
@@ -41,7 +41,7 @@ enum {
 };
 
 /** フォーマット後の日付/時刻文字列長 */
-#define CMN_TIME_FORMAT_SIZE_ALL			(20 + 1)	/**< 形式：yyyy/mm/dd[hh:mm:ss] */
+#define CMN_TIME_FORMAT_SIZE_ALL			(19 + 1)	/**< 形式：yyyy/mm/dd hh:mm:ss */
 #define CMN_TIME_FORMAT_SIZE_ALL_SHORT 		(14 + 1)	/**< 形式：yyyymmddhhmmss */
 #define CMN_TIME_FORMAT_SIZE_DATE			(10 + 1)	/**< 形式：yyyy/mm/dd */
 #define CMN_TIME_FORMAT_SIZE_DATE_SHORT		( 8 + 1)	/**< 形式：yyyymmdd */
@@ -50,17 +50,17 @@ enum {
 
 /* --- CommonTime.c --- */
 /* 現在日時を取得する */
-D_EXTERN CmnTime_DateTime* CmnTime_DateTimeSetNow(CmnTime_DateTime *datetime);
+D_EXTERN CmnTimeDateTime* CmnTimeDateTime_SetNow(CmnTimeDateTime *datetime);
 /* 日時情報を作成する */
-D_EXTERN CmnTime_DateTime* CmnTime_DateTimeSet(CmnTime_DateTime *datetime, int year, int month, int day, int hour, int minute, int second, int isdst);
+D_EXTERN CmnTimeDateTime* CmnTimeDateTime_Set(CmnTimeDateTime *datetime, int year, int month, int day, int hour, int minute, int second, int isdst);
 /* 日時情報を作成する */
-D_EXTERN CmnTime_DateTime* CmnTime_DateTimeSetByTime(CmnTime_DateTime *datetime, time_t time);
+D_EXTERN CmnTimeDateTime* CmnTimeDateTime_SetBySerial(CmnTimeDateTime *datetime, time_t time);
 /* 日時を加算する */
-D_EXTERN CmnTime_DateTime* CmnTime_DateTimeAdd(CmnTime_DateTime *datetime, int year, int month, int day, int hour, int minute, int second);
+D_EXTERN CmnTimeDateTime* CmnTimeDateTime_Add(CmnTimeDateTime *datetime, int year, int month, int day, int hour, int minute, int second);
 /* 日時を加算する */
-D_EXTERN CmnTime_DateTime* CmnTime_DateTimeAddByTime(CmnTime_DateTime *datetime, time_t time);
+D_EXTERN CmnTimeDateTime* CmnTimeDateTime_AddBySerial(CmnTimeDateTime *datetime, time_t time);
 /* 現在時刻文字列生成 */
-D_EXTERN char *CmnTime_GetFormatTime(int type, char *buf);
+D_EXTERN char *CmnTime_Format(int type, char *buf);
 
 #endif /* _COMMON_TIME_H */
 

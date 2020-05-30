@@ -26,7 +26,7 @@ static const int BASE_MON = 1;		/* 月調整用の値。tm_monは0～11月で表
  * @param time コピー元
  * @param datetime コピー先
  */
-static void tmToDateTime(struct tm *time, CmnTime_DateTime *datetime)
+static void tmToDateTime(struct tm *time, CmnTimeDateTime *datetime)
 {
 	datetime->year = time->tm_year + BASE_YEAR;
 	datetime->month = time->tm_mon + BASE_MON;
@@ -44,7 +44,7 @@ static void tmToDateTime(struct tm *time, CmnTime_DateTime *datetime)
  * @param datetime コピー元
  * @param time コピー先
  */
-static void dateTimeToTm(CmnTime_DateTime *datetime, struct tm *time)
+static void dateTimeToTm(CmnTimeDateTime *datetime, struct tm *time)
 {
 	time->tm_year = datetime->year - BASE_YEAR;
 	time->tm_mon = datetime->month - BASE_MON;
@@ -65,9 +65,9 @@ static void dateTimeToTm(CmnTime_DateTime *datetime, struct tm *time)
  * @param datetime 日時を設定する先
  * @return datetimeを返却する
  */
-CmnTime_DateTime* CmnTime_DateTimeSetNow(CmnTime_DateTime *datetime)
+CmnTimeDateTime* CmnTimeDateTime_SetNow(CmnTimeDateTime *datetime)
 {
-	return CmnTime_DateTimeSetByTime(datetime, time(NULL));
+	return CmnTimeDateTime_SetBySerial(datetime, time(NULL));
 }
 
 /**
@@ -85,7 +85,7 @@ CmnTime_DateTime* CmnTime_DateTimeSetNow(CmnTime_DateTime *datetime)
  * @param isdst 夏時間（夏時間の場合は1、そうでなければ0、不明の場合は-1）
  * @return datetimeを返却する
  */
-CmnTime_DateTime* CmnTime_DateTimeSet(CmnTime_DateTime *datetime, int year, int month, int day, int hour, int minute, int second, int isdst)
+CmnTimeDateTime* CmnTimeDateTime_Set(CmnTimeDateTime *datetime, int year, int month, int day, int hour, int minute, int second, int isdst)
 {
 	struct tm tmptm;
 	time_t time;
@@ -101,7 +101,7 @@ CmnTime_DateTime* CmnTime_DateTimeSet(CmnTime_DateTime *datetime, int year, int 
 	time = mktime(&tmptm);
 
 	/* DateTimeを作成 */
-	return CmnTime_DateTimeSetByTime(datetime, time);
+	return CmnTimeDateTime_SetBySerial(datetime, time);
 }
 
 /**
@@ -113,7 +113,7 @@ CmnTime_DateTime* CmnTime_DateTimeSet(CmnTime_DateTime *datetime, int year, int 
  * @param time 1970/01/01 00:00:00 をゼロとした経過秒
  * @return datetimeを返却する
  */
-CmnTime_DateTime* CmnTime_DateTimeSetByTime(CmnTime_DateTime *datetime, time_t time)
+CmnTimeDateTime* CmnTimeDateTime_SetBySerial(CmnTimeDateTime *datetime, time_t time)
 {
 	struct tm tmptm;
 
@@ -150,7 +150,7 @@ CmnTime_DateTime* CmnTime_DateTimeSetByTime(CmnTime_DateTime *datetime, time_t t
  * @param second 加減算する秒
  * @return datetimeを返却する
  */
-CmnTime_DateTime* CmnTime_DateTimeAdd(CmnTime_DateTime *datetime, int year, int month, int day, int hour, int minute, int second)
+CmnTimeDateTime* CmnTimeDateTime_Add(CmnTimeDateTime *datetime, int year, int month, int day, int hour, int minute, int second)
 {
 	struct tm tmptm;
 	time_t time;
@@ -168,7 +168,7 @@ CmnTime_DateTime* CmnTime_DateTimeAdd(CmnTime_DateTime *datetime, int year, int 
 
 	/* 変換 */
 	time = mktime(&tmptm);
-	return CmnTime_DateTimeSetByTime(datetime, time);
+	return CmnTimeDateTime_SetBySerial(datetime, time);
 }
 
 /**
@@ -180,9 +180,9 @@ CmnTime_DateTime* CmnTime_DateTimeAdd(CmnTime_DateTime *datetime, int year, int 
  * @param time 加減算する時間（1970/01/01 00:00:00 をゼロとした経過秒）
  * @return datetimeを返却する
  */
-CmnTime_DateTime* CmnTime_DateTimeAddByTime(CmnTime_DateTime *datetime, time_t time)
+CmnTimeDateTime* CmnTimeDateTime_AddBySerial(CmnTimeDateTime *datetime, time_t time)
 {
-	return CmnTime_DateTimeSetByTime(datetime, datetime->time + time);
+	return CmnTimeDateTime_SetBySerial(datetime, datetime->time + time);
 }
 
 /* TODO : CmnTime_DateTimeを渡して任意の時間の文字列を生成できるよう修正 */
@@ -194,7 +194,7 @@ CmnTime_DateTime* CmnTime_DateTimeAddByTime(CmnTime_DateTime *datetime, time_t t
  *
  * @param type      (I)   フォーマットタイプ。以下のものを指定すること
  *                    <UL>
- *                      <LI>CMN_TIME_FORMAT_ALL        &nbsp;&nbsp; --形式：yyyy/mm/dd[hh:mm:ss]</LI>
+ *                      <LI>CMN_TIME_FORMAT_ALL        &nbsp;&nbsp; --形式：yyyy/mm/dd hh:mm:ss</LI>
  *                      <LI>CMN_TIME_FORMAT_ALL_SHORT  &nbsp;&nbsp; --形式：yyyymmddhhmmss</LI>
  *                      <LI>CMN_TIME_FORMAT_DATE       &nbsp;&nbsp; --形式：yyyy/mm/dd</LI>
  *                      <LI>CMN_TIME_FORMAT_DATE_SHORT &nbsp;&nbsp; --形式：yyyymmdd</LI>
@@ -205,7 +205,7 @@ CmnTime_DateTime* CmnTime_DateTimeAddByTime(CmnTime_DateTime *datetime, time_t t
  * @param buf       (O)   フォーマット後の文字列が格納されるバッファ。<BR>
  *                    必要なバッファサイズは、以下のマクロから得られる。
  *                    <UL>
- *                      <LI>CMN_TIME_FORMAT_SIZE_ALL        &nbsp;&nbsp; --形式：yyyy/mm/dd[hh:mm:ss]</LI>
+ *                      <LI>CMN_TIME_FORMAT_SIZE_ALL        &nbsp;&nbsp; --形式：yyyy/mm/dd hh:mm:ss</LI>
  *                      <LI>CMN_TIME_FORMAT_SIZE_ALL_SHORT  &nbsp;&nbsp; --形式：yyyymmddhhmmss</LI>
  *                      <LI>CMN_TIME_FORMAT_SIZE_DATE       &nbsp;&nbsp; --形式：yyyy/mm/dd</LI>
  *                      <LI>CMN_TIME_FORMAT_SIZE_DATE_SHORT &nbsp;&nbsp; --形式：yyyymmdd</LI>
@@ -218,7 +218,7 @@ CmnTime_DateTime* CmnTime_DateTimeAddByTime(CmnTime_DateTime *datetime, time_t t
  * @note この関数は<time.h>のlocaltime関数を使用している。<BR>
  *       そのため、2038年問題の影響を受ける。
  */
-char *CmnTime_GetFormatTime(int type, char *buf)
+char *CmnTime_Format(int type, char *buf)
 {
 	struct tm *ptime;
 	time_t now;
@@ -232,9 +232,9 @@ char *CmnTime_GetFormatTime(int type, char *buf)
 
 	/* TODO 暇があったら、この部分を外出しする */
 	switch (type) {
-		/* 形式：yyyy/mm/dd[hh:mm:ss] */
+		/* 形式：yyyy/mm/dd hh:mm:ss */
 		case CMN_TIME_FORMAT_ALL:
-			sprintf(buf, "%04d/%02d/%02d[%02d:%02d:%02d]",
+			sprintf(buf, "%04d/%02d/%02d %02d:%02d:%02d",
 			        ptime->tm_year, ptime->tm_mon, ptime->tm_mday,
 			        ptime->tm_hour, ptime->tm_min, ptime->tm_sec);
 			break;

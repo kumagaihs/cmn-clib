@@ -9,7 +9,7 @@
 #include "CommonTest.h"
 #include "CommonString.h"
 
-static void test_CmnString_RTrim(CmnTest_Case *t)
+static void test_CmnString_RTrim(CmnTestCase *t)
 {
 	char nonSpace[]    = "Hello world";
 	char singleSpace[] = " Hello world ";
@@ -20,7 +20,7 @@ static void test_CmnString_RTrim(CmnTest_Case *t)
 	CmnTest_AssertString(t, __LINE__, CmnString_RTrim(multiSpace),  "  Hello world");
 }
 
-static void test_CmnString_LTrim(CmnTest_Case *t)
+static void test_CmnString_LTrim(CmnTestCase *t)
 {
 	char nonSpace[]    = "Hello world";
 	char singleSpace[] = " Hello world ";
@@ -31,7 +31,7 @@ static void test_CmnString_LTrim(CmnTest_Case *t)
 	CmnTest_AssertString(t, __LINE__, CmnString_LTrim(multiSpace),  "Hello world  ");
 }
 
-static void test_CmnString_Trim(CmnTest_Case *t)
+static void test_CmnString_Trim(CmnTestCase *t)
 {
 	char nonSpace[]    = "Hello world";
 	char singleSpace[] = " Hello world ";
@@ -43,7 +43,7 @@ static void test_CmnString_Trim(CmnTest_Case *t)
 	CmnTest_AssertString(t, __LINE__, CmnString_Trim(multiSpace),  "Hello world");
 }
 
-static void test_CmnString_Replace(CmnTest_Case *t)
+static void test_CmnString_Replace(CmnTestCase *t)
 {
 	char org[] = "hoge fuga fuga foo";
 	char dest[64];
@@ -58,7 +58,7 @@ static void test_CmnString_Replace(CmnTest_Case *t)
 	CmnTest_AssertString(t, __LINE__, CmnString_Replace(org, "o", "EEE", dest), "hEEEge fuga fuga fEEEEEE");
 }
 
-static void test_CmnString_ReplaceNew(CmnTest_Case *t)
+static void test_CmnString_ReplaceNew(CmnTestCase *t)
 {
 	char org[] = "hoge fuga fuga foo";
 	char *dest;
@@ -77,14 +77,14 @@ static void test_CmnString_ReplaceNew(CmnTest_Case *t)
 	free(dest);
 }
 
-static void test_CmnString_StrcatNew(CmnTest_Case *t)
+static void test_CmnString_StrcatNew(CmnTestCase *t)
 {
 	char *dest;
 	CmnTest_AssertString(t, __LINE__, dest = CmnString_StrcatNew("kuma", "tama"), "kumatama");
 	free(dest);
 }
 
-static void test_CmnString_Split(CmnTest_Case *t)
+static void test_CmnString_Split(CmnTestCase *t)
 {
 
 	/* 区切り文字なし */
@@ -128,7 +128,7 @@ static void test_CmnString_Split(CmnTest_Case *t)
 
 }
 
-static void test_CmnString_Lpad(CmnTest_Case *t)
+static void test_CmnString_Lpad(CmnTestCase *t)
 {
 	char buf[64];
 	CmnTest_AssertString(t, __LINE__, CmnString_Lpad(buf, "1", '0', 0), "1");
@@ -141,26 +141,26 @@ static void test_CmnString_Lpad(CmnTest_Case *t)
 	CmnTest_AssertString(t, __LINE__, CmnString_Lpad(buf, "001", '0', 1), "001");
 }
 
-static void test_CmnString_List(CmnTest_Case *t)
+static void test_CmnString_List(CmnTestCase *t)
 {
-	CmnString_List *list = CmnString_CreateList();
+	CmnStringList *list = CmnStringList_Create();
 	CmnTest_AssertNumber(t, __LINE__, list->size, 0);
 
-	CmnString_ListAddItem(list, "One");
+	CmnStringList_Add(list, "One");
 	CmnTest_AssertNumber(t, __LINE__, list->size, 1);
-	CmnString_ListAddItem(list, "Two");
+	CmnStringList_Add(list, "Two");
 	CmnTest_AssertNumber(t, __LINE__, list->size, 2);
-	CmnString_ListAddItem(list, "Three");
+	CmnStringList_Add(list, "Three");
 	CmnTest_AssertNumber(t, __LINE__, list->size, 3);
 
-	CmnTest_AssertString(t, __LINE__, CmnString_ListGetItem(list, 0), "One");
-	CmnTest_AssertString(t, __LINE__, CmnString_ListGetItem(list, 1), "Two");
-	CmnTest_AssertString(t, __LINE__, CmnString_ListGetItem(list, 2), "Three");
+	CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 0), "One");
+	CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 1), "Two");
+	CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 2), "Three");
 
-	CmnString_FreeList(list);
+	CmnStringList_Free(list);
 }
 
-static void test_CmnStringBuffer(CmnTest_Case *t)
+static void test_CmnStringBuffer(CmnTestCase *t)
 {
 	CmnStringBuffer *buf = CmnStringBuffer_Create("");
 	CmnTest_AssertString(t, __LINE__, buf->string, "");
@@ -186,7 +186,7 @@ static void test_CmnStringBuffer(CmnTest_Case *t)
 	CmnTest_AssertString(t, __LINE__, buf->string, "12345678");
 	CmnTest_AssertNumber(t, __LINE__, buf->length, 8);
 }
-void test_CommonString_AddCase(CmnTest_Plan *plan)
+void test_CommonString_AddCase(CmnTestPlan *plan)
 {
 	CmnTest_AddTestCaseEasy(plan, test_CmnString_RTrim);
 	CmnTest_AddTestCaseEasy(plan, test_CmnString_LTrim);

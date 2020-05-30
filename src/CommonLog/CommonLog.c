@@ -39,7 +39,7 @@
 #define PARSE_CHAR   ','
 #define COMMENT_CHAR '#'
 
-static CmnLog_LogMessage *gList = NULL;    /* ログメッセージリスト先頭へのポインタ */
+static CmnLogMessage *gList = NULL;    /* ログメッセージリスト先頭へのポインタ */
 static int gLevel;                     /* ログ出力レベル                       */
 
 /**
@@ -82,6 +82,7 @@ static int gLevel;                     /* ログ出力レベル                 
  */
 int CmnLog_Init(const char *msgFile, int level)
 {
+	/* TODO:msgFile	にNULLが渡された場合はエラーにしないこと。（メッセージファイルなしでも手軽に使えるように） */
 
 	/* ログレベル設定 */
 	if (level > CMN_LOG_LEVEL_MAX) return False;
@@ -93,8 +94,69 @@ int CmnLog_Init(const char *msgFile, int level)
 	}
 
 	/* メッセージリストを取得 */
-	gList = cmnLog_CreateLogMessageList(msgFile);
+	gList = _CmnLogMessage_Create(msgFile);
 	return gList ? True : False ;
+}
+
+
+/**
+ * @brief 標準ログ出力共通関数終了処理
+ *
+ *  標準ログ共通関数の終了処理を行う。（メモリ領域解放処理）<BR>
+ *  標準ログ共通関数の使用を終えた時は、必ずこの関数を実行すること。
+ *
+ * @author H.Kumagai
+ */
+void CmnLog_End()
+{
+	_CmnLogMessage_Free(gList);
+	gList = NULL;
+}
+
+
+/**
+ * @brief 標準ログ出力
+ *
+ *  ログを出力する。出力先はstdout。<BR>
+ *  CmnLog_Init関数をコールする前に本関数をコールした場合は何も行わない。<BR>
+ *  <ログ出力例><BR>
+ *    yyyy/mm/dd[hh:mm:ss] CODE=メッセージコード : メッセージ本文
+ *
+ * @param level            (I) ログレベル。LoggerInitで指定されたログレベルと比較し、出力可否を決める。
+ * @param msgCode          (I) メッセージコード
+ * @param ...              (I) メッセージ内に含まれる%sや%dの部分に対応する変数を指定する
+ * @author H.Kumagai
+ */
+void CmnLog_Put(int level, const char *msgCode, ...)
+{
+	/* TODO:msgCode	にNULLが渡された場合はエラーにしないこと。（メッセージファイルなしでも手軽に使えるように） */
+	va_list args;
+	char str_date[CMN_TIME_FORMAT_SIZE_ALL];
+	char format[512];
+	CmnLogMessage msg;
+
+	if (gList == NULL) return ;
+
+	/* ログレベルチェック */
+	if (level > gLevel) return;
+
+	/* 書式フォーマットされた現在時刻文字列を取得 */
+	CmnTime_Format(CMN_TIME_FORMAT_ALL, str_date);
+
+	/* 出力メッセージを取得 */
+	if ( ! _CmnLogMessage_Get(gList, msgCode, &msg)) {
+		return ;
+	}
+
+	/* 時刻、メッセージコード部分を出力 */
+	sprintf(format, "%s CODE=%s : ", str_date, msg.code);
+	fprintf(stdout, format);
+
+	/* メッセージ本文を出力 */
+	va_start(args, msgCode);
+	vfprintf(stdout, strcat(msg.msg, "\n"), args);
+	va_end(args);
+
 }
 
 
@@ -112,11 +174,11 @@ int CmnLog_Init(const char *msgFile, int level)
  * @author H.Kumagai
  * @note この関数は、ログ出力共通関数から使用される。外部からの使用は禁止。
  */
-CmnLog_LogMessage *cmnLog_CreateLogMessageList(const char *msgFile)
+CmnLogMessage *_CmnLogMessage_Create(const char *msgFile)
 {
 	FILE *fp;
-	CmnLog_LogMessage *list = NULL;
-	CmnLog_LogMessage *tmp;
+	CmnLogMessage *list = NULL;
+	CmnLogMessage *tmp;
 	char  buf[MSG_BUFSIZ];
 	char *code_pos;
 	char *code_buf;
@@ -157,7 +219,7 @@ CmnLog_LogMessage *cmnLog_CreateLogMessageList(const char *msgFile)
 
 		/* 最初のリストを作成 */
 		if (list == NULL) {
-			list = (CmnLog_LogMessage *)calloc(1, sizeof(CmnLog_LogMessage));
+			list = (CmnLogMessage *)calloc(1, sizeof(CmnLogMessage));
 			list->code = code_buf;
 			list->msg  = msg_buf;
 			list->next = NULL;
@@ -165,7 +227,7 @@ CmnLog_LogMessage *cmnLog_CreateLogMessageList(const char *msgFile)
 		}
 		/* 2番目以降のリストを作成 */
 		else {
-			tmp->next = (CmnLog_LogMessage *)calloc(1, sizeof(CmnLog_LogMessage));
+			tmp->next = (CmnLogMessage *)calloc(1, sizeof(CmnLogMessage));
 			tmp = tmp->next;
 			tmp->code = code_buf;
 			tmp->msg  = msg_buf;
@@ -178,21 +240,6 @@ CmnLog_LogMessage *cmnLog_CreateLogMessageList(const char *msgFile)
 
 
 /**
- * @brief 標準ログ出力共通関数終了処理
- *
- *  標準ログ共通関数の終了処理を行う。（メモリ領域解放処理）<BR>
- *  標準ログ共通関数の使用を終えた時は、必ずこの関数を実行すること。
- *
- * @author H.Kumagai
- */
-void CmnLog_End()
-{
-	cmnLog_ReleaseLogMessageList(gList);
-	gList = NULL;
-}
-
-
-/**
  * @brief ログメッセージリスト解放処理
  *
  *  ログメッセージリストのメモリ領域を解放する
@@ -201,10 +248,10 @@ void CmnLog_End()
  * @author H.Kumagai
  * @note この関数は、ログ出力共通関数から使用される。外部からの使用は禁止。
  */
-void cmnLog_ReleaseLogMessageList(CmnLog_LogMessage *list)
+void _CmnLogMessage_Free(CmnLogMessage *list)
 {
-	CmnLog_LogMessage *p;
-	CmnLog_LogMessage *tmp;
+	CmnLogMessage *p;
+	CmnLogMessage *tmp;
 
 	if (list == NULL) {
 		return;
@@ -217,51 +264,6 @@ void cmnLog_ReleaseLogMessageList(CmnLog_LogMessage *list)
 		free(p->msg);
 		free(p);
 	}
-}
-
-
-/**
- * @brief 標準ログ出力
- *
- *  ログを出力する。出力先はstdout。<BR>
- *  CmnLog_Init関数をコールする前に本関数をコールした場合は何も行わない。<BR>
- *  <ログ出力例><BR>
- *    yyyy/mm/dd[hh:mm:ss] CODE=メッセージコード : メッセージ本文
- *
- * @param level            (I) ログレベル。LoggerInitで指定されたログレベルと比較し、出力可否を決める。
- * @param msgCode          (I) メッセージコード
- * @param ...              (I) メッセージ内に含まれる%sや%dの部分に対応する変数を指定する
- * @author H.Kumagai
- */
-void CmnLog_Put(int level, const char *msgCode, ...)
-{
-	va_list args;
-	char str_date[CMN_TIME_FORMAT_SIZE_ALL];
-	char format[512];
-	CmnLog_LogMessage msg;
-
-	if (gList == NULL) return ;
-
-	/* ログレベルチェック */
-	if (level > gLevel) return;
-
-	/* 書式フォーマットされた現在時刻文字列を取得 */
-	CmnTime_GetFormatTime(CMN_TIME_FORMAT_ALL, str_date);
-
-	/* 出力メッセージを取得 */
-	if ( ! cmnLog_GetMessage(gList, msgCode, &msg)) {
-		return ;
-	}
-
-	/* 時刻、メッセージコード部分を出力 */
-	sprintf(format, "%s CODE=%s : ", str_date, msg.code);
-	fprintf(stdout, format);
-
-	/* メッセージ本文を出力 */
-	va_start(args, msgCode);
-	vfprintf(stdout, strcat(msg.msg, "\n"), args);
-	va_end(args);
-
 }
 
 
@@ -279,9 +281,9 @@ void CmnLog_Put(int level, const char *msgCode, ...)
  * @author H.Kumagai
  * @note この関数は、ログ出力共通関数から使用される。外部からの使用は禁止。
  */
-int cmnLog_GetMessage(CmnLog_LogMessage *list, const char *msg_code, CmnLog_LogMessage *msg)
+int _CmnLogMessage_Get(CmnLogMessage *list, const char *msg_code, CmnLogMessage *msg)
 {
-	CmnLog_LogMessage *p;
+	CmnLogMessage *p;
 
 	if (list == NULL) return False;
 

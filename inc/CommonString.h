@@ -18,7 +18,7 @@
 /** 文字列リスト（構造は単方向リストと同じ）
  * @sa 単方向リスト CmnData_List
  */
-typedef CmnData_List CmnString_List;
+typedef CmnDataList CmnStringList;
 
 /** 文字列一致(strcmp関数用) */
 #define EQUAL 0
@@ -41,10 +41,10 @@ D_EXTERN int CmnString_Split(char *buf, size_t rowlen, size_t collen, const char
 D_EXTERN char* CmnString_Lpad(char *buf, const char *str, const char padch, size_t digit);
 
 /* --- CommonStringList.c --- */
-D_EXTERN CmnString_List *CmnString_CreateList();
-D_EXTERN void CmnString_FreeList(CmnString_List *list);
-D_EXTERN void CmnString_ListAddItem(CmnString_List *list, const char *str);
-D_EXTERN char *CmnString_ListGetItem(CmnString_List *list, int index);
+D_EXTERN CmnStringList *CmnStringList_Create();
+D_EXTERN void CmnStringList_Free(CmnStringList *list);
+D_EXTERN void CmnStringList_Add(CmnStringList *list, const char *str);
+D_EXTERN char *CmnStringList_Get(CmnStringList *list, int index);
 
 /* --- CommonStringBuffer.c --- */
 D_EXTERN CmnStringBuffer* CmnStringBuffer_Create(const char *str);
