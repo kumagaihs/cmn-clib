@@ -9,7 +9,7 @@
 #include "CommonTest.h"
 #include "CommonData.h"
 
-static void test_CmnDataBuffer_small(CmnTest_Case *t)
+static void test_CmnDataBuffer_small(CmnTestCase *t)
 {
 	CmnDataBuffer *buf = CmnDataBuffer_Create(8);
 	CmnTest_AssertNumber(t, __LINE__, buf->bufSize, 8);
@@ -41,7 +41,7 @@ static void test_CmnDataBuffer_small(CmnTest_Case *t)
 	CmnTest_AssertNumber(t, __LINE__, buf->size, 8);
 }
 
-void test_CommonData_AddCase(CmnTest_Plan *plan)
+void test_CommonData_AddCase(CmnTestPlan *plan)
 {
 	CmnTest_AddTestCaseEasy(plan, test_CmnDataBuffer_small);
 }

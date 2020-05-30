@@ -18,10 +18,10 @@
  * @return 作成したスタックへのポインタ。作成に失敗した場合はNULLを返す。
  * @author H.Kumagai
  */
-CmnData_Stack* CmnData_CreateStack()
+CmnDataStack* CmnDataStack_Create()
 {
-	CmnData_Stack *ret;
-	ret = malloc(sizeof(CmnData_Stack));
+	CmnDataStack *ret;
+	ret = malloc(sizeof(CmnDataStack));
 	ret->first = NULL;
 	ret->last = NULL;
 	ret->size = 0L;
@@ -46,15 +46,15 @@ CmnData_Stack* CmnData_CreateStack()
  *                       （グローバルメモリや関数ポインタをスタックに格納する場合などにNULLを指定する）
  * @author H.Kumagai
  */
-void CmnData_FreeStack(CmnData_Stack *stack, void *method)
+void CmnDataStack_Free(CmnDataStack *stack, void *method)
 {
-	CmnData_StackItem *current;
+	CmnDataStackItem *current;
 	void (*freeMethod)() = method;
 	if (stack == NULL) return;
 
 	current = stack->first;
 	while (current != NULL) {
-		CmnData_StackItem *tmp = current;
+		CmnDataStackItem *tmp = current;
 		current = current->next;
 		if (method != NULL) {
 			freeMethod(tmp->data);		/* XXX:popではfreeしていないのに、ここでfreeするのは一貫性がない。 */
@@ -75,12 +75,12 @@ void CmnData_FreeStack(CmnData_Stack *stack, void *method)
  * @param data    (I)   追加する要素（データ）
  * @author H.Kumagai
  */
-void CmnData_PushStack(CmnData_Stack *stack, void *data)
+void CmnDataStack_Push(CmnDataStack *stack, void *data)
 {
-	CmnData_StackItem *item;
+	CmnDataStackItem *item;
 	if (stack == NULL) return;
 
-	item = malloc(sizeof(CmnData_StackItem));
+	item = malloc(sizeof(CmnDataStackItem));
 	item->prev = stack->last;
 	item->next = NULL;
 	item->data = data;
@@ -105,9 +105,9 @@ void CmnData_PushStack(CmnData_Stack *stack, void *data)
  * @return スタックから取り出したデータ（stackが空の場合はNULLを返す）
  * @author H.Kumagai
  */
-void* CmnData_PopStack(CmnData_Stack *stack)
+void* CmnDataStack_Pop(CmnDataStack *stack)
 {
-	CmnData_StackItem *item = NULL;
+	CmnDataStackItem *item = NULL;
 	if (stack == NULL || stack->size == 0) {
 		return NULL;
 	}

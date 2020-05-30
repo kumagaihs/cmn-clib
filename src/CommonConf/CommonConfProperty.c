@@ -56,7 +56,7 @@
  *         プロパティの取得に失敗した場合はNULLを返す。
  * @author H.Kumagai
  */
-CmnConf_PropertyList *CmnConf_GetPropertyList(const char *file)
+CmnConfProperty *CmnConfProperty_Load(const char *file)
 {
 	char  buf[PROP_BUF_SIZE + 1];
 	char *comment_pos;
@@ -65,8 +65,8 @@ CmnConf_PropertyList *CmnConf_GetPropertyList(const char *file)
 	char *value_pos;
 	char *value_buf;
 	FILE *prop_fp;
-	CmnConf_PropertyList *list = NULL;
-	CmnConf_PropertyList *tmp;
+	CmnConfProperty *list = NULL;
+	CmnConfProperty *tmp;
 
 	prop_fp = fopen(file, "r");
 	if (prop_fp == NULL) {
@@ -108,7 +108,7 @@ CmnConf_PropertyList *CmnConf_GetPropertyList(const char *file)
 
 		/* 最初のリストを作成 */
 		if (list == NULL) {
-			list = (CmnConf_PropertyList *)calloc(1, sizeof(CmnConf_PropertyList));
+			list = (CmnConfProperty *)calloc(1, sizeof(CmnConfProperty));
 			list->name  = name_buf;
 			list->value = value_buf;
 			list->next  = NULL;
@@ -119,7 +119,7 @@ CmnConf_PropertyList *CmnConf_GetPropertyList(const char *file)
 			while (tmp->next != NULL) {
 				tmp = tmp->next;
 			}
-			tmp->next = (CmnConf_PropertyList *)calloc(1, sizeof(CmnConf_PropertyList));
+			tmp->next = (CmnConfProperty *)calloc(1, sizeof(CmnConfProperty));
 			tmp->next->name  = name_buf;
 			tmp->next->value = value_buf;
 			tmp->next->next  = NULL;
@@ -138,10 +138,10 @@ CmnConf_PropertyList *CmnConf_GetPropertyList(const char *file)
  * @param list      (I)   解放するプロパティリスト
  * @author H.Kumagai
  */
-void CmnConf_FreePropertyList(CmnConf_PropertyList *list)
+void CmnConfProperty_Free(CmnConfProperty *list)
 {
-	CmnConf_PropertyList *p;
-	CmnConf_PropertyList *tmp;
+	CmnConfProperty *p;
+	CmnConfProperty *tmp;
 
 	if (list == NULL) {
 		return;
@@ -167,7 +167,7 @@ void CmnConf_FreePropertyList(CmnConf_PropertyList *list)
  * @return プロパティ値文字列へのポインタ。nameに該当が無い場合はNULLを返す。
  * @author H.Kumagai
  */
-char *CmnConf_GetProperty(const CmnConf_PropertyList *list, const char *name )
+char *CmnConfProperty_GetValue(const CmnConfProperty *list, const char *name )
 {
 	for (; list; list = list->next) {
 		if (strcmp(list->name, name) == 0) {

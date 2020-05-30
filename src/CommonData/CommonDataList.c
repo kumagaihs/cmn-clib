@@ -22,10 +22,10 @@
  * @return 作成した単方向リストへのポインタ。作成に失敗した場合はNULLを返す。
  * @author H.Kumagai
  */
-CmnData_List *CmnData_CreateList()
+CmnDataList *CmnDataList_Create()
 {
-	CmnData_List *list;
-	list = malloc(sizeof(CmnData_List));
+	CmnDataList *list;
+	list = malloc(sizeof(CmnDataList));
 	if (list != NULL) {
 		list->first = NULL;
 		list->size  = 0;
@@ -52,9 +52,9 @@ CmnData_List *CmnData_CreateList()
  *                       （グローバルメモリや関数ポインタをリストとして格納する場合などにNULLを指定する）
  * @author H.Kumagai
  */
-void CmnData_FreeList(CmnData_List *list, void *method)
+void CmnDataList_Free(CmnDataList *list, void *method)
 {
-	CmnData_ListItem *item, *tmp;
+	CmnDataListItem *item, *tmp;
 	void (*freeMethod)() = method;
 
 	if (list == NULL) return;
@@ -80,12 +80,12 @@ void CmnData_FreeList(CmnData_List *list, void *method)
  * @param data    (I)   追加する要素（データ）
  * @author H.Kumagai
  */
-void CmnData_ListAddItem(CmnData_List *list, void *data)
+void CmnDataList_Add(CmnDataList *list, void *data)
 {
-	CmnData_ListItem *item, *p, *tmp;
+	CmnDataListItem *item, *p, *tmp;
 
 	if (list == NULL) return;
-	if ((item = malloc(sizeof(CmnData_ListItem))) == NULL) return;
+	if ((item = malloc(sizeof(CmnDataListItem))) == NULL) return;
 	item->data = data;
 	item->next = NULL;
 
@@ -113,9 +113,9 @@ void CmnData_ListAddItem(CmnData_List *list, void *data)
  * @return 取得したデータへのポインタ（listやindexが不正な場合はNULLを返す）
  * @author H.Kumagai
  */
-void *CmnData_ListGetItem(CmnData_List *list, int index)
+void *CmnDataList_Get(CmnDataList *list, int index)
 {
-	CmnData_ListItem *item;
+	CmnDataListItem *item;
 	int i;
 
 	if (list == NULL) return NULL;

@@ -59,9 +59,9 @@
  * @sa 標準ログ出力関数初期化処理 CmnLog_Init()
  * @author H.Kumagai
  */
-CmnLog_LogEx *CmnLog_InitEx(const char *msgFile, int level, const char *file)
+CmnLogEx *CmnLogEx_Init(const char *msgFile, int level, const char *file)
 {
-	CmnLog_LogEx *log;
+	CmnLogEx *log;
 
 	/* 引数不正チェック */
 	if (msgFile == NULL)          return NULL;
@@ -69,21 +69,21 @@ CmnLog_LogEx *CmnLog_InitEx(const char *msgFile, int level, const char *file)
 	if (file == NULL)             return NULL;
 
 	/* 拡張ログ情報を取得、設定 */
-	if ((log = malloc(sizeof(CmnLog_LogEx))) == NULL) {
+	if ((log = malloc(sizeof(CmnLogEx))) == NULL) {
 		return NULL;
 	}
-	memset(log, 0, sizeof(CmnLog_LogEx));
+	memset(log, 0, sizeof(CmnLogEx));
 	log->level = level;
 
 	if ((log->file = malloc(strlen(file) + 1)) == NULL) {
-		CmnLog_EndEx(log);
+		CmnLogEx_End(log);
 		return NULL;
 	}
 	strcpy(log->file, file);
 
-	log->list = cmnLog_CreateLogMessageList(msgFile);
+	log->list = _CmnLogMessage_Create(msgFile);
 	if (log->list == NULL) {
-		CmnLog_EndEx(log);
+		CmnLogEx_End(log);
 		return NULL;
 	}
 
@@ -100,11 +100,11 @@ CmnLog_LogEx *CmnLog_InitEx(const char *msgFile, int level, const char *file)
  * @param log    (I/O) 拡張ログ情報へのポインタ
  * @author H.Kumagai
  */
-void CmnLog_EndEx(CmnLog_LogEx *log)
+void CmnLogEx_End(CmnLogEx *log)
 {
 	if (log == NULL) return;
 	if (log->list != NULL) {
-		cmnLog_ReleaseLogMessageList(log->list);
+		_CmnLogMessage_Free(log->list);
 	}
 	if (log->file != NULL) {
 		free(log->file);
@@ -127,12 +127,12 @@ void CmnLog_EndEx(CmnLog_LogEx *log)
  * @author H.Kumagai
  * @note メッセージコードが存在しない場合は何も出力されない
  */
-void CmnLog_PutEx(CmnLog_LogEx *log, int level, const char *msgCode, ...)
+void CmnLogEx_Put(CmnLogEx *log, int level, const char *msgCode, ...)
 {
 	va_list args;
 	char str_date[CMN_TIME_FORMAT_SIZE_ALL];
 	char format[512];
-	CmnLog_LogMessage msg;
+	CmnLogMessage msg;
 	FILE *file;
 
 	if (log == NULL) return;
@@ -141,10 +141,10 @@ void CmnLog_PutEx(CmnLog_LogEx *log, int level, const char *msgCode, ...)
 	if (level > log->level) return;
 
 	/* 書式フォーマットされた現在時刻文字列を取得 */
-	CmnTime_GetFormatTime(CMN_TIME_FORMAT_ALL, str_date);
+	CmnTime_Format(CMN_TIME_FORMAT_ALL, str_date);
 
 	/* 出力メッセージを取得 */
-	if ( ! cmnLog_GetMessage(log->list, msgCode, &msg)) {
+	if ( ! _CmnLogMessage_Get(log->list, msgCode, &msg)) {
 		return ;
 	}
 

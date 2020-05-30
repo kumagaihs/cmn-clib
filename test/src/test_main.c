@@ -8,16 +8,16 @@
 
 #include"CommonTest.h"
 
-extern void test_CommonConf_AddCase(CmnTest_Plan *plan);
-extern void test_CommonData_AddCase(CmnTest_Plan *plan);
-extern void test_CommonFile_AddCase(CmnTest_Plan *plan);
-extern void test_CommonLog_AddCase(CmnTest_Plan *plan);
-extern void test_CommonString_AddCase(CmnTest_Plan *plan);
-extern void test_CommonTime_AddCase(CmnTest_Plan *plan);
+extern void test_CommonConf_AddCase(CmnTestPlan *plan);
+extern void test_CommonData_AddCase(CmnTestPlan *plan);
+extern void test_CommonFile_AddCase(CmnTestPlan *plan);
+extern void test_CommonLog_AddCase(CmnTestPlan *plan);
+extern void test_CommonString_AddCase(CmnTestPlan *plan);
+extern void test_CommonTime_AddCase(CmnTestPlan *plan);
 
 int main(int argc, char **argv)
 {
-	CmnTest_Plan plan;
+	CmnTestPlan plan;
 
 	printf("### Start test ###\n");
 

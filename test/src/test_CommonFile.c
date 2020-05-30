@@ -10,7 +10,7 @@
 #include "CommonFile.h"
 #include "CommonData.h"
 
-static void test_CmnFile_ReadAll(CmnTest_Case *t)
+static void test_CmnFile_ReadAll(CmnTestCase *t)
 {
 	CmnDataBuffer *buf = CmnFile_ReadAll("test/resources/CmnFile/ReadAll.txt");
 
@@ -21,7 +21,7 @@ static void test_CmnFile_ReadAll(CmnTest_Case *t)
 	CmnDataBuffer_Free(buf);
 }
 
-static void test_CmnFile_ReadAllText(CmnTest_Case *t)
+static void test_CmnFile_ReadAllText(CmnTestCase *t)
 {
 	CmnDataBuffer *buf = CmnFile_ReadAll("test/resources/CmnFile/ReadAll.txt");
 	char *txt = CmnFile_ReadAllText("test/resources/CmnFile/ReadAll.txt");
@@ -35,7 +35,7 @@ static void test_CmnFile_ReadAllText(CmnTest_Case *t)
 	free(txt);
 }
 
-void test_CommonFile_AddCase(CmnTest_Plan *plan)
+void test_CommonFile_AddCase(CmnTestPlan *plan)
 {
 	CmnTest_AddTestCaseEasy(plan, test_CmnFile_ReadAll);
 	CmnTest_AddTestCaseEasy(plan, test_CmnFile_ReadAllText);
