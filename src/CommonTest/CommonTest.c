@@ -185,9 +185,9 @@ _Bool CmnTest_AssertNumber(CmnTestCase *testCase, long line, long actual, long e
 		testCase->result = False;
 		testCase->lineOfNg = line;
 		sprintf(buf, "%ld", actual);
-		testCase->actual = CmnString_StrcatNew(buf, "");
+		testCase->actual = CmnString_StrCatNew(buf, "");
 		sprintf(buf, "%ld", expected);
-		testCase->expected = CmnString_StrcatNew(buf, "");
+		testCase->expected = CmnString_StrCatNew(buf, "");
 		return False;
 	}
 
@@ -212,8 +212,8 @@ _Bool CmnTest_AssertString(CmnTestCase *testCase, long line, char *actual, char 
 	if (strcmp(actual, expected) != 0) {
 		testCase->result = False;
 		testCase->lineOfNg = line;
-		testCase->actual = CmnString_StrcatNew(actual, "");
-		testCase->expected = CmnString_StrcatNew(expected, "");
+		testCase->actual = CmnString_StrCatNew(actual, "");
+		testCase->expected = CmnString_StrCatNew(expected, "");
 		return False;
 	}
 
@@ -298,8 +298,8 @@ _Bool CmnTest_AssertNG(CmnTestCase *testCase, long line)
 
 	testCase->result = False;
 	testCase->lineOfNg = line;
-	testCase->actual = CmnString_StrcatNew("no data", "");
-	testCase->expected = CmnString_StrcatNew("no data", "");
+	testCase->actual = CmnString_StrCatNew("no data", "");
+	testCase->expected = CmnString_StrCatNew("no data", "");
 	return False;
 }
 

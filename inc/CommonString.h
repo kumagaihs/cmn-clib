@@ -34,9 +34,10 @@ typedef struct _tag_CmnStringBuffer {
 D_EXTERN char *CmnString_RTrim(char *str);
 D_EXTERN char *CmnString_LTrim(char *str);
 D_EXTERN char *CmnString_Trim(char *str);
-D_EXTERN char* CmnString_Replace(const char *src, const char *old, const char *new, char *dest);
-D_EXTERN char* CmnString_ReplaceNew(const char *src, const char *old, const char *new);
-D_EXTERN char* CmnString_StrcatNew(const char *left, const char *right);
+D_EXTERN char* CmnString_Replace(const char *src, const char *befor, const char *after, char *dest);
+D_EXTERN char* CmnString_ReplaceNew(const char *src, const char *befor, const char *after);
+D_EXTERN char* CmnString_StrCatNew(const char *left, const char *right);
+D_EXTERN char* CmnString_StrCopyNew(const char *str);
 D_EXTERN int CmnString_Split(char *buf, size_t rowlen, size_t collen, const char *str, const char *delim);
 D_EXTERN char* CmnString_Lpad(char *buf, const char *str, const char padch, size_t digit);
 

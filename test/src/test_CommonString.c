@@ -80,7 +80,7 @@ static void test_CmnString_ReplaceNew(CmnTestCase *t)
 static void test_CmnString_StrcatNew(CmnTestCase *t)
 {
 	char *dest;
-	CmnTest_AssertString(t, __LINE__, dest = CmnString_StrcatNew("kuma", "tama"), "kumatama");
+	CmnTest_AssertString(t, __LINE__, dest = CmnString_StrCatNew("kuma", "tama"), "kumatama");
 	free(dest);
 }
 

@@ -185,6 +185,30 @@ CmnTimeDateTime* CmnTimeDateTime_AddBySerial(CmnTimeDateTime *datetime, time_t t
 	return CmnTimeDateTime_SetBySerial(datetime, datetime->time + time);
 }
 
+/**
+ * @brief CmnTimeDateTimeを文字列に変換する
+ * @param datetime 変換するCmnTimeDateTime
+ * @param buf 変換後文字列を格納するバッファ。バッファサイズはCMN_TIME_DATETIME_STRING_BUFFER_SIZE以上であること。
+ */
+char* CmnTimeDateTime_ToString(const CmnTimeDateTime *datetime, char *buf)
+{
+	*buf = '\0';
+	sprintf(buf, "time=%I64d, year=%d, month=%d, day(m)=%d, day(w)=%d, day(y)=%d, hour=%d, min=%d, sec=%d, isdst=%d, timezone=%ld",
+			datetime->time,
+			datetime->year,
+			datetime->month,
+			datetime->dayOfMonth,
+			datetime->dayOfWeek,
+			datetime->dayOfYear,
+			datetime->hour,
+			datetime->minute,
+			datetime->second,
+			datetime->isdst,
+			datetime->timezone);
+	return buf;
+}
+
+
 /* TODO : CmnTime_DateTimeを渡して任意の時間の文字列を生成できるよう修正 */
 /**
  * @brief 現在時刻文字列生成
