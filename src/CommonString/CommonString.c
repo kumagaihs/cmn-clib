@@ -88,23 +88,23 @@ char *CmnString_Trim(char *str)
  *  srcを読み込み、oldをnewに置換した文字列をdestに格納する。
  *
  * @param src  (I) 元文字列
- * @param old  (I) 置換対象文字列
- * @param new  (I) 置換後文字列
+ * @param befor  (I) 置換対象文字列
+ * @param after  (I) 置換後文字列
  * @param dest (O) 置換処理後の文字列を格納するバッファ
  * @return destを返却する。
  */
-char* CmnString_Replace(const char *src, const char *old, const char *new, char *dest)
+char* CmnString_Replace(const char *src, const char *befor, const char *after, char *dest)
 {
 	size_t oldlen;
-	oldlen = strlen(old);
+	oldlen = strlen(befor);
 
 	*dest = '\0';
 
 	while (src != NULL) {
-		char *oldpos = strstr(src, old);
+		char *oldpos = strstr(src, befor);
 		if (oldpos != NULL) {
 			strncat(dest, src, oldpos - src);
-			strcat(dest, new);
+			strcat(dest, after);
 			src = oldpos + oldlen;
 		}
 		else {
@@ -122,11 +122,11 @@ char* CmnString_Replace(const char *src, const char *old, const char *new, char 
  *  srcを読み込み、oldをnewに置換した文字列を生成する。
  *
  * @param src  (I) 元文字列
- * @param old  (I) 置換対象文字列
- * @param new  (I) 置換後文字列
+ * @param befor  (I) 置換対象文字列
+ * @param after  (I) 置換後文字列
  * @return 置換後文字列へのポインタを返却する。呼び出し元でfreeすること。
  */
-char* CmnString_ReplaceNew(const char *src, const char *old, const char *new)
+char* CmnString_ReplaceNew(const char *src, const char *befor, const char *after)
 {
 	size_t srclen, oldlen, newlen;
 	size_t bufsize;
@@ -134,15 +134,15 @@ char* CmnString_ReplaceNew(const char *src, const char *old, const char *new)
 
 	/* 元文字列のサイズから必要十分なバッファサイズを算出 */
 	srclen = strlen(src);
-	oldlen = strlen(old);
-	newlen = strlen(new);
+	oldlen = strlen(befor);
+	newlen = strlen(after);
 	bufsize = srclen + (srclen * (newlen / oldlen)) + 1;
 
 	/* バッファ確保 */
 	dest = malloc(bufsize);
 	memset(dest, '\0', bufsize);
 
-	return CmnString_Replace(src, old, new, dest);
+	return CmnString_Replace(src, befor, after, dest);
 }
 
 /**
@@ -154,7 +154,7 @@ char* CmnString_ReplaceNew(const char *src, const char *old, const char *new)
  * @param right (I) 右側文字列
  * @return 連結後文字列へのポインタを返却する。呼び出し元でfreeすること。
  */
-char* CmnString_StrcatNew(const char *left, const char *right)
+char* CmnString_StrCatNew(const char *left, const char *right)
 {
 	char *buf;
 	size_t bufsize = strlen(left) + strlen(right) + 1;
@@ -162,6 +162,20 @@ char* CmnString_StrcatNew(const char *left, const char *right)
 	memset(buf, '\0', bufsize);
 
 	return strcat(strcat(buf, left), right);
+}
+
+/**
+ * @brief 文字列コピー（動的メモリ確保）
+ *
+ *  strをコピーした文字列を生成する。
+ *
+ * @param str  (I) 文字列
+ * @return コピーした文字列へのポインタを返却する。呼び出し元でfreeすること。
+ */
+char* CmnString_StrCopyNew(const char *str)
+{
+	char *buf = calloc(1, strlen(str) + 1);
+	return strcpy(buf, str);
 }
 
 /**

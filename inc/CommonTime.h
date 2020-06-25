@@ -48,6 +48,9 @@ enum {
 #define CMN_TIME_FORMAT_SIZE_TIME			( 8 + 1)	/**< 形式：hh:mm:ss */
 #define CMN_TIME_FORMAT_SIZE_TIME_SHORT		( 6 + 1)	/**< 形式：hhmmss */
 
+/** 時刻文字列のバッファ長 */
+#define CMN_TIME_DATETIME_STRING_BUFFER_SIZE (160)
+
 /* --- CommonTime.c --- */
 /* 現在日時を取得する */
 D_EXTERN CmnTimeDateTime* CmnTimeDateTime_SetNow(CmnTimeDateTime *datetime);
@@ -61,6 +64,8 @@ D_EXTERN CmnTimeDateTime* CmnTimeDateTime_Add(CmnTimeDateTime *datetime, int yea
 D_EXTERN CmnTimeDateTime* CmnTimeDateTime_AddBySerial(CmnTimeDateTime *datetime, time_t time);
 /* 現在時刻文字列生成 */
 D_EXTERN char *CmnTime_Format(int type, char *buf);
+/* CmnTimeDateTimeを文字列に変換する */
+D_EXTERN char* CmnTimeDateTime_ToString(const CmnTimeDateTime *datetime, char *buf);
 
 #endif /* _COMMON_TIME_H */
 
