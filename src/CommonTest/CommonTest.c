@@ -43,11 +43,11 @@
 #include<stdlib.h>
 #include<string.h>
 
-#include "CommonTest.h"
-#include "Common.h"
-#include "CommonData.h"
-#include "CommonTime.h"
-#include "CommonString.h"
+#include "cmnclib/CommonTest.h"
+#include "cmnclib/Common.h"
+#include "cmnclib/CommonData.h"
+#include "cmnclib/CommonTime.h"
+#include "cmnclib/CommonString.h"
 
 static const size_t REPORT_BUF_SIZE_OF_DUMP = 1024;
 static const size_t REPORT_BUF_SIZE_OF_ONE_CALSE = 4096;

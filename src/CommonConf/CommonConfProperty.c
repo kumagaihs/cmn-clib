@@ -29,9 +29,9 @@
 #include<string.h>
 #include<stdlib.h>
 
-#include"Common.h"
-#include"CommonConf.h"
-#include"CommonString.h"
+#include"cmnclib/Common.h"
+#include"cmnclib/CommonConf.h"
+#include"cmnclib/CommonString.h"
 
 #define PROP_BUF_SIZE  4096		/* プロパティファイル１行の最大文字数  */
 #define COMMENT_CHAR   '#'		/* コメント識別文字                    */

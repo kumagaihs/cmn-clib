@@ -7,8 +7,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "CommonTest.h"
-#include "CommonTime.h"
+#include "cmnclib/CommonTest.h"
+#include "cmnclib/CommonTime.h"
 
 static void test_CmnTime_DateTimeSetNow(CmnTestCase *testCase)
 {

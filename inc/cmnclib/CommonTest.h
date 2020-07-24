@@ -11,9 +11,9 @@
 #ifndef _COMMON_TEST_H
 #define _COMMON_TEST_H
 
-#include "Common.h"
-#include "CommonData.h"
-#include "CommonTime.h"
+#include "cmnclib/Common.h"
+#include "cmnclib/CommonData.h"
+#include "cmnclib/CommonTime.h"
 
 /** テストプラン */
 typedef struct tag_CmnTestPlan {

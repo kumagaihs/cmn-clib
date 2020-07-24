@@ -6,9 +6,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "CommonTest.h"
-#include "CommonFile.h"
-#include "CommonData.h"
+#include "cmnclib/CommonTest.h"
+#include "cmnclib/CommonFile.h"
+#include "cmnclib/CommonData.h"
 
 static void test_CmnFile_ReadAll(CmnTestCase *t)
 {

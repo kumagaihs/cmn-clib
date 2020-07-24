@@ -9,9 +9,9 @@
 #include<stdlib.h>
 #include<string.h>
 
-#include "Common.h"
-#include "CommonFile.h"
-#include "CommonData.h"
+#include "cmnclib/Common.h"
+#include "cmnclib/CommonFile.h"
+#include "cmnclib/CommonData.h"
 
 #if IS_PRATFORM_WINDOWS()
 #include<windows.h>
@@ -19,8 +19,11 @@
 
 static const size_t BUF_SIZE = 4096;
 
+#if IS_PRATFORM_WINDOWS()
 static CmnDataList* ListForWindows(const char *path, CmnDataList *list);
+#else
 static CmnDataList* ListForLinux(const char *path, CmnDataList *list);
+#endif
 
 /**
  * @brief ファイルをテキストデータとして全て読み込む
@@ -158,6 +161,11 @@ char* CmnFileInfo_ToString(const CmnFileInfo *info, char *buf)
 }
 
 
+#if IS_PRATFORM_WINDOWS()
+/* ============================================================================
+ *    Only Windows code
+ * ========================================================================= */
+
 static CmnDataList* ListForWindows(const char *path, CmnDataList *list)
 {
 	char *searchPath;
@@ -220,9 +228,16 @@ static CmnDataList* ListForWindows(const char *path, CmnDataList *list)
 	return list;
 }
 
+#else
+/* ============================================================================
+ *    Only Linux code
+ * ========================================================================= */
+
 static CmnDataList* ListForLinux(const char *path, CmnDataList *list)
 {
 	/* TODO */
 	return NULL;
 }
+
+#endif
 

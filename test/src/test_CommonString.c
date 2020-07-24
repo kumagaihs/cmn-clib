@@ -6,8 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "CommonTest.h"
-#include "CommonString.h"
+#include "cmnclib/CommonTest.h"
+#include "cmnclib/CommonString.h"
 
 static void test_CmnString_RTrim(CmnTestCase *t)
 {

@@ -6,8 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "CommonTest.h"
-#include "CommonLog.h"
+#include "cmnclib/CommonTest.h"
+#include "cmnclib/CommonLog.h"
 
 static void test_Xxx(CmnTestCase *testCase)
 {

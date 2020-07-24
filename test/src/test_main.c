@@ -6,7 +6,7 @@
  */
 #include<stdio.h>
 
-#include"CommonTest.h"
+#include"cmnclib/CommonTest.h"
 
 extern void test_CommonConf_AddCase(CmnTestPlan *plan);
 extern void test_CommonData_AddCase(CmnTestPlan *plan);

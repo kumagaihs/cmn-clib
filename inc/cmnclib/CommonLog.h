@@ -12,7 +12,7 @@
 #ifndef _COMMON_LOG_H
 #define _COMMON_LOG_H
 
-#include "Common.h"
+#include "cmnclib/Common.h"
 
 
 /** ログメッセージ格納構造体 */

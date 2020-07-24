@@ -12,8 +12,8 @@
 #ifndef _COMMON_STRING_H
 #define _COMMON_STRING_H
 
-#include "Common.h"
-#include "CommonData.h"
+#include "cmnclib/Common.h"
+#include "cmnclib/CommonData.h"
 
 /** 文字列リスト（構造は単方向リストと同じ）
  * @sa 単方向リスト CmnData_List

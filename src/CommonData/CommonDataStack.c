@@ -8,7 +8,7 @@
  *****************************************************************************/
 #include<stdlib.h>
 
-#include "CommonData.h"
+#include "cmnclib/CommonData.h"
 
 /**
  * @brief スタック作成

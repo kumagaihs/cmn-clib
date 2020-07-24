@@ -9,7 +9,7 @@
 #include<stdlib.h>
 #include<string.h>
 
-#include "CommonData.h"
+#include "cmnclib/CommonData.h"
 
 static const size_t DEFAULT_BUFFER_SIZE = 4096;
 

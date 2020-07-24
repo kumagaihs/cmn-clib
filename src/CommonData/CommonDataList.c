@@ -10,8 +10,8 @@
  *****************************************************************************/
 #include<stdlib.h>
 
-#include"Common.h"
-#include"CommonData.h"
+#include"cmnclib/Common.h"
+#include"cmnclib/CommonData.h"
 
 
 /**

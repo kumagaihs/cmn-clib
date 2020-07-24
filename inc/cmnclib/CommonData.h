@@ -12,7 +12,7 @@
 #ifndef _COMMON_DATA_H
 #define _COMMON_DATA_H
 
-#include "Common.h"
+#include "cmnclib/Common.h"
 
 /** 単方向リストの要素 */
 typedef struct tag_CmnDataListItem {
