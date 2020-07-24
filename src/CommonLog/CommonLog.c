@@ -30,10 +30,10 @@
 #include<string.h>
 #include<stdarg.h>
 
-#include"Common.h"
-#include"CommonLog.h"
-#include"CommonTime.h"
-#include"CommonString.h"
+#include"cmnclib/Common.h"
+#include"cmnclib/CommonLog.h"
+#include"cmnclib/CommonTime.h"
+#include"cmnclib/CommonString.h"
 
 #define MSG_BUFSIZ   2048
 #define PARSE_CHAR   ','

@@ -11,8 +11,8 @@
 #include<stdlib.h>
 #include<string.h>
 
-#include"Common.h"
-#include"CommonString.h"
+#include"cmnclib/Common.h"
+#include"cmnclib/CommonString.h"
 
 
 /**

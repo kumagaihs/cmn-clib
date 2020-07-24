@@ -10,8 +10,8 @@
 #include<stdlib.h>
 #include<string.h>
 
-#include"Common.h"
-#include"CommonConf.h"
+#include"cmnclib/Common.h"
+#include"cmnclib/CommonConf.h"
 
 /**
  * @brief 環境変数取得

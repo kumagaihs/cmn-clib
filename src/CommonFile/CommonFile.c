@@ -9,9 +9,9 @@
 #include<stdlib.h>
 #include<string.h>
 
-#include "Common.h"
-#include "CommonFile.h"
-#include "CommonData.h"
+#include "cmnclib/Common.h"
+#include "cmnclib/CommonFile.h"
+#include "cmnclib/CommonData.h"
 
 #if IS_PRATFORM_WINDOWS()
 #include<windows.h>

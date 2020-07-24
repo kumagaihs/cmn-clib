@@ -10,10 +10,10 @@
 #ifndef _COMMON_FILE_H
 #define _COMMON_FILE_H
 
-#include "Common.h"
-#include "CommonData.h"
-#include "CommonString.h"
-#include "CommonTime.h"
+#include "cmnclib/Common.h"
+#include "cmnclib/CommonData.h"
+#include "cmnclib/CommonString.h"
+#include "cmnclib/CommonTime.h"
 
 /* 不要
 typedef enum {

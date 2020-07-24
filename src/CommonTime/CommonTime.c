@@ -12,8 +12,8 @@
 #include<string.h>
 #include<time.h>
 
-#include"Common.h"
-#include"CommonTime.h"
+#include"cmnclib/Common.h"
+#include"cmnclib/CommonTime.h"
 
 
 /* 年月日情報の調整値 */

@@ -6,8 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "CommonTest.h"
-#include "CommonData.h"
+#include "cmnclib/CommonTest.h"
+#include "cmnclib/CommonData.h"
 
 static void test_CmnDataBuffer_small(CmnTestCase *t)
 {

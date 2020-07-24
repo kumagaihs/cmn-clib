@@ -9,7 +9,7 @@
 #include<stdlib.h>
 #include<string.h>
 
-#include "CommonString.h"
+#include "cmnclib/CommonString.h"
 
 /**
  * @brief 自動領域拡張バッファ作成

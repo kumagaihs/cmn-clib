@@ -13,7 +13,8 @@
 #define _COMMON_TIME_H
 
 #include <time.h>
-#include "Common.h"
+
+#include "cmnclib/Common.h"
 
 /** 日付時刻情報 */
 typedef struct tag_CmnTimeDateTime {

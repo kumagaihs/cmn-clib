@@ -12,7 +12,7 @@
 #ifndef _COMMON_CONF_H
 #define _COMMON_CONF_H
 
-#include "Common.h"
+#include "cmnclib/Common.h"
 
 /** プロパティリスト。プロパティファイルの情報を全て格納する。 */
 typedef struct tag_CmnConf_PropertyList {
