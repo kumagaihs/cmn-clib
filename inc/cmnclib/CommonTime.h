@@ -63,10 +63,12 @@ D_EXTERN CmnTimeDateTime* CmnTimeDateTime_SetBySerial(CmnTimeDateTime *datetime,
 D_EXTERN CmnTimeDateTime* CmnTimeDateTime_Add(CmnTimeDateTime *datetime, int year, int month, int day, int hour, int minute, int second);
 /* 日時を加算する */
 D_EXTERN CmnTimeDateTime* CmnTimeDateTime_AddBySerial(CmnTimeDateTime *datetime, time_t time);
-/* 現在時刻文字列生成 */
-D_EXTERN char *CmnTime_Format(int type, char *buf);
 /* CmnTimeDateTimeを文字列に変換する */
 D_EXTERN char* CmnTimeDateTime_ToString(const CmnTimeDateTime *datetime, char *buf);
+/* 現在時刻文字列生成 */
+D_EXTERN char *CmnTime_Format(int type, char *buf);
+/* 指定ミリ秒スリープする */
+D_EXTERN void CmnTime_Sleep(unsigned long long msec);
 
 #endif /* _COMMON_TIME_H */
 

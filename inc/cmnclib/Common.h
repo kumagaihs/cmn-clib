@@ -12,6 +12,8 @@
 #ifndef _COMMON_H
 #define _COMMON_H
 
+#include <stddef.h>
+
 /* 真偽値 */
 #ifndef True
   #define True      1  /**< 真 */
