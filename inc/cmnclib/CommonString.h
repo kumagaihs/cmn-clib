@@ -39,7 +39,10 @@ D_EXTERN char* CmnString_ReplaceNew(const char *src, const char *befor, const ch
 D_EXTERN char* CmnString_StrCatNew(const char *left, const char *right);
 D_EXTERN char* CmnString_StrCopyNew(const char *str);
 D_EXTERN int CmnString_Split(char *buf, size_t rowlen, size_t collen, const char *str, const char *delim);
-D_EXTERN char* CmnString_Lpad(char *buf, const char *str, const char padch, size_t digit);
+D_EXTERN char* CmnString_Lpad(char *buf, const char *str, char padch, size_t digit);
+D_EXTERN char* CmnString_Rpad(char *buf, const char *str, char padch, size_t digit);
+D_EXTERN int CmnString_StartWith(const char *str, const char *mark);
+D_EXTERN int CmnString_EndWith(const char *str, const char *mark);
 
 /* --- CommonStringList.c --- */
 D_EXTERN CmnStringList *CmnStringList_Create();

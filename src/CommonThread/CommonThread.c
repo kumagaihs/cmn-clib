@@ -3,6 +3,7 @@
  * @author H.Kumagai
  *****************************************************************************/
 
+#include "cmnclib/Common.h"
 #include "cmnclib/CommonThread.h"
 
 #if IS_PRATFORM_WINDOWS()
@@ -14,8 +15,10 @@
 
 #if IS_PRATFORM_WINDOWS()
 /* 呼出規約「__stdcall」を吸収するラッパ */
-static void __stdcall callMethodForWin(CmnThread *thread) {
+static unsigned int __stdcall callMethodForWin(void *arg) {
+	CmnThread *thread = (CmnThread *)arg;
 	thread->method(thread);
+	return 0;
 }
 #endif
 
@@ -58,7 +61,7 @@ int CmnThread_Start(CmnThread *thread)
 	 * 　C標準ライブラリはどこで使用しているかわからないので、安全のために_beginthreadexを使用する。
 	 */
 	/* スレッド作成＆起動 */
-	tmpThreadId = _beginthreadex(
+	tmpThreadId = (HANDLE)_beginthreadex(
 			NULL,				/* SECURITY_ATTRIBUTES構造体 */
 			0,					/* スタックサイズ( 0は呼び出し側と同じサイズ ) */
 			callMethodForWin,	/* スレッド関数 */
