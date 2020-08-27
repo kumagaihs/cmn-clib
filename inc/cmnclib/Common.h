@@ -12,6 +12,8 @@
 #ifndef _COMMON_H
 #define _COMMON_H
 
+#include <stddef.h>
+
 /* 真偽値 */
 #ifndef True
   #define True      1  /**< 真 */
@@ -36,6 +38,11 @@
 #define IS_PRATFORM_WINDOWS()  (PRATFORM == PRATFORM_WINDOWS)
 /** OSがLinuxかを判定（Linuxの場合：True */
 #define IS_PRATFORM_LINUX()    (PRATFORM == PRATFORM_LINUX)
+
+/* Winsock2のための設定。CommonNetでwinsock2.hを使用するため、windows.hから旧バージョンのwinsock.hが読み込まれないようにする。 */
+#if IS_PRATFORM_WINDOWS()
+  #define _WINSOCKAPI_ /* Prevent includsion of winsock.h in windows.h */
+#endif
 
 /* DLL使用かLIB使用かによるプロトタイプ切り替え */
 #ifdef _USRDLL

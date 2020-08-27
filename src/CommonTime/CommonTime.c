@@ -15,6 +15,12 @@
 #include"cmnclib/Common.h"
 #include"cmnclib/CommonTime.h"
 
+#if IS_PRATFORM_WINDOWS()
+	#include <windows.h>
+#else
+	#include <unistd.h>
+#endif
+
 
 /* 年月日情報の調整値 */
 static const int BASE_YEAR = 1900;	/* 年数調整用の値。localtime()では、                  */
@@ -301,3 +307,15 @@ char *CmnTime_Format(int type, char *buf)
 	return buf;
 }
 
+/**
+ * @brief 指定ミリ秒スリープする
+ * @param msec スリープする時間（ミリ秒）
+ */
+void CmnTime_Sleep(unsigned long long msec)
+{
+#if IS_PRATFORM_WINDOWS()
+	Sleep(msec);
+#else
+	usleep(msec * 1000);
+#endif
+}

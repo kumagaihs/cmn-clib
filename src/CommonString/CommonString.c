@@ -234,7 +234,7 @@ int CmnString_Split(char *buf, size_t rowlen, size_t collen, const char *str, co
  * @param digit パディング後何文字にするか
  * @return bufを返す
  */
-char* CmnString_Lpad(char *buf, const char *str, const char padch, size_t digit)
+char* CmnString_Lpad(char *buf, const char *str, char padch, size_t digit)
 {
 	size_t stlen = 0;
 	size_t padlen = 0;
@@ -251,5 +251,64 @@ char* CmnString_Lpad(char *buf, const char *str, const char padch, size_t digit)
 	strcpy(buf + padlen, str);
 
 	return buf;
+}
+
+/**
+ * @brief 文字列の右側パディング
+ * @param buf パディング後の文字列を格納するバッファ
+ * @param str 元文字列
+ * @param padch パディングする文字
+ * @param digit パディング後何文字にするか
+ * @return bufを返す
+ */
+char* CmnString_Rpad(char *buf, const char *str, char padch, size_t digit)
+{
+	size_t stlen = 0;
+	size_t padlen = 0;
+
+	strcpy(buf, str);
+	stlen = strlen(str);
+
+	if (stlen < digit) {
+		/* padding */
+		padlen = digit - stlen;
+		memset(buf + stlen, padch, padlen);
+	}
+
+	return buf;
+}
+
+/**
+ * @brief 対象文字列が特定文字列で始まっているかチェックする
+ * @param str 対象文字列
+ * @param mark チェックする文字列
+ * @return strがmarkで始まっている場合は1を、そうでない場合は0を返す。
+ */
+int CmnString_StartWith(const char *str, const char *mark)
+{
+	if (strstr(str, mark) == EQUAL) {
+		return 1;
+	}
+	return 0;
+}
+
+/**
+ * @brief 対象文字列が特定文字列で終わっているかチェックする
+ * @param str 対象文字列
+ * @param mark チェックする文字列
+ * @return strがmarkで終わっている場合は1を、そうでない場合は0を返す。
+ */
+int CmnString_EndWith(const char *str, const char *mark)
+{
+	int strLen;
+	int markLen;
+
+	strLen = strlen(str);
+	markLen = strlen(mark);
+
+	if (strcmp(str + strLen - markLen, mark) == EQUAL) {
+		return 1;
+	}
+	return 0;
 }
 

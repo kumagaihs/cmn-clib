@@ -141,6 +141,21 @@ static void test_CmnString_Lpad(CmnTestCase *t)
 	CmnTest_AssertString(t, __LINE__, CmnString_Lpad(buf, "001", '0', 1), "001");
 }
 
+static void test_CmnString_Rpad(CmnTestCase *t)
+{
+	/* TODO テスト実施すること */
+}
+
+static void test_CmnString_StartWith(CmnTestCase *t)
+{
+	/* TODO テスト実施すること */
+}
+
+static void test_CmnString_EndWith(CmnTestCase *t)
+{
+	/* TODO テスト実施すること */
+}
+
 static void test_CmnString_List(CmnTestCase *t)
 {
 	CmnStringList *list = CmnStringList_Create();
@@ -196,6 +211,9 @@ void test_CommonString_AddCase(CmnTestPlan *plan)
 	CmnTest_AddTestCaseEasy(plan, test_CmnString_StrcatNew);
 	CmnTest_AddTestCaseEasy(plan, test_CmnString_Split);
 	CmnTest_AddTestCaseEasy(plan, test_CmnString_Lpad);
+	CmnTest_AddTestCaseEasy(plan, test_CmnString_Rpad);
+	CmnTest_AddTestCaseEasy(plan, test_CmnString_StartWith);
+	CmnTest_AddTestCaseEasy(plan, test_CmnString_EndWith);
 	CmnTest_AddTestCaseEasy(plan, test_CmnString_List);
 	CmnTest_AddTestCaseEasy(plan, test_CmnStringBuffer);
 }

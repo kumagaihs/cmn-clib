@@ -14,6 +14,8 @@ extern void test_CommonFile_AddCase(CmnTestPlan *plan);
 extern void test_CommonLog_AddCase(CmnTestPlan *plan);
 extern void test_CommonString_AddCase(CmnTestPlan *plan);
 extern void test_CommonTime_AddCase(CmnTestPlan *plan);
+extern void test_CommonThread_AddCase(CmnTestPlan *plan);
+extern void test_CommonNet_AddCase(CmnTestPlan *plan);
 
 int main(int argc, char **argv)
 {
@@ -35,6 +37,10 @@ int main(int argc, char **argv)
 	test_CommonString_AddCase(&plan);
 	/* CommonTime */
 	test_CommonTime_AddCase(&plan);
+	/* CommonThread */
+	test_CommonThread_AddCase(&plan);
+	/* CommonNet */
+	test_CommonNet_AddCase(&plan);
 
 	CmnTest_Run(&plan, True);
 
