@@ -17,7 +17,7 @@
 #include<windows.h>
 #endif
 
-static const size_t BUF_SIZE = 4096;
+#define BUF_SIZE 4096
 
 #if IS_PRATFORM_WINDOWS()
 static CmnDataList* ListForWindows(const char *path, CmnDataList *list);
@@ -134,12 +134,11 @@ int CmnFile_WriteTail(const char *filePath, void *data, size_t len)
  */
 CmnDataList* CmnFile_List(const char *path, CmnDataList *list)
 {
-	if (IS_PRATFORM_WINDOWS()) {
-		return ListForWindows(path, list);
-	}
-	else {
-		return ListForLinux(path, list);
-	}
+#if IS_PRATFORM_WINDOWS()
+	return ListForWindows(path, list);
+#else
+	return ListForLinux(path, list);
+#endif
 }
 
 char* CmnFileInfo_ToString(const CmnFileInfo *info, char *buf)

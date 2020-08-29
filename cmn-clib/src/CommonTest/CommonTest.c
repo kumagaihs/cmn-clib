@@ -49,8 +49,8 @@
 #include "cmnclib/CommonTime.h"
 #include "cmnclib/CommonString.h"
 
-static const size_t REPORT_BUF_SIZE_OF_DUMP = 1024;
-static const size_t REPORT_BUF_SIZE_OF_ONE_CALSE = 4096;
+#define REPORT_BUF_SIZE_OF_DUMP 1024
+#define REPORT_BUF_SIZE_OF_ONE_CALSE 4096
 
 static void cutAndCopyDumpText(char *buf, const char *str, size_t bufSize);
 

@@ -5,6 +5,15 @@ VisualStudioVersion = 16.0.30225.117
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cmn-clib", "cmn-clib\cmn-clib.vcxproj", "{C896B11E-62AB-4857-ADE3-63AE14020374}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{47E89914-F04E-4BE4-B280-94F0934359F0}"
+	ProjectSection(SolutionItems) = preProject
+		ctags.exe = ctags.exe
+		Doxyfile = Doxyfile
+		doxygen.exe = doxygen.exe
+		Makefile = Makefile
+		readme.txt = readme.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
