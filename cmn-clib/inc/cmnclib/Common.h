@@ -22,6 +22,13 @@
   #define False     0  /**< 偽 */
 #endif
 
+/** 文字コード */
+typedef enum enmCHARSET {
+    CHARSET_ASCII,
+    CHARSET_SHIFT_JIS,
+    CHARSET_UTF8,
+} CHARSET;
+
 /** 配列サイズを取得 */
 #define ARRAY_LENGTH(x)  (sizeof(x) / sizeof(*x))
 

@@ -41,7 +41,7 @@ static void test_CmnFile_List(CmnTestCase *t)
 	char buf[4096];
 	CmnFileInfo *info;
 	CmnDataList *list = CmnDataList_Create();
-	CmnFile_List("test/resources/CmnFile/list", list);
+	CmnFile_List("test/resources/CmnFile/list", list, CHARSET_UTF8);
 
 	CmnTest_AssertNumber(t, __LINE__, list->size, 3);
 	for (i = 0; i < list->size; i++) {

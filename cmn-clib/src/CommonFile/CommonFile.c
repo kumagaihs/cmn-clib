@@ -18,9 +18,10 @@
 #endif
 
 #define BUF_SIZE 4096
+#define MAX_PATH_SIZE 4096
 
 #if IS_PRATFORM_WINDOWS()
-static CmnDataList* ListForWindows(const char *path, CmnDataList *list);
+static CmnDataList* ListForWindows(const char *path, CmnDataList *list, CHARSET pathCharset);
 #else
 static CmnDataList* ListForLinux(const char *path, CmnDataList *list);
 #endif
@@ -132,10 +133,10 @@ int CmnFile_WriteTail(const char *filePath, void *data, size_t len)
  * @param list ファイル/ディレクトリ一覧を格納するリストオブジェクト。リストの要素にはCmnFileInfoをセットする。
  * @return listを返す。pathが無効な場合など一覧の取得に失敗した場合はNULLを返す。
  */
-CmnDataList* CmnFile_List(const char *path, CmnDataList *list)
+CmnDataList* CmnFile_List(const char *path, CmnDataList *list, CHARSET pathCharset)
 {
 #if IS_PRATFORM_WINDOWS()
-	return ListForWindows(path, list);
+	return ListForWindows(path, list, pathCharset);
 #else
 	return ListForLinux(path, list);
 #endif
@@ -165,12 +166,14 @@ char* CmnFileInfo_ToString(const CmnFileInfo *info, char *buf)
  *    Only Windows code
  * ========================================================================= */
 
-static CmnDataList* ListForWindows(const char *path, CmnDataList *list)
+static CmnDataList* ListForWindows(const char *path, CmnDataList *list, CHARSET pathCharset)
 {
 	char *searchPath;
+	wchar_t searchPathWide[MAX_PATH_SIZE * 2] = {'\0'};
 	HANDLE hFind;
 	WIN32_FIND_DATA win32fd;
 	SYSTEMTIME win32time;
+	UINT codepage;
 
 	CmnFileInfo *info;
 	CmnTimeDateTime cmnTime;
@@ -179,8 +182,14 @@ static CmnDataList* ListForWindows(const char *path, CmnDataList *list)
 
 	/* TODO:pathの存在確認して、存在しなければNULLリターン */
 
-	searchPath = CmnString_StrCatNew(path, CMN_FILE_PATH_DELIMITER "*.*");
-	hFind = FindFirstFile(searchPath, &win32fd);
+	searchPath = CmnString_StrCatNew(path, CMN_FILE_PATH_DELIMITER "*");
+
+	/* FindFirstFileWを呼び出すためにファイルパスをUNICODEに変換（UTF-8以外は環境文字コード（SJIS）と判定） */
+	codepage = (pathCharset == CHARSET_UTF8) ? CP_UTF8 : CP_THREAD_ACP;
+	MultiByteToWideChar(codepage, MB_PRECOMPOSED, searchPath, -1, searchPathWide, ARRAY_LENGTH(searchPathWide));
+
+	/* ファイル一覧を取得 */
+	hFind = FindFirstFileW(searchPathWide, &win32fd);
 	if (hFind == INVALID_HANDLE_VALUE) {
 		return list;
 	}
@@ -196,7 +205,7 @@ static CmnDataList* ListForWindows(const char *path, CmnDataList *list)
 
 		/* パス、ファイル名 */
 		strcpy(info->dir, path);
-		strcpy(info->name, win32fd.cFileName);
+		WideCharToMultiByte(codepage, 0, win32fd.cFileName, -1, info->name, ARRAY_LENGTH(info->name), NULL, NULL);
 
 		/* ファイルサイズ */
 		info->size = (win32fd.nFileSizeHigh * (MAXDWORD + 1)) + win32fd.nFileSizeLow;
