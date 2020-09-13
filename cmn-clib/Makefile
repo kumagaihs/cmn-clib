@@ -13,7 +13,7 @@ TEST_OBJS := $(addprefix $(OUTDIR)/,$(patsubst %.c,%.o,$(TEST_SRCS)))
 
 CC = gcc
 AR = ar
-CFLAGS = -Wall -O2 -I $(INCDIR)
+CFLAGS = -Wall -O2 -I $(INCDIR) -lpthread
 ARFLAG = crsv
 
 .PHONY: all clean
