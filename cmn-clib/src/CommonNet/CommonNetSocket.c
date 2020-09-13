@@ -397,21 +397,21 @@ CmnNetSocketStatus CmnNetSocket_SendAll(CmnNetSocket *socket, const void *data, 
  */
 CmnNetSocketStatus CmnNetSocket_ToSocketAddress(const char *host, unsigned short port, struct sockaddr_in *addr)
 {
-	unsigned long s_addr;
+	unsigned long sAddr;
 
 	addr->sin_family = AF_INET;
 	addr->sin_port = htons(port);
 
 	/* IPアドレスに変換 */
-	s_addr = inet_addr(host);
+	sAddr = inet_addr(host);
 	#if IS_PRATFORM_WINDOWS()
-		addr->sin_addr.S_un.S_addr = s_addr;
+		addr->sin_addr.S_un.S_addr = sAddr;
 	#else
-		addr->sin_addr.s_addr = s_addr;
+		addr->sin_addr.s_addr = sAddr;
 	#endif
 
 	/* 単純変換に失敗した場合は名前解決によりIPアドレスに変換 */
-	if (s_addr == 0xffffffff) {
+	if (sAddr == 0xffffffff) {
 		struct hostent *hostInfo;
 
 		hostInfo = gethostbyname(host);
