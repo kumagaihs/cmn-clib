@@ -32,6 +32,7 @@
 #include"cmnclib/Common.h"
 #include"cmnclib/CommonConf.h"
 #include"cmnclib/CommonString.h"
+#include"cmnclib/CommonLog.h"
 
 #define PROP_BUF_SIZE  4096		/* プロパティファイル１行の最大文字数  */
 #define COMMENT_CHAR   '#'		/* コメント識別文字                    */
@@ -67,9 +68,11 @@ CmnConfProperty *CmnConfProperty_Load(const char *file)
 	FILE *prop_fp;
 	CmnConfProperty *list = NULL;
 	CmnConfProperty *tmp;
+	CMNLOG_TRACE_START();
 
 	prop_fp = fopen(file, "r");
 	if (prop_fp == NULL) {
+		CMNLOG_TRACE_END();
 		return NULL;
 	}
 
@@ -109,6 +112,9 @@ CmnConfProperty *CmnConfProperty_Load(const char *file)
 		/* 最初のリストを作成 */
 		if (list == NULL) {
 			list = (CmnConfProperty *)calloc(1, sizeof(CmnConfProperty));
+			if (list == NULL) {
+				return NULL;
+			}
 			list->name  = name_buf;
 			list->value = value_buf;
 			list->next  = NULL;
@@ -126,6 +132,8 @@ CmnConfProperty *CmnConfProperty_Load(const char *file)
 		}
 	}
 	fclose(prop_fp);
+
+	CMNLOG_TRACE_END();
 	return list;
 }
 
@@ -142,8 +150,10 @@ void CmnConfProperty_Free(CmnConfProperty *list)
 {
 	CmnConfProperty *p;
 	CmnConfProperty *tmp;
+	CMNLOG_TRACE_START();
 
 	if (list == NULL) {
+		CMNLOG_TRACE_END();
 		return;
 	}
 
@@ -154,6 +164,7 @@ void CmnConfProperty_Free(CmnConfProperty *list)
 		free(p->value);
 		free(p);
 	}
+	CMNLOG_TRACE_END();
 }
 
 
@@ -169,11 +180,14 @@ void CmnConfProperty_Free(CmnConfProperty *list)
  */
 char *CmnConfProperty_GetValue(const CmnConfProperty *list, const char *name )
 {
+	CMNLOG_TRACE_START();
 	for (; list; list = list->next) {
 		if (strcmp(list->name, name) == 0) {
+			CMNLOG_TRACE_END();
 			return list->value;
 		}
 	}
+	CMNLOG_TRACE_END();
 	return NULL;
 }
 

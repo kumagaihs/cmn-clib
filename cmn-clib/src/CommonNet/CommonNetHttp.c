@@ -5,6 +5,7 @@
 
 #include "cmnclib/CommonNet.h"
 #include "cmnclib/CommonData.h"
+#include"cmnclib/CommonLog.h"
 
 /**
  * @brief HTTPのGETリクエストを送信する
@@ -15,8 +16,10 @@
  */
 CmnNetHttpResponse* CmnNetHttp_GetRequest(const char *ip, unsigned short port, const char *path)
 {
+	CMNLOG_TRACE_START();
 	/* TODO:ヘッダー情報も指定可能な様に機能追加 */
 	/* TODO:実装 */
+	CMNLOG_TRACE_END();
 	return NULL;
 }
 
@@ -30,8 +33,10 @@ CmnNetHttpResponse* CmnNetHttp_GetRequest(const char *ip, unsigned short port, c
  */
 CmnNetHttpResponse* CmnNetHttp_PostRequest(const char *ip, unsigned short port, const char *path, CmnDataBuffer *requestBody)
 {
+	CMNLOG_TRACE_START();
 	/* TODO:ヘッダー情報も指定可能な様に機能追加 */
 	/* TODO:実装 */
+	CMNLOG_TRACE_END();
 	return NULL;
 }
 

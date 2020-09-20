@@ -15,7 +15,7 @@
 #include"cmnclib/Common.h"
 #include"cmnclib/CommonString.h"
 #include"cmnclib/CommonData.h"
-
+#include"cmnclib/CommonLog.h"
 
 /**
  * @brief 文字列リスト作成
@@ -27,7 +27,13 @@
  */
 CmnStringList *CmnStringList_Create()
 {
-	return (CmnStringList *)CmnDataList_Create();
+	CmnStringList *ret;
+	CMNLOG_TRACE_START();
+
+	ret = (CmnStringList *)CmnDataList_Create();
+
+	CMNLOG_TRACE_END();
+	return ret;
 }
 
 
@@ -41,7 +47,9 @@ CmnStringList *CmnStringList_Create()
  */
 void CmnStringList_Free(CmnStringList *list)
 {
+	CMNLOG_TRACE_START();
 	CmnDataList_Free((CmnDataList *)list, free);
+	CMNLOG_TRACE_END();
 }
 
 
@@ -59,12 +67,15 @@ void CmnStringList_Free(CmnStringList *list)
 void CmnStringList_Add(CmnStringList *list, const char *str)
 {
 	char *data;
+	CMNLOG_TRACE_START();
 
 	data = malloc(strlen(str) + 1);
 	if (data) {
 		strcpy(data, str);
 	}
 	CmnDataList_Add((CmnDataList *)list, data);
+
+	CMNLOG_TRACE_END();
 }
 
 
@@ -80,6 +91,12 @@ void CmnStringList_Add(CmnStringList *list, const char *str)
  */
 char *CmnStringList_Get(CmnStringList *list, int index)
 {
-	return (char *)CmnDataList_Get((CmnDataList *)list, index);
+	char *ret;
+	CMNLOG_TRACE_START();
+
+	ret = (char *)CmnDataList_Get((CmnDataList *)list, index);
+
+	CMNLOG_TRACE_END();
+	return ret;
 }
 

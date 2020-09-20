@@ -9,6 +9,7 @@
 #include<stdlib.h>
 
 #include "cmnclib/CommonData.h"
+#include"cmnclib/CommonLog.h"
 
 /**
  * @brief スタック作成
@@ -21,10 +22,14 @@
 CmnDataStack* CmnDataStack_Create()
 {
 	CmnDataStack *ret;
+	CMNLOG_TRACE_START();
+
 	ret = malloc(sizeof(CmnDataStack));
 	ret->first = NULL;
 	ret->last = NULL;
 	ret->size = 0L;
+
+	CMNLOG_TRACE_END();
 	return ret;
 }
 
@@ -50,7 +55,12 @@ void CmnDataStack_Free(CmnDataStack *stack, void *method)
 {
 	CmnDataStackItem *current;
 	void (*freeMethod)() = method;
-	if (stack == NULL) return;
+	CMNLOG_TRACE_START();
+
+	if (stack == NULL) {
+		CMNLOG_TRACE_END();
+		return;
+	}
 
 	current = stack->first;
 	while (current != NULL) {
@@ -63,6 +73,7 @@ void CmnDataStack_Free(CmnDataStack *stack, void *method)
 	}
 
 	free(stack);
+	CMNLOG_TRACE_END();
 }
 
 /**
@@ -78,7 +89,12 @@ void CmnDataStack_Free(CmnDataStack *stack, void *method)
 void CmnDataStack_Push(CmnDataStack *stack, void *data)
 {
 	CmnDataStackItem *item;
-	if (stack == NULL) return;
+	CMNLOG_TRACE_START();
+
+	if (stack == NULL) {
+		CMNLOG_TRACE_END();
+		return;
+	}
 
 	item = malloc(sizeof(CmnDataStackItem));
 	item->prev = stack->last;
@@ -94,6 +110,8 @@ void CmnDataStack_Push(CmnDataStack *stack, void *data)
 		stack->last = item;
 	}
 	stack->size++;
+
+	CMNLOG_TRACE_END();
 }
 
 /**
@@ -108,7 +126,10 @@ void CmnDataStack_Push(CmnDataStack *stack, void *data)
 void* CmnDataStack_Pop(CmnDataStack *stack)
 {
 	CmnDataStackItem *item = NULL;
+	CMNLOG_TRACE_START();
+
 	if (stack == NULL || stack->size == 0) {
+		CMNLOG_TRACE_END();
 		return NULL;
 	}
 	item = stack->last;
@@ -118,6 +139,8 @@ void* CmnDataStack_Pop(CmnDataStack *stack)
 
 	char *ret = item->data;
 	free(item);
+
+	CMNLOG_TRACE_END();
 	return ret;
 }
 

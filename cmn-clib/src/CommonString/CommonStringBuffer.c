@@ -10,6 +10,7 @@
 #include<string.h>
 
 #include "cmnclib/CommonString.h"
+#include "cmnclib/CommonLog.h"
 
 /**
  * @brief 自動領域拡張バッファ作成
@@ -22,24 +23,31 @@
 CmnStringBuffer* CmnStringBuffer_Create(const char *str)
 {
 	size_t strLen = 0;
-	CmnStringBuffer *ret = malloc(sizeof(CmnStringBuffer));
+	CmnStringBuffer *ret;
+	CMNLOG_TRACE_START();
+
+	ret = malloc(sizeof(CmnStringBuffer));
 	if (ret == NULL) {
+		CMNLOG_TRACE_END();
 		return NULL;
 	}
 
 	if (str == NULL) {
+		CMNLOG_TRACE_END();
 		str = "";
 	}
 	strLen = strlen(str);
 
 	ret->_buf = CmnDataBuffer_Create(strLen + 1);
 	if (ret->_buf == NULL) {
+		CMNLOG_TRACE_END();
 		return NULL;
 	}
 	CmnDataBuffer_Set(ret->_buf, str, strLen + 1);
 	ret->string = ret->_buf->data;
 	ret->length = strLen;
 
+	CMNLOG_TRACE_END();
 	return ret;
 }
 
@@ -54,18 +62,23 @@ CmnStringBuffer* CmnStringBuffer_Create(const char *str)
  */
 int CmnStringBuffer_Append(CmnStringBuffer *buf, const char *str)
 {
-	size_t strLen = strlen(str);
+	size_t strLen;
+	CMNLOG_TRACE_START();
+
+	strLen = strlen(str);
 
 	/* '\0'を削除 */
 	CmnDataBuffer_Delete(buf->_buf, 1);
 	/* 文字列を追加 */
 	if (CmnDataBuffer_Append(buf->_buf, str, strLen + 1) != 0) {
+		CMNLOG_TRACE_END();
 		return -1;
 	}
 
 	buf->string = buf->_buf->data;
 	buf->length += strLen;
 
+	CMNLOG_TRACE_END();
 	return 0;
 }
 
@@ -80,16 +93,21 @@ int CmnStringBuffer_Append(CmnStringBuffer *buf, const char *str)
  */
 int CmnStringBuffer_Set(CmnStringBuffer *buf, const char *str)
 {
-	size_t strLen = strlen(str);
+	size_t strLen;
+	CMNLOG_TRACE_START();
+	
+	strLen = strlen(str);
 
 	/* 文字列を設定 */
 	if (CmnDataBuffer_Set(buf->_buf, str, strLen + 1) != 0) {
+		CMNLOG_TRACE_END();
 		return -1;
 	}
 
 	buf->string = buf->_buf->data;
 	buf->length = strLen;
 
+	CMNLOG_TRACE_END();
 	return 0;
 }
 
@@ -102,7 +120,9 @@ int CmnStringBuffer_Set(CmnStringBuffer *buf, const char *str)
  */
 void CmnStringBuffer_Free(CmnStringBuffer *buf)
 {
+	CMNLOG_TRACE_START();
 	free(buf->_buf);
 	free(buf);
+	CMNLOG_TRACE_END();
 }
 

@@ -5,6 +5,7 @@
 
 #include "cmnclib/Common.h"
 #include "cmnclib/CommonThread.h"
+#include "cmnclib/CommonLog.h"
 
 #if IS_PRATFORM_WINDOWS()
 	#include <windows.h>
@@ -17,7 +18,11 @@
 /* 呼出規約「__stdcall」を吸収するラッパ */
 static unsigned int __stdcall callMethodForWin(void *arg) {
 	CmnThread *thread = (CmnThread *)arg;
+	CMNLOG_TRACE_START();
+
 	thread->method(thread);
+
+	CMNLOG_TRACE_END();
 	return 0;
 }
 #endif
@@ -35,9 +40,11 @@ static unsigned int __stdcall callMethodForWin(void *arg) {
  */
 void CmnThread_Init(CmnThread *thread, void (*method)(CmnThread*), void *data, CmnThreadMutex *mutex)
 {
+	CMNLOG_TRACE_START();
 	thread->method = method;
 	thread->data = data;
 	thread->mutex = mutex;
+	CMNLOG_TRACE_END();
 }
 
 /**
@@ -53,6 +60,7 @@ int CmnThread_Start(CmnThread *thread)
 #if IS_PRATFORM_WINDOWS()
 	unsigned int dummy;
 	HANDLE tmpThreadId;
+	CMNLOG_TRACE_START();
 
 	/*
 	 * Memo : CreateThreadと_beginthreadexの違い
@@ -72,13 +80,17 @@ int CmnThread_Start(CmnThread *thread)
 
 	if (tmpThreadId == 0) {
 		/* 起動エラー */
+		CMNLOG_TRACE_END();
 		return -1;
 	}
 
 	thread->threadId = tmpThreadId;
+
+	CMNLOG_TRACE_END();
 	return 0;
 #else
 	pthread_t tmpThreadId;
+	CMNLOG_TRACE_START();
 	if (pthread_create(
 					&(thread->threadId),		/* スレッドIDを格納するポインタ */
 					NULL,						/* オプション指定 */
@@ -87,8 +99,11 @@ int CmnThread_Start(CmnThread *thread)
 			!= 0) {
 
 		/* 起動エラー */
+		CMNLOG_TRACE_END();
 		return -1;
 	}
+
+	CMNLOG_TRACE_END();
 	return 0;
 #endif
 }
@@ -102,11 +117,15 @@ int CmnThread_Start(CmnThread *thread)
  */
 void CmnThread_Join(CmnThread *thread)
 {
+	CMNLOG_TRACE_START();
+
 #if IS_PRATFORM_WINDOWS()
 	WaitForSingleObject(thread->threadId, INFINITE);
 #else
 	pthread_join(thread->threadId, NULL);
 #endif
+
+	CMNLOG_TRACE_END();
 }
 
 /**
@@ -118,11 +137,15 @@ void CmnThread_Join(CmnThread *thread)
  */
 void CmnThread_Kill(CmnThread *thread)
 {
+	CMNLOG_TRACE_START();
+
 #if IS_PRATFORM_WINDOWS()
 	TerminateThread(thread->threadId, 0);
 #else
 	pthread_cancel(thread->threadId);
 #endif
+
+	CMNLOG_TRACE_END();
 }
 
 /**
@@ -136,23 +159,29 @@ CmnThreadMutex* CmnThreadMutex_Create()
 {
 	CmnThreadMutex tmp;
 	CmnThreadMutex *ret;
+	CMNLOG_TRACE_START();
 
 #if IS_PRATFORM_WINDOWS()
 	tmp.mutexId = CreateMutex(NULL, FALSE, "CmnThreadMutex");
 	if (tmp.mutexId == 0) {
+		CMNLOG_TRACE_END();
 		return NULL;
 	}
 #else
 	if (pthread_mutex_init(&(tmp.mutexId), NULL) != 0) {
+		CMNLOG_TRACE_END();
 		return NULL;
 	}
 #endif
 
 	if ((ret = calloc(1, sizeof(CmnThreadMutex))) == NULL) {
+		CMNLOG_TRACE_END();
 		return NULL;
 	}
 
 	ret->mutexId = tmp.mutexId;
+
+	CMNLOG_TRACE_END();
 	return ret;
 }
 
@@ -165,11 +194,15 @@ CmnThreadMutex* CmnThreadMutex_Create()
  */
 void CmnThreadMutex_Lock(CmnThreadMutex *mutex)
 {
+	CMNLOG_TRACE_START();
+
 #if IS_PRATFORM_WINDOWS()
 	WaitForSingleObject(mutex->mutexId, INFINITE);
 #else
 	pthread_mutex_lock(&(mutex->mutexId));
 #endif
+
+	CMNLOG_TRACE_END();
 }
 
 /**
@@ -181,11 +214,15 @@ void CmnThreadMutex_Lock(CmnThreadMutex *mutex)
  */
 void CmnThreadMutex_UnLock(CmnThreadMutex *mutex)
 {
+	CMNLOG_TRACE_START();
+
 #if IS_PRATFORM_WINDOWS()
 	ReleaseMutex(mutex->mutexId);
 #else
 	pthread_mutex_unlock(&(mutex->mutexId));
 #endif
+
+	CMNLOG_TRACE_END();
 }
 
 /**
@@ -197,6 +234,8 @@ void CmnThreadMutex_UnLock(CmnThreadMutex *mutex)
  */
 void CmnThreadMutex_Free(CmnThreadMutex *mutex)
 {
+	CMNLOG_TRACE_START();
+
 #if IS_PRATFORM_WINDOWS()
 	CloseHandle(mutex->mutexId);
 #else
@@ -204,5 +243,6 @@ void CmnThreadMutex_Free(CmnThreadMutex *mutex)
 #endif
 
 	free(mutex);
+	CMNLOG_TRACE_END();
 }
 

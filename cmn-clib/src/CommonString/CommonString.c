@@ -13,7 +13,7 @@
 
 #include"cmnclib/Common.h"
 #include"cmnclib/CommonString.h"
-
+#include"cmnclib/CommonLog.h"
 
 /**
  * @brief 右側トリム
@@ -27,13 +27,16 @@
 char *CmnString_RTrim(char *str)
 {
 	int len;
+	CMNLOG_TRACE_START();
 
 	if ( ! str) {
+		CMNLOG_TRACE_END();
 		return str;
 	}
 
 	len = strlen(str) - 1;
 	if (len <= 0) {
+		CMNLOG_TRACE_END();
 		return str;
 	}
 
@@ -46,6 +49,7 @@ char *CmnString_RTrim(char *str)
 	len++;
 	*(str + len) = '\0';
 
+	CMNLOG_TRACE_END();
 	return str;
 }
 
@@ -63,7 +67,10 @@ char *CmnString_RTrim(char *str)
  */
 char *CmnString_LTrim(char *str)
 {
+	CMNLOG_TRACE_START();
 	for (; *str && (*str == ' '); str++) ;
+
+	CMNLOG_TRACE_END();
 	return str;
 }
 
@@ -79,7 +86,13 @@ char *CmnString_LTrim(char *str)
  */
 char *CmnString_Trim(char *str)
 {
-	return CmnString_RTrim(CmnString_LTrim(str));
+	char *ret;
+	CMNLOG_TRACE_START();
+
+	ret = CmnString_RTrim(CmnString_LTrim(str));
+
+	CMNLOG_TRACE_END();
+	return ret;
 }
 
 /**
@@ -96,6 +109,8 @@ char *CmnString_Trim(char *str)
 char* CmnString_Replace(const char *src, const char *befor, const char *after, char *dest)
 {
 	size_t oldlen;
+	CMNLOG_TRACE_START();
+
 	oldlen = strlen(befor);
 
 	*dest = '\0';
@@ -113,6 +128,7 @@ char* CmnString_Replace(const char *src, const char *befor, const char *after, c
 		}
 	}
 
+	CMNLOG_TRACE_END();
 	return dest;
 }
 
@@ -131,6 +147,8 @@ char* CmnString_ReplaceNew(const char *src, const char *befor, const char *after
 	size_t srclen, oldlen, newlen;
 	size_t bufsize;
 	char *dest;
+	char *ret;
+	CMNLOG_TRACE_START();
 
 	/* 元文字列のサイズから必要十分なバッファサイズを算出 */
 	srclen = strlen(src);
@@ -142,7 +160,10 @@ char* CmnString_ReplaceNew(const char *src, const char *befor, const char *after
 	dest = malloc(bufsize);
 	memset(dest, '\0', bufsize);
 
-	return CmnString_Replace(src, befor, after, dest);
+	ret = CmnString_Replace(src, befor, after, dest);
+
+	CMNLOG_TRACE_END();
+	return ret;
 }
 
 /**
@@ -157,11 +178,18 @@ char* CmnString_ReplaceNew(const char *src, const char *befor, const char *after
 char* CmnString_StrCatNew(const char *left, const char *right)
 {
 	char *buf;
-	size_t bufsize = strlen(left) + strlen(right) + 1;
+	size_t bufsize;
+	char *ret;
+	CMNLOG_TRACE_START();
+
+	bufsize = strlen(left) + strlen(right) + 1;
 	buf = malloc(bufsize);
 	memset(buf, '\0', bufsize);
 
-	return strcat(strcat(buf, left), right);
+	ret = strcat(strcat(buf, left), right);
+
+	CMNLOG_TRACE_END();
+	return ret;
 }
 
 /**
@@ -172,10 +200,18 @@ char* CmnString_StrCatNew(const char *left, const char *right)
  * @param str  (I) 文字列
  * @return コピーした文字列へのポインタを返却する。呼び出し元でfreeすること。
  */
-char* CmnString_StrCopyNew(const char *str)
+char* CmnString_StrCopyNew(const char* str)
 {
-	char *buf = calloc(1, strlen(str) + 1);
-	return strcpy(buf, str);
+	char *buf;
+	CMNLOG_TRACE_START();
+
+	buf = calloc(1, strlen(str) + 1);
+	if (buf != NULL) {
+		strcpy(buf, str);
+	}
+
+	CMNLOG_TRACE_END();
+	return buf;
 }
 
 /**
@@ -196,6 +232,7 @@ int CmnString_Split(char *buf, size_t rowlen, size_t collen, const char *str, co
 	const char *pos = str;
 	size_t delimlen;
 	size_t row = 0;
+	CMNLOG_TRACE_START();
 
 	delimlen = strlen(delim);
 
@@ -223,6 +260,7 @@ int CmnString_Split(char *buf, size_t rowlen, size_t collen, const char *str, co
 		}
 	}
 
+	CMNLOG_TRACE_END();
 	return row;
 }
 
@@ -238,6 +276,7 @@ char* CmnString_Lpad(char *buf, const char *str, char padch, size_t digit)
 {
 	size_t stlen = 0;
 	size_t padlen = 0;
+	CMNLOG_TRACE_START();
 
 	stlen = strlen(str);
 
@@ -250,6 +289,7 @@ char* CmnString_Lpad(char *buf, const char *str, char padch, size_t digit)
 	/* add str */
 	strcpy(buf + padlen, str);
 
+	CMNLOG_TRACE_END();
 	return buf;
 }
 
@@ -265,6 +305,7 @@ char* CmnString_Rpad(char *buf, const char *str, char padch, size_t digit)
 {
 	size_t stlen = 0;
 	size_t padlen = 0;
+	CMNLOG_TRACE_START();
 
 	strcpy(buf, str);
 	stlen = strlen(str);
@@ -275,6 +316,7 @@ char* CmnString_Rpad(char *buf, const char *str, char padch, size_t digit)
 		memset(buf + stlen, padch, padlen);
 	}
 
+	CMNLOG_TRACE_END();
 	return buf;
 }
 
@@ -286,10 +328,14 @@ char* CmnString_Rpad(char *buf, const char *str, char padch, size_t digit)
  */
 int CmnString_StartWith(const char *str, const char *mark)
 {
+	int ret = 0;
+	CMNLOG_TRACE_START();
+
 	if (strstr(str, mark) == EQUAL) {
 		return 1;
 	}
-	return 0;
+	CMNLOG_TRACE_END();
+	return ret;
 }
 
 /**
@@ -302,13 +348,17 @@ int CmnString_EndWith(const char *str, const char *mark)
 {
 	int strLen;
 	int markLen;
+	int ret = 0;
+	CMNLOG_TRACE_START();
 
 	strLen = strlen(str);
 	markLen = strlen(mark);
 
 	if (strcmp(str + strLen - markLen, mark) == EQUAL) {
-		return 1;
+		ret = 1;
 	}
-	return 0;
+
+	CMNLOG_TRACE_END();
+	return ret;
 }
 

@@ -5,8 +5,11 @@
  * $Revision: 1.5 $
  */
 #include<stdio.h>
+#include<string.h>
 
 #include"cmnclib/CommonTest.h"
+#include"cmnclib/CommonLog.h"
+#include"cmnclib/CommonTime.h"
 
 extern void test_CommonConf_AddCase(CmnTestPlan *plan);
 extern void test_CommonData_AddCase(CmnTestPlan *plan);
@@ -20,8 +23,14 @@ extern void test_CommonNet_AddCase(CmnTestPlan *plan);
 int main(int argc, char **argv)
 {
 	CmnTestPlan plan;
+	char timeBuf[64];
+	char logFileName[128] = "cmn-clib_test_";
 
 	printf("### Start test ###\n");
+
+	CmnTime_Format(CMN_TIME_FORMAT_ALL_SHORT, timeBuf);
+	CmnLog_Init(strcat(strcat(logFileName, timeBuf), ".log"), CMN_LOG_LEVEL_TRACE, NULL);
+	CmnLog_InitCmnClibLog(NULL, CMN_LOG_LEVEL_TRACE);
 
 	CmnTest_InitializeTestPlan(&plan);
 
@@ -45,6 +54,9 @@ int main(int argc, char **argv)
 	CmnTest_Run(&plan, True);
 
 	CmnTest_DestroyTest(&plan);
+
+	CmnLog_End();
+	CmnLog_EndCmnClibLog();
 
 	printf("### End test ###\n");
 

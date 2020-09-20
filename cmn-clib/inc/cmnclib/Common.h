@@ -14,6 +14,11 @@
 
 #include <stddef.h>
 
+/* パフォーマンス優先設定 */
+/*
+#define CMN_CLIB_HI_PERFORMANCE 1
+*/
+
 /* 真偽値 */
 #ifndef True
   #define True      1  /**< 真 */
