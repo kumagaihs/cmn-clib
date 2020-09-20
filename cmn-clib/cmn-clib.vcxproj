@@ -166,6 +166,7 @@
     <ClCompile Include="src\CommonFile\CommonFile.c" />
     <ClCompile Include="src\CommonLog\CommonLog.c" />
     <ClCompile Include="src\CommonLog\CommonLogEx.c" />
+    <ClCompile Include="src\CommonLog\CommonLogMessage.c" />
     <ClCompile Include="src\CommonNet\CommonNetHttp.c" />
     <ClCompile Include="src\CommonNet\CommonNetSocket.c" />
     <ClCompile Include="src\CommonString\CommonString.c" />

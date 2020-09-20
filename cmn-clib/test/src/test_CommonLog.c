@@ -9,12 +9,13 @@
 #include "cmnclib/CommonTest.h"
 #include "cmnclib/CommonLog.h"
 
-static void test_Xxx(CmnTestCase *testCase)
+static void test_CmnLogEx(CmnTestCase *testCase)
 {
-	/* TODO */
+	CmnLogEx* logex = CmnLogEx_Create("test.log", CMN_LOG_LEVEL_DEBUG, NULL);
+	CmnLogEx_Put(logex, CMN_LOG_LEVEL_DEBUG, "test[%s] val[%s]", "AAA", "BBB");
 }
 
 void test_CommonLog_AddCase(CmnTestPlan *plan)
 {
-	CmnTest_AddTestCaseEasy(plan, test_Xxx);
+	CmnTest_AddTestCaseEasy(plan, test_CmnLogEx);
 }

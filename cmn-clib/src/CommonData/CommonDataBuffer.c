@@ -10,6 +10,7 @@
 #include<string.h>
 
 #include "cmnclib/CommonData.h"
+#include "cmnclib/CommonLog.h"
 
 static const size_t DEFAULT_BUFFER_SIZE = 4096;
 
@@ -23,8 +24,12 @@ static const size_t DEFAULT_BUFFER_SIZE = 4096;
  */
 CmnDataBuffer* CmnDataBuffer_Create(size_t bufSize)
 {
-	CmnDataBuffer *ret = malloc(sizeof(CmnDataBuffer));
+	CmnDataBuffer *ret;
+	CMNLOG_TRACE_START();
+
+	ret = malloc(sizeof(CmnDataBuffer));
 	if (ret == NULL) {
+		CMNLOG_TRACE_END();
 		return NULL;
 	}
 
@@ -32,10 +37,13 @@ CmnDataBuffer* CmnDataBuffer_Create(size_t bufSize)
 		bufSize = DEFAULT_BUFFER_SIZE;
 	}
 	if ((ret->data = malloc(bufSize)) == NULL) {
+		CMNLOG_TRACE_END();
 		return NULL;
 	}
 	ret->bufSize = bufSize;
 	ret->size = 0;
+
+	CMNLOG_TRACE_END();
 	return ret;
 }
 
@@ -54,6 +62,7 @@ int CmnDataBuffer_Append(CmnDataBuffer *buf, const void *data, size_t len)
 	void *buftmp;
 	size_t oldBufSize = buf->bufSize;
 	size_t newBufSize = buf->size + len;
+	CMNLOG_TRACE_START();
 
 	/* 領域が不足する場合は拡張 */
 	if (oldBufSize < newBufSize) {
@@ -65,6 +74,7 @@ int CmnDataBuffer_Append(CmnDataBuffer *buf, const void *data, size_t len)
 
 		buftmp = realloc(buf->data, newBufSize);
 		if (buftmp == NULL) {
+			CMNLOG_TRACE_END();
 			return -1;
 		}
 		buf->data = buftmp;
@@ -75,6 +85,7 @@ int CmnDataBuffer_Append(CmnDataBuffer *buf, const void *data, size_t len)
 	memcpy(((char*)buf->data) + buf->size, data, len);
 	buf->size += len;
 
+	CMNLOG_TRACE_END();
 	return 0;
 }
 
@@ -94,6 +105,7 @@ int CmnDataBuffer_Set(CmnDataBuffer *buf, const void *data, size_t len)
 	size_t oldBufSize = buf->bufSize;
 	size_t newBufSize = len;
 	int resize = False;
+	CMNLOG_TRACE_START();
 
 	/* 領域が不足する場合は拡張 */
 	if (oldBufSize < newBufSize) {
@@ -113,6 +125,7 @@ int CmnDataBuffer_Set(CmnDataBuffer *buf, const void *data, size_t len)
 	if (resize) {
 		buftmp = realloc(buf->data, newBufSize);
 		if (buftmp == NULL) {
+			CMNLOG_TRACE_END();
 			return -1;
 		}
 		buf->data = buftmp;
@@ -123,6 +136,7 @@ int CmnDataBuffer_Set(CmnDataBuffer *buf, const void *data, size_t len)
 	memcpy(buf->data, data, len);
 	buf->size = len;
 
+	CMNLOG_TRACE_END();
 	return 0;
 }
 
@@ -136,10 +150,12 @@ int CmnDataBuffer_Set(CmnDataBuffer *buf, const void *data, size_t len)
  */
 void CmnDataBuffer_Delete(CmnDataBuffer *buf, size_t len)
 {
+	CMNLOG_TRACE_START();
 	if (buf->size < len) {
 		len = buf->size;
 	}
 	buf->size -=len;
+	CMNLOG_TRACE_END();
 }
 
 /**
@@ -151,7 +167,9 @@ void CmnDataBuffer_Delete(CmnDataBuffer *buf, size_t len)
  */
 void CmnDataBuffer_Free(CmnDataBuffer *buf)
 {
+	CMNLOG_TRACE_START();
 	free(buf->data);
 	free(buf);
+	CMNLOG_TRACE_END();
 }
 

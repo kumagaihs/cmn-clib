@@ -12,6 +12,7 @@
 
 #include"cmnclib/Common.h"
 #include"cmnclib/CommonData.h"
+#include"cmnclib/CommonLog.h"
 
 
 /**
@@ -25,11 +26,15 @@
 CmnDataList *CmnDataList_Create()
 {
 	CmnDataList *list;
+	CMNLOG_TRACE_START();
+
 	list = malloc(sizeof(CmnDataList));
 	if (list != NULL) {
 		list->first = NULL;
 		list->size  = 0;
 	}
+
+	CMNLOG_TRACE_END();
 	return list;
 }
 
@@ -56,8 +61,12 @@ void CmnDataList_Free(CmnDataList *list, void *method)
 {
 	CmnDataListItem *item, *tmp;
 	void (*freeMethod)() = method;
+	CMNLOG_TRACE_START();
 
-	if (list == NULL) return;
+	if (list == NULL) {
+		CMNLOG_TRACE_END();
+		return;
+	}
 
 	for (item = list->first; item; item = tmp) {
 		tmp = item->next;
@@ -67,6 +76,8 @@ void CmnDataList_Free(CmnDataList *list, void *method)
 		free(item);
 	}
 	free(list);
+
+	CMNLOG_TRACE_END();
 }
 
 
@@ -83,9 +94,17 @@ void CmnDataList_Free(CmnDataList *list, void *method)
 void CmnDataList_Add(CmnDataList *list, void *data)
 {
 	CmnDataListItem *item, *p, *tmp;
+	CMNLOG_TRACE_START();
 
-	if (list == NULL) return;
-	if ((item = malloc(sizeof(CmnDataListItem))) == NULL) return;
+	if (list == NULL) {
+		CMNLOG_TRACE_END();
+		return;
+	}
+
+	if ((item = malloc(sizeof(CmnDataListItem))) == NULL) {
+		CMNLOG_TRACE_END();
+		return;
+	}
 	item->data = data;
 	item->next = NULL;
 
@@ -100,6 +119,8 @@ void CmnDataList_Add(CmnDataList *list, void *data)
 		tmp->next = item;
 	}
 	list->size++ ;
+
+	CMNLOG_TRACE_END();
 }
 
 
@@ -117,12 +138,17 @@ void *CmnDataList_Get(CmnDataList *list, int index)
 {
 	CmnDataListItem *item;
 	int i;
+	CMNLOG_TRACE_START();
 
-	if (list == NULL) return NULL;
+	if (list == NULL) {
+		CMNLOG_TRACE_END();
+		return NULL;
+	}
 
 	item = list->first;
 	for (i = 0; i < index; i++) {
 		if (item == NULL) {
+			CMNLOG_TRACE_END();
 			return NULL;
 		}
 		else {
@@ -130,6 +156,7 @@ void *CmnDataList_Get(CmnDataList *list, int index)
 		}
 	}
 
+	CMNLOG_TRACE_END();
 	return (item) ? item->data : NULL ;
 }
 

@@ -6,6 +6,7 @@
 #include "cmnclib/CommonNet.h"
 #include "cmnclib/CommonData.h"
 #include "cmnclib/CommonThread.h"
+#include "cmnclib/CommonLog.h"
 
 #if IS_PRATFORM_WINDOWS()
 	#include <winsock2.h>
@@ -35,10 +36,12 @@ typedef struct tag_RunServerMainProcParam {
  */
 static void allocateGlobalSocketResource()
 {
+	CMNLOG_TRACE_START();
 	#if IS_PRATFORM_WINDOWS()
 		WSADATA wsaData;
 		WSAStartup(MAKEWORD(2, 0), &wsaData);
 	#endif
+	CMNLOG_TRACE_END();
 }
 
 /**
@@ -46,9 +49,11 @@ static void allocateGlobalSocketResource()
  */
 static void releaseGlobalSocketResource()
 {
+	CMNLOG_TRACE_START();
 	#if IS_PRATFORM_WINDOWS()
 		WSACleanup();
 	#endif
+	CMNLOG_TRACE_END();
 }
 
 /**
@@ -57,11 +62,13 @@ static void releaseGlobalSocketResource()
  */
 static void closeSocket(CmnNetSocket *sock)
 {
+	CMNLOG_TRACE_START();
 	#if IS_PRATFORM_WINDOWS()
 		closesocket(sock->socketId);
 	#else
 		close(sock->socketId);
 	#endif
+	CMNLOG_TRACE_END();
 }
 
 /**
@@ -70,6 +77,8 @@ static void closeSocket(CmnNetSocket *sock)
  */
 static void runServerMainProc(CmnThread *thread)
 {
+	CMNLOG_TRACE_START();
+
 	/* サーバー主処理の実行 */
 	RunServerMainProcParam *param = (RunServerMainProcParam*)thread->data;
 	param->serverMainProc(param->socket);
@@ -78,6 +87,8 @@ static void runServerMainProc(CmnThread *thread)
 	closeSocket(param->socket);
 	free(param->socket);
 	free(param);
+
+	CMNLOG_TRACE_END();
 }
 
 /**
@@ -91,6 +102,8 @@ static void runAccept(CmnThread *thread)
 	fd_set fdRead;
 	struct timeval timeout;
 	CmnNetSocketServer *server;
+
+	CMNLOG_TRACE_START();
 
 	server = (CmnNetSocketServer*)thread->data;
 
@@ -157,6 +170,8 @@ static void runAccept(CmnThread *thread)
 	releaseGlobalSocketResource();
 	free(server->serverSocket);
 	free(server->acceptThread);
+
+	CMNLOG_TRACE_END();
 }
 
 /**
@@ -183,6 +198,8 @@ CmnNetSocketStatus CmnNetSocket_StartServer(unsigned short port, void (*serverMa
 	CmnThread *acceptThread;
 	struct sockaddr_in addr;
 
+	CMNLOG_TRACE_START();
+
 	serverSocket = calloc(1, sizeof(CmnNetSocket));
 	if (serverSocket == NULL) {
 		return CNS_MEMORY_OVER_ERROR;
@@ -194,6 +211,7 @@ CmnNetSocketStatus CmnNetSocket_StartServer(unsigned short port, void (*serverMa
 	if (CmnNetSocket_isSocketError(serverSocket->socketId)) {
 		free(serverSocket);
 		releaseGlobalSocketResource();
+		CMNLOG_TRACE_END();
 		return CNS_SERVER_INITIAL_ERROR;
 	}
 
@@ -215,6 +233,7 @@ CmnNetSocketStatus CmnNetSocket_StartServer(unsigned short port, void (*serverMa
 		free(serverSocket);
 		closeSocket(serverSocket);
 		releaseGlobalSocketResource();
+		CMNLOG_TRACE_END();
 		return CNS_BIND_ERROR;
 	}
 
@@ -223,6 +242,7 @@ CmnNetSocketStatus CmnNetSocket_StartServer(unsigned short port, void (*serverMa
 		free(serverSocket);
 		closeSocket(serverSocket);
 		releaseGlobalSocketResource();
+		CMNLOG_TRACE_END();
 		return CNS_LISTEN_ERROR;
 	}
 
@@ -232,6 +252,7 @@ CmnNetSocketStatus CmnNetSocket_StartServer(unsigned short port, void (*serverMa
 		free(serverSocket);
 		closeSocket(serverSocket);
 		releaseGlobalSocketResource();
+		CMNLOG_TRACE_END();
 		return CNS_MEMORY_OVER_ERROR;
 	}
 	server->serverSocket = serverSocket;
@@ -241,6 +262,7 @@ CmnNetSocketStatus CmnNetSocket_StartServer(unsigned short port, void (*serverMa
 	CmnThread_Init(acceptThread, runAccept, server, NULL);
 	CmnThread_Start(acceptThread);
 
+	CMNLOG_TRACE_END();
 	return 0;
 }
 
@@ -250,8 +272,10 @@ CmnNetSocketStatus CmnNetSocket_StartServer(unsigned short port, void (*serverMa
  */
 CmnNetSocketStatus CmnNetSocket_EndServer(CmnNetSocketServer *server)
 {
+	CMNLOG_TRACE_START();
 	server->_isRunnable = False;
 	return CNS_SUCCESS;
+	CMNLOG_TRACE_END();
 }
 
 /**
@@ -281,12 +305,14 @@ CmnNetSocketStatus CmnNetSocket_NoSessionRequest(
 	CmnNetSocket cmnSocket;
 	CmnNetSocketStatus status;
 
+	CMNLOG_TRACE_START();
 	allocateGlobalSocketResource();
 
 	/* アドレス情報生成 */
 	status = CmnNetSocket_ToSocketAddress(host, port, &addr);
 	if (status != CNS_SUCCESS) {
 		releaseGlobalSocketResource();
+		CMNLOG_TRACE_END();
 		return status;
 	}
 
@@ -294,6 +320,7 @@ CmnNetSocketStatus CmnNetSocket_NoSessionRequest(
 	cmnSocket.socketId = socket(AF_INET, SOCK_STREAM, 0);
 	if (CmnNetSocket_isSocketError(cmnSocket.socketId)) {
 		releaseGlobalSocketResource();
+		CMNLOG_TRACE_END();
 		return CNS_CLIENT_INITIAL_ERROR;
 	}
 
@@ -301,6 +328,7 @@ CmnNetSocketStatus CmnNetSocket_NoSessionRequest(
 	if (connect(cmnSocket.socketId, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
 		closeSocket(&cmnSocket);
 		releaseGlobalSocketResource();
+		CMNLOG_TRACE_END();
 		return CNS_CONNECT_ERROR;
 	}
 
@@ -309,6 +337,7 @@ CmnNetSocketStatus CmnNetSocket_NoSessionRequest(
 	if (status != CNS_SUCCESS) {
 		closeSocket(&cmnSocket);
 		releaseGlobalSocketResource();
+		CMNLOG_TRACE_END();
 		return status;
 	}
 
@@ -326,9 +355,11 @@ CmnNetSocketStatus CmnNetSocket_NoSessionRequest(
 	if (status != CNS_SUCCESS) {
 		closeSocket(&cmnSocket);
 		releaseGlobalSocketResource();
+		CMNLOG_TRACE_END();
 		return status;
 	}
 
+	CMNLOG_TRACE_END();
 	return CNS_SUCCESS;
 }
 
@@ -348,6 +379,7 @@ CmnNetSocketStatus CmnNetSocket_ReceiveAll(CmnNetSocket *socket, CmnDataBuffer *
 	char tmpBuf[CMNNETSOCKET_RECEIVE_BUFFER_SIZE];
 	int recvRet;
 
+	CMNLOG_TRACE_START();
 	while (1) {
 		recvRet = recv(socket->socketId, tmpBuf, CMNNETSOCKET_RECEIVE_BUFFER_SIZE, 0);
 		/* 受信データあり */
@@ -359,18 +391,22 @@ CmnNetSocketStatus CmnNetSocket_ReceiveAll(CmnNetSocket *socket, CmnDataBuffer *
 			/* 終了マークの確認 */
 			if (endMark != NULL && endMarkLen > 0
 					&& memcmp(p + recvRet - endMarkLen, endMark, endMarkLen) == 0) {
+				CMNLOG_TRACE_END();
 				return CNS_SUCCESS;
 			}
 		}
 		/* 相手の送信終了（graceful close） */
 		else if (recvRet == 0) {
+			CMNLOG_TRACE_END();
 			return CNS_SUCCESS;
 		}
 		/* エラー発生 */
 		else {
+			CMNLOG_TRACE_END();
 			return CNS_INPUT_ERROR;
 		}
 	}
+	CMNLOG_TRACE_END();
 }
 
 /**
@@ -382,10 +418,15 @@ CmnNetSocketStatus CmnNetSocket_ReceiveAll(CmnNetSocket *socket, CmnDataBuffer *
  */
 CmnNetSocketStatus CmnNetSocket_SendAll(CmnNetSocket *socket, const void *data, int len)
 {
+	CmnNetSocketStatus ret = CNS_SUCCESS;
+	CMNLOG_TRACE_START();
+
 	if (send(socket->socketId, data, len, 0) < 0) {
-		return CNS_OUTPUT_ERROR;
+		ret = CNS_OUTPUT_ERROR;
 	}
-	return CNS_SUCCESS;
+
+	CMNLOG_TRACE_END();
+	return ret;
 }
 
 /**
@@ -398,6 +439,7 @@ CmnNetSocketStatus CmnNetSocket_SendAll(CmnNetSocket *socket, const void *data, 
 CmnNetSocketStatus CmnNetSocket_ToSocketAddress(const char *host, unsigned short port, struct sockaddr_in *addr)
 {
 	unsigned long sAddr;
+	CMNLOG_TRACE_START();
 
 	addr->sin_family = AF_INET;
 	addr->sin_port = htons(port);
@@ -416,6 +458,7 @@ CmnNetSocketStatus CmnNetSocket_ToSocketAddress(const char *host, unsigned short
 
 		hostInfo = gethostbyname(host);
 		if (hostInfo == NULL) {
+			CMNLOG_TRACE_END();
 			return CNS_ADDRESS_ERROR;
 		}
 
@@ -426,6 +469,7 @@ CmnNetSocketStatus CmnNetSocket_ToSocketAddress(const char *host, unsigned short
 		#endif
 	}
 
+	CMNLOG_TRACE_END();
 	return CNS_SUCCESS;
 }
 

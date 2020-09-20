@@ -14,6 +14,7 @@
 
 #include"cmnclib/Common.h"
 #include"cmnclib/CommonTime.h"
+#include"cmnclib/CommonLog.h"
 
 #if IS_PRATFORM_WINDOWS()
 	#include <windows.h>
@@ -34,6 +35,7 @@ static const int BASE_MON = 1;		/* 月調整用の値。tm_monは0～11月で表
  */
 static void tmToDateTime(struct tm *time, CmnTimeDateTime *datetime)
 {
+	CMNLOG_TRACE_START();
 	datetime->year = time->tm_year + BASE_YEAR;
 	datetime->month = time->tm_mon + BASE_MON;
 	datetime->dayOfMonth = time->tm_mday;
@@ -43,6 +45,7 @@ static void tmToDateTime(struct tm *time, CmnTimeDateTime *datetime)
 	datetime->minute = time->tm_min;
 	datetime->second = time->tm_sec;
 	datetime->isdst = time->tm_isdst;
+	CMNLOG_TRACE_END();
 }
 
 /**
@@ -52,6 +55,7 @@ static void tmToDateTime(struct tm *time, CmnTimeDateTime *datetime)
  */
 static void dateTimeToTm(CmnTimeDateTime *datetime, struct tm *time)
 {
+	CMNLOG_TRACE_START();
 	time->tm_year = datetime->year - BASE_YEAR;
 	time->tm_mon = datetime->month - BASE_MON;
 	time->tm_mday = datetime->dayOfMonth;
@@ -61,6 +65,7 @@ static void dateTimeToTm(CmnTimeDateTime *datetime, struct tm *time)
 	time->tm_min = datetime->minute;
 	time->tm_sec = datetime->second;
 	time->tm_isdst = datetime->isdst;
+	CMNLOG_TRACE_END();
 }
 
 /**
@@ -73,7 +78,11 @@ static void dateTimeToTm(CmnTimeDateTime *datetime, struct tm *time)
  */
 CmnTimeDateTime* CmnTimeDateTime_SetNow(CmnTimeDateTime *datetime)
 {
-	return CmnTimeDateTime_SetBySerial(datetime, time(NULL));
+	CMNLOG_TRACE_START();
+	CmnTimeDateTime *ret;
+	ret = CmnTimeDateTime_SetBySerial(datetime, time(NULL));
+	CMNLOG_TRACE_END();
+	return ret;
 }
 
 /**
@@ -95,6 +104,8 @@ CmnTimeDateTime* CmnTimeDateTime_Set(CmnTimeDateTime *datetime, int year, int mo
 {
 	struct tm tmptm;
 	time_t time;
+	CmnTimeDateTime *ret;
+	CMNLOG_TRACE_START();
 
 	/* time_tを取得 */
 	tmptm.tm_year = year - BASE_YEAR;
@@ -107,7 +118,10 @@ CmnTimeDateTime* CmnTimeDateTime_Set(CmnTimeDateTime *datetime, int year, int mo
 	time = mktime(&tmptm);
 
 	/* DateTimeを作成 */
-	return CmnTimeDateTime_SetBySerial(datetime, time);
+	ret = CmnTimeDateTime_SetBySerial(datetime, time);
+
+	CMNLOG_TRACE_END();
+	return ret;
 }
 
 /**
@@ -122,6 +136,7 @@ CmnTimeDateTime* CmnTimeDateTime_Set(CmnTimeDateTime *datetime, int year, int mo
 CmnTimeDateTime* CmnTimeDateTime_SetBySerial(CmnTimeDateTime *datetime, time_t time)
 {
 	struct tm tmptm;
+	CMNLOG_TRACE_START();
 
 	/* tm取得 */
 #if IS_PRATFORM_WINDOWS()
@@ -135,6 +150,7 @@ CmnTimeDateTime* CmnTimeDateTime_SetBySerial(CmnTimeDateTime *datetime, time_t t
 	datetime->time = time;
 	datetime->timezone = 0;		/* タイムゾーン設定処理を実装すること */
 
+	CMNLOG_TRACE_END();
 	return datetime;
 }
 
@@ -160,6 +176,8 @@ CmnTimeDateTime* CmnTimeDateTime_Add(CmnTimeDateTime *datetime, int year, int mo
 {
 	struct tm tmptm;
 	time_t time;
+	CmnTimeDateTime *ret;
+	CMNLOG_TRACE_START();
 
 	/* struct tmに変換 */
 	dateTimeToTm(datetime, &tmptm);
@@ -174,7 +192,10 @@ CmnTimeDateTime* CmnTimeDateTime_Add(CmnTimeDateTime *datetime, int year, int mo
 
 	/* 変換 */
 	time = mktime(&tmptm);
-	return CmnTimeDateTime_SetBySerial(datetime, time);
+	ret = CmnTimeDateTime_SetBySerial(datetime, time);
+
+	CMNLOG_TRACE_END();
+	return ret;
 }
 
 /**
@@ -188,7 +209,13 @@ CmnTimeDateTime* CmnTimeDateTime_Add(CmnTimeDateTime *datetime, int year, int mo
  */
 CmnTimeDateTime* CmnTimeDateTime_AddBySerial(CmnTimeDateTime *datetime, time_t time)
 {
-	return CmnTimeDateTime_SetBySerial(datetime, datetime->time + time);
+	CmnTimeDateTime *ret;
+	CMNLOG_TRACE_START();
+
+	ret = CmnTimeDateTime_SetBySerial(datetime, datetime->time + time);
+
+	CMNLOG_TRACE_END();
+	return ret;
 }
 
 /**
@@ -198,6 +225,7 @@ CmnTimeDateTime* CmnTimeDateTime_AddBySerial(CmnTimeDateTime *datetime, time_t t
  */
 char* CmnTimeDateTime_ToString(const CmnTimeDateTime *datetime, char *buf)
 {
+	CMNLOG_TRACE_START();
 	*buf = '\0';
 	sprintf(buf, "time=%I64d, year=%d, month=%d, day(m)=%d, day(w)=%d, day(y)=%d, hour=%d, min=%d, sec=%d, isdst=%d, timezone=%ld",
 			datetime->time,
@@ -211,6 +239,7 @@ char* CmnTimeDateTime_ToString(const CmnTimeDateTime *datetime, char *buf)
 			datetime->second,
 			datetime->isdst,
 			datetime->timezone);
+	CMNLOG_TRACE_END();
 	return buf;
 }
 
@@ -252,6 +281,7 @@ char *CmnTime_Format(int type, char *buf)
 {
 	struct tm *ptime;
 	time_t now;
+	CMNLOG_TRACE_START();
 
 	time(&now);
 	ptime = localtime(&now);
@@ -304,6 +334,7 @@ char *CmnTime_Format(int type, char *buf)
 			*buf = '\0';
 	}
 
+	CMNLOG_TRACE_END();
 	return buf;
 }
 
@@ -313,9 +344,11 @@ char *CmnTime_Format(int type, char *buf)
  */
 void CmnTime_Sleep(unsigned long long msec)
 {
+	CMNLOG_TRACE_START();
 #if IS_PRATFORM_WINDOWS()
 	Sleep(msec);
 #else
 	usleep(msec * 1000);
 #endif
+	CMNLOG_TRACE_END();
 }

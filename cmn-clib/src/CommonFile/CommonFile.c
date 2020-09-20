@@ -12,6 +12,7 @@
 #include "cmnclib/Common.h"
 #include "cmnclib/CommonFile.h"
 #include "cmnclib/CommonData.h"
+#include"cmnclib/CommonLog.h"
 
 #if IS_PRATFORM_WINDOWS()
 #include<windows.h>
@@ -39,18 +40,24 @@ static CmnDataList* ListForLinux(const char *path, CmnDataList *list);
 char* CmnFile_ReadAllText(const char *filePath)
 {
 	char *ret;
-	CmnDataBuffer *buf = CmnFile_ReadAll(filePath);
+	CmnDataBuffer *buf;
+	CMNLOG_TRACE_START();
+
+	buf = CmnFile_ReadAll(filePath);
 	if (buf == NULL) {
+		CMNLOG_TRACE_END();
 		return NULL;
 	}
 
 	if ((ret = malloc(buf->size + 1)) == NULL) {
+		CMNLOG_TRACE_END();
 		return NULL;
 	}
 	strncpy(ret, buf->data, buf->size);
 	ret[buf->size] = '\0';
 	CmnDataBuffer_Free(buf);
 
+	CMNLOG_TRACE_END();
 	return ret;
 }
 
@@ -69,25 +76,30 @@ CmnDataBuffer* CmnFile_ReadAll(const char *filePath)
 	CmnDataBuffer *buf;
 	char tmp[BUF_SIZE];
 	int readLen;
+	CMNLOG_TRACE_START();
 
 	if ((fp = fopen(filePath, "rb")) == NULL) {
+		CMNLOG_TRACE_END();
 		return NULL;
 	}
 
 	if ((buf = CmnDataBuffer_Create(0)) == NULL) {
 		fclose(fp);
+		CMNLOG_TRACE_END();
 		return NULL;
 	}
 
 	while ((readLen = fread(tmp, sizeof(tmp[0]), BUF_SIZE, fp)) > 0) {
 		if (CmnDataBuffer_Append(buf, tmp, readLen) != 0) {
 			CmnDataBuffer_Free(buf);
+			CMNLOG_TRACE_END();
 			return NULL;
 		}
 
 	}
 
 	fclose(fp);
+	CMNLOG_TRACE_END();
 	return buf;
 }
 
@@ -99,7 +111,10 @@ CmnDataBuffer* CmnFile_ReadAll(const char *filePath)
  */
 int CmnFile_WriteNew(const char *filePath, void *data, size_t len)
 {
+	CMNLOG_TRACE_START();
+
 	//TODO
+	CMNLOG_TRACE_END();
 	return 0;
 }
 
@@ -111,7 +126,10 @@ int CmnFile_WriteNew(const char *filePath, void *data, size_t len)
  */
 int CmnFile_WriteHead(const char *filePath, void *data, size_t len)
 {
+	CMNLOG_TRACE_START();
+
 	//TODO
+	CMNLOG_TRACE_END();
 	return 0;
 }
 
@@ -123,7 +141,10 @@ int CmnFile_WriteHead(const char *filePath, void *data, size_t len)
  */
 int CmnFile_WriteTail(const char *filePath, void *data, size_t len)
 {
+	CMNLOG_TRACE_START();
+
 	//TODO
+	CMNLOG_TRACE_END();
 	return 0;
 }
 
@@ -135,16 +156,23 @@ int CmnFile_WriteTail(const char *filePath, void *data, size_t len)
  */
 CmnDataList* CmnFile_List(const char *path, CmnDataList *list, CHARSET pathCharset)
 {
+	CMNLOG_TRACE_START();
+	CmnDataList *ret;
+
 #if IS_PRATFORM_WINDOWS()
-	return ListForWindows(path, list, pathCharset);
+	ret = ListForWindows(path, list, pathCharset);
 #else
-	return ListForLinux(path, list);
+	ret = ListForLinux(path, list);
 #endif
+
+	CMNLOG_TRACE_END();
+	return ret;
 }
 
 char* CmnFileInfo_ToString(const CmnFileInfo *info, char *buf)
 {
 	char timeBuf[160];
+	CMNLOG_TRACE_START();
 
 	*buf = '\0';
 	sprintf(buf, "dir=%s, name=%s, size=%I64d, lastUpdateTime=[%s], isDirectory=%d, isFile=%d, isHiddenFile=%d, isSystemFile=%d, isSymbolicLink=%d",
@@ -157,6 +185,8 @@ char* CmnFileInfo_ToString(const CmnFileInfo *info, char *buf)
 			info->isHiddenFile,
 			info->isSystemFile,
 			info->isSymbolicLink);
+
+	CMNLOG_TRACE_END();
 	return buf;
 }
 
@@ -178,6 +208,8 @@ static CmnDataList* ListForWindows(const char *path, CmnDataList *list, CHARSET 
 	CmnFileInfo *info;
 	CmnTimeDateTime cmnTime;
 
+	CMNLOG_TRACE_START();
+
 	/* TODO:最後の文字がパス区切りなら除去 */
 
 	/* TODO:pathの存在確認して、存在しなければNULLリターン */
@@ -191,6 +223,7 @@ static CmnDataList* ListForWindows(const char *path, CmnDataList *list, CHARSET 
 	/* ファイル一覧を取得 */
 	hFind = FindFirstFileW(searchPathWide, &win32fd);
 	if (hFind == INVALID_HANDLE_VALUE) {
+		CMNLOG_TRACE_END();
 		return list;
 	}
 
@@ -233,6 +266,7 @@ static CmnDataList* ListForWindows(const char *path, CmnDataList *list, CHARSET 
 
 	FindClose(hFind);
 
+	CMNLOG_TRACE_END();
 	return list;
 }
 
@@ -243,7 +277,9 @@ static CmnDataList* ListForWindows(const char *path, CmnDataList *list, CHARSET 
 
 static CmnDataList* ListForLinux(const char *path, CmnDataList *list)
 {
+	CMNLOG_TRACE_START();
 	/* TODO */
+	CMNLOG_TRACE_END();
 	return NULL;
 }
 

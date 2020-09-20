@@ -1,4 +1,4 @@
-cmn-clibのビルド方法や使い方、その他メモなどa
+cmn-clibのビルド方法や使い方、その他メモなど
 
 ■プロジェクト構成
 	・inc			# ヘッダーファイル格納場所。ヘッダーファイル名はソースファイルのディレクトリ名と同じ
@@ -34,6 +34,9 @@ cmn-clibのビルド方法や使い方、その他メモなどa
 		$ cd プロジェクトフォルダ
 		$ make
 
+	＜挙動を変えるマクロ＞
+		Common.h：CMN_CLIB_HI_PERFORMANCE　　defineされているとトレースログの省略等を行ったハイパフォーマンスモードでビルドする。
+
 ■テスト実施方法
 	＜Windows＞
 		test_mainを実行
@@ -41,8 +44,7 @@ cmn-clibのビルド方法や使い方、その他メモなどa
 		・テストビルド
 			$ cd プロジェクトフォルダ
 			$ make
-			$ cd build
-			$ ./test_main
+			$ build/test_main
 
 ■cmn-clibの利用方法（リンク方法）
 	//TODO
@@ -75,7 +77,8 @@ cmn-clibのビルド方法や使い方、その他メモなどa
 		例：CmnDataList_Create
 		　　CmnDataList_GetFirst
 		　　
-		※非公開関数はアンダーバーで始まる。
+		※非公開関数は先頭小文字で始まる。
+		　cmnLogEx_PutLog
 
 	＜定数マクロ名＞
 		全て大文字のアンダーバー区切り

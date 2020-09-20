@@ -12,6 +12,7 @@
 
 #include"cmnclib/Common.h"
 #include"cmnclib/CommonConf.h"
+#include"cmnclib/CommonLog.h"
 
 /**
  * @brief 環境変数取得
@@ -28,13 +29,17 @@
 int CmnConf_GetEnv(char *buf, const char *envName)
 {
 	char *env;		/* 取得した環境変数の値 */
+	CMNLOG_TRACE_START();
 
 	env = getenv(envName);
 	if(env == NULL) {
+		CMNLOG_TRACE_END();
 		return False;
 	}
 
 	strcpy(buf, env);
+
+	CMNLOG_TRACE_END();
 	return True;
 }
 

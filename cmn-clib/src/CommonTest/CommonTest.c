@@ -48,6 +48,7 @@
 #include "cmnclib/CommonData.h"
 #include "cmnclib/CommonTime.h"
 #include "cmnclib/CommonString.h"
+#include"cmnclib/CommonLog.h"
 
 #define REPORT_BUF_SIZE_OF_DUMP 1024
 #define REPORT_BUF_SIZE_OF_ONE_CALSE 4096
@@ -75,7 +76,10 @@ void CmnTest_InitializeTestPlan(CmnTestPlan *plan)
  */
 void CmnTest_AddTestCase(CmnTestPlan *plan, char *fileName, char *caseName, void (*testFunction)())
 {
-	CmnTestCase *testCase = calloc(1, sizeof(CmnTestCase));
+	CmnTestCase *testCase;
+	CMNLOG_TRACE_START();
+
+	testCase = calloc(1, sizeof(CmnTestCase));
 	testCase->testFileName = fileName;
 	testCase->testCaseName = caseName;
 	testCase->testFunction = testFunction;
@@ -83,6 +87,8 @@ void CmnTest_AddTestCase(CmnTestPlan *plan, char *fileName, char *caseName, void
 	testCase->actual = NULL;
 	testCase->expected = NULL;
 	CmnDataList_Add(plan->caseList, testCase);
+
+	CMNLOG_TRACE_END();
 }
 
 /**
@@ -93,10 +99,12 @@ void CmnTest_AddTestCase(CmnTestPlan *plan, char *fileName, char *caseName, void
 void CmnTest_Run(CmnTestPlan *plan, _Bool realtimeReport)
 {
 	CmnTestCase *testCase;
+
 	char reportTmp[REPORT_BUF_SIZE_OF_ONE_CALSE];
 	char expectedTmp[REPORT_BUF_SIZE_OF_DUMP];
 	char actualTmp[REPORT_BUF_SIZE_OF_DUMP];
 	int i = 0;
+	CMNLOG_TRACE_START();
 
 	/* レポートの初期化 */
 	plan->report = calloc(plan->caseList->size * REPORT_BUF_SIZE_OF_ONE_CALSE, sizeof(char));
@@ -140,6 +148,7 @@ void CmnTest_Run(CmnTestPlan *plan, _Bool realtimeReport)
 
 	/* テスト終了時間記録 */
 	CmnTimeDateTime_SetNow(&plan->endTime);
+	CMNLOG_TRACE_END();
 }
 
 /**
@@ -150,6 +159,7 @@ void CmnTest_DestroyTest(CmnTestPlan *plan)
 {
 	int i;
 	CmnTestCase *testCase;
+	CMNLOG_TRACE_START();
 
 	/* 実測値、期待値を解放 */
 	for (i = 0; i < plan->caseList->size; i++) {
@@ -163,6 +173,7 @@ void CmnTest_DestroyTest(CmnTestPlan *plan)
 
 	/* レポートの解放 */
 	free(plan->report);
+	CMNLOG_TRACE_END();
 }
 
 /*
@@ -175,8 +186,11 @@ void CmnTest_DestroyTest(CmnTestPlan *plan)
  */
 _Bool CmnTest_AssertNumber(CmnTestCase *testCase, long line, long actual, long expected)
 {
+	CMNLOG_TRACE_START();
+
 	/* すでに検証NGの場合は検証しない */
 	if ( ! testCase->result) {
+		CMNLOG_TRACE_END();
 		return False;
 	}
 
@@ -188,9 +202,11 @@ _Bool CmnTest_AssertNumber(CmnTestCase *testCase, long line, long actual, long e
 		testCase->actual = CmnString_StrCatNew(buf, "");
 		sprintf(buf, "%ld", expected);
 		testCase->expected = CmnString_StrCatNew(buf, "");
+		CMNLOG_TRACE_END();
 		return False;
 	}
 
+	CMNLOG_TRACE_END();
 	return True;
 }
 
@@ -204,8 +220,11 @@ _Bool CmnTest_AssertNumber(CmnTestCase *testCase, long line, long actual, long e
  */
 _Bool CmnTest_AssertString(CmnTestCase *testCase, long line, char *actual, char *expected)
 {
+	CMNLOG_TRACE_START();
+
 	/* すでに検証NGの場合は検証しない */
 	if ( ! testCase->result) {
+		CMNLOG_TRACE_END();
 		return False;
 	}
 
@@ -214,9 +233,11 @@ _Bool CmnTest_AssertString(CmnTestCase *testCase, long line, char *actual, char 
 		testCase->lineOfNg = line;
 		testCase->actual = CmnString_StrCatNew(actual, "");
 		testCase->expected = CmnString_StrCatNew(expected, "");
+		CMNLOG_TRACE_END();
 		return False;
 	}
 
+	CMNLOG_TRACE_END();
 	return True;
 }
 
@@ -267,8 +288,11 @@ char* toHexString(void *data, size_t len)
  */
 _Bool CmnTest_AssertData(CmnTestCase *testCase, long line, void *actual, void *expected, size_t dataLen)
 {
+	CMNLOG_TRACE_START();
+
 	/* すでに検証NGの場合は検証しない */
 	if ( ! testCase->result) {
+		CMNLOG_TRACE_END();
 		return False;
 	}
 
@@ -277,9 +301,11 @@ _Bool CmnTest_AssertData(CmnTestCase *testCase, long line, void *actual, void *e
 		testCase->lineOfNg = line;
 		testCase->actual = toHexString(actual, dataLen);
 		testCase->expected = toHexString(expected, dataLen);
+		CMNLOG_TRACE_END();
 		return False;
 	}
 
+	CMNLOG_TRACE_END();
 	return True;
 }
 
@@ -291,8 +317,11 @@ _Bool CmnTest_AssertData(CmnTestCase *testCase, long line, void *actual, void *e
  */
 _Bool CmnTest_AssertNG(CmnTestCase *testCase, long line)
 {
+	CMNLOG_TRACE_START();
+
 	/* すでに検証NGの場合は検証しない */
 	if ( ! testCase->result) {
+		CMNLOG_TRACE_END();
 		return False;
 	}
 
@@ -300,12 +329,14 @@ _Bool CmnTest_AssertNG(CmnTestCase *testCase, long line)
 	testCase->lineOfNg = line;
 	testCase->actual = CmnString_StrCatNew("no data", "");
 	testCase->expected = CmnString_StrCatNew("no data", "");
+	CMNLOG_TRACE_END();
 	return False;
 }
 
 static void cutAndCopyDumpText(char *buf, const char *str, size_t bufSize)
 {
 	char omitMark[] = "...";
+	CMNLOG_TRACE_START();
 
 	if (strlen(str) > (bufSize - 1)) {
 		size_t omitStart = bufSize - (strlen(omitMark) + 1);
@@ -316,5 +347,7 @@ static void cutAndCopyDumpText(char *buf, const char *str, size_t bufSize)
 	else {
 		strcpy(buf, str);
 	}
+
+	CMNLOG_TRACE_END();
 }
 
