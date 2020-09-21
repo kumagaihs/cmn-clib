@@ -13,6 +13,7 @@
 #define _COMMON_LOG_H
 
 #include <time.h>
+#include <stdarg.h>
 
 #include "cmnclib/Common.h"
 #include "cmnclib/CommonThread.h"
