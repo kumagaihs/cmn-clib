@@ -74,7 +74,7 @@ void CmnTest_InitializeTestPlan(CmnTestPlan *plan)
  * @param caseName テストケース名
  * @param testFunction テスト実施関数
  */
-void CmnTest_AddTestCase(CmnTestPlan *plan, char *fileName, char *caseName, void (*testFunction)())
+void CmnTest_AddTestCase(CmnTestPlan *plan, char *fileName, char *caseName, void (*testFunction)(CmnTestCase*))
 {
 	CmnTestCase *testCase;
 	CMNLOG_TRACE_START();
@@ -184,7 +184,7 @@ void CmnTest_DestroyTest(CmnTestPlan *plan)
  * @param expected 期待値
  * @return 検証OK：True、検証NG：False
  */
-_Bool CmnTest_AssertNumber(CmnTestCase *testCase, long line, long actual, long expected)
+_Bool CmnTest_AssertNumber(CmnTestCase *testCase, long line, long long actual, long long expected)
 {
 	CMNLOG_TRACE_START();
 
@@ -198,9 +198,9 @@ _Bool CmnTest_AssertNumber(CmnTestCase *testCase, long line, long actual, long e
 		char buf[64];
 		testCase->result = False;
 		testCase->lineOfNg = line;
-		sprintf(buf, "%ld", actual);
+		sprintf(buf, "%lld", actual);
 		testCase->actual = CmnString_StrCatNew(buf, "");
-		sprintf(buf, "%ld", expected);
+		sprintf(buf, "%lld", expected);
 		testCase->expected = CmnString_StrCatNew(buf, "");
 		CMNLOG_TRACE_END();
 		return False;

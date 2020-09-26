@@ -19,7 +19,7 @@
 #endif
 
 #define BUF_SIZE 4096
-#define MAX_PATH_SIZE 4096
+#define MAX_PATH_SIZE 2048
 
 #if IS_PRATFORM_WINDOWS()
 static CmnDataList* ListForWindows(const char *path, CmnDataList *list, CHARSET pathCharset);

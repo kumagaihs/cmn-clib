@@ -16,39 +16,48 @@
     <Filter Include="ソース ファイル\test-src">
       <UniqueIdentifier>{2e0ac506-2e54-44e2-9e39-26c0e37af4be}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\cmnclib">
+      <UniqueIdentifier>{f4daf102-c47d-4eb5-aeea-17de9c73e5ac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\cmnclib\Common.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\cmnclib</Filter>
     </ClInclude>
     <ClInclude Include="inc\cmnclib\CommonConf.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\cmnclib</Filter>
     </ClInclude>
     <ClInclude Include="inc\cmnclib\CommonData.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\cmnclib</Filter>
     </ClInclude>
     <ClInclude Include="inc\cmnclib\CommonDllImport.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\cmnclib</Filter>
     </ClInclude>
     <ClInclude Include="inc\cmnclib\CommonFile.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\cmnclib</Filter>
     </ClInclude>
     <ClInclude Include="inc\cmnclib\CommonLog.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\cmnclib</Filter>
     </ClInclude>
     <ClInclude Include="inc\cmnclib\CommonNet.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\cmnclib</Filter>
     </ClInclude>
     <ClInclude Include="inc\cmnclib\CommonString.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\cmnclib</Filter>
     </ClInclude>
     <ClInclude Include="inc\cmnclib\CommonTest.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\cmnclib</Filter>
     </ClInclude>
     <ClInclude Include="inc\cmnclib\CommonThread.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\cmnclib</Filter>
     </ClInclude>
     <ClInclude Include="inc\cmnclib\CommonTime.h">
+      <Filter>ヘッダー ファイル\cmnclib</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\cmnclib\CommonWin32.h">
+      <Filter>ヘッダー ファイル\cmnclib</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\cmnclib.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
@@ -140,5 +149,18 @@
     <ClCompile Include="src\CommonLog\CommonLogMessage.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="src\CommonWin32\CommonWin32.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="test\src\test_CommonWin32.c">
+      <Filter>ソース ファイル\test-src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Doxyfile" />
+    <None Include="Makefile" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="readme.txt" />
   </ItemGroup>
 </Project>

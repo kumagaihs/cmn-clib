@@ -19,6 +19,9 @@ extern void test_CommonString_AddCase(CmnTestPlan *plan);
 extern void test_CommonTime_AddCase(CmnTestPlan *plan);
 extern void test_CommonThread_AddCase(CmnTestPlan *plan);
 extern void test_CommonNet_AddCase(CmnTestPlan *plan);
+#if IS_PRATFORM_WINDOWS()
+  extern void test_CommonWin32_AddCase(CmnTestPlan *plan);
+#endif
 
 int main(int argc, char **argv)
 {
@@ -50,6 +53,10 @@ int main(int argc, char **argv)
 	test_CommonThread_AddCase(&plan);
 	/* CommonNet */
 	test_CommonNet_AddCase(&plan);
+	/* CommonWin32 */
+	#if IS_PRATFORM_WINDOWS()
+	test_CommonWin32_AddCase(&plan);
+	#endif
 
 	CmnTest_Run(&plan, True);
 

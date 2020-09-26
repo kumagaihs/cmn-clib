@@ -18,6 +18,11 @@
 /*
 #define CMN_CLIB_HI_PERFORMANCE 1
 */
+#ifdef NDEBUG
+  #ifndef CMN_CLIB_HI_PERFORMANCE
+    #define CMN_CLIB_HI_PERFORMANCE 1
+  #endif
+#endif
 
 /* 真偽値 */
 #ifndef True

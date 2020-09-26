@@ -43,7 +43,7 @@ D_EXTERN void CmnTest_Run(CmnTestPlan *plan, _Bool realtimeReport);
 /** テストプランを破棄する */
 D_EXTERN void CmnTest_DestroyTest(CmnTestPlan *plan);
 /** 整数値検証 */
-D_EXTERN _Bool CmnTest_AssertNumber(CmnTestCase *testCase, long line, long actual, long expected);
+D_EXTERN _Bool CmnTest_AssertNumber(CmnTestCase *testCase, long line, long long actual, long long expected);
 /** 文字列検証 */
 D_EXTERN _Bool CmnTest_AssertString(CmnTestCase *testCase, long line, char *actual, char *expected);
 /** データ検証 */

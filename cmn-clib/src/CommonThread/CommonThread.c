@@ -162,7 +162,7 @@ CmnThreadMutex* CmnThreadMutex_Create()
 	CMNLOG_TRACE_START();
 
 #if IS_PRATFORM_WINDOWS()
-	tmp.mutexId = CreateMutex(NULL, FALSE, "CmnThreadMutex");
+	tmp.mutexId = CreateMutex(NULL, FALSE, L"CmnThreadMutex");
 	if (tmp.mutexId == 0) {
 		CMNLOG_TRACE_END();
 		return NULL;

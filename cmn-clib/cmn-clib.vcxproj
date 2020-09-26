@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="inc\cmnclib.h" />
     <ClInclude Include="inc\cmnclib\Common.h" />
     <ClInclude Include="inc\cmnclib\CommonConf.h" />
     <ClInclude Include="inc\cmnclib\CommonData.h" />
@@ -153,6 +154,7 @@
     <ClInclude Include="inc\cmnclib\CommonTest.h" />
     <ClInclude Include="inc\cmnclib\CommonThread.h" />
     <ClInclude Include="inc\cmnclib\CommonTime.h" />
+    <ClInclude Include="inc\cmnclib\CommonWin32.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CommonConf\CommonConf.c" />
@@ -175,6 +177,7 @@
     <ClCompile Include="src\CommonTest\CommonTest.c" />
     <ClCompile Include="src\CommonThread\CommonThread.c" />
     <ClCompile Include="src\CommonTime\CommonTime.c" />
+    <ClCompile Include="src\CommonWin32\CommonWin32.c" />
     <ClCompile Include="test\src\test_CommonConf.c" />
     <ClCompile Include="test\src\test_CommonData.c" />
     <ClCompile Include="test\src\test_CommonFile.c" />
@@ -183,7 +186,15 @@
     <ClCompile Include="test\src\test_CommonString.c" />
     <ClCompile Include="test\src\test_CommonThread.c" />
     <ClCompile Include="test\src\test_CommonTime.c" />
+    <ClCompile Include="test\src\test_CommonWin32.c" />
     <ClCompile Include="test\src\test_main.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Doxyfile" />
+    <None Include="Makefile" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="readme.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
