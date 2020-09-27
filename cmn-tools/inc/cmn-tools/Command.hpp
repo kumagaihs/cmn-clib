@@ -41,7 +41,7 @@ public:
 	 * @param args コマンド引数
 	 * @return コマンドの実行結果（リターンコード）
 	 */
-	virtual int execute(std::vector<std::string> args) { return 0; }
+	virtual int execute(std::vector<std::string>& args) { return 0; }
 
 	/**
 	 * cmn-toolsに登録されている全てのクラスを取得する

@@ -20,7 +20,7 @@ getclip
 ‚È‚µ
 )"; }
 
-	int execute(std::vector<std::string> args);
+	int execute(std::vector<std::string>& args);
 
 };
 

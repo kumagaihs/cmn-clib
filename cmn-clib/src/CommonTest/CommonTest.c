@@ -96,7 +96,7 @@ void CmnTest_AddTestCase(CmnTestPlan *plan, char *fileName, char *caseName, void
  * @param plan テストプラン
  * @param realtimeReport テスト実行時にテスト結果を順次標準出力に出力するか（True:出力する、False:出力しない）
  */
-void CmnTest_Run(CmnTestPlan *plan, _Bool realtimeReport)
+void CmnTest_Run(CmnTestPlan *plan, int realtimeReport)
 {
 	CmnTestCase *testCase;
 
@@ -184,7 +184,7 @@ void CmnTest_DestroyTest(CmnTestPlan *plan)
  * @param expected 期待値
  * @return 検証OK：True、検証NG：False
  */
-_Bool CmnTest_AssertNumber(CmnTestCase *testCase, long line, long long actual, long long expected)
+int CmnTest_AssertNumber(CmnTestCase *testCase, long line, long long actual, long long expected)
 {
 	CMNLOG_TRACE_START();
 
@@ -218,7 +218,7 @@ _Bool CmnTest_AssertNumber(CmnTestCase *testCase, long line, long long actual, l
  * @param expected 期待値
  * @return 検証OK：True、検証NG：False
  */
-_Bool CmnTest_AssertString(CmnTestCase *testCase, long line, char *actual, char *expected)
+int CmnTest_AssertString(CmnTestCase *testCase, long line, char *actual, char *expected)
 {
 	CMNLOG_TRACE_START();
 
@@ -286,7 +286,7 @@ char* toHexString(void *data, size_t len)
  * @param expected 期待値
  * @return 検証OK：True、検証NG：False
  */
-_Bool CmnTest_AssertData(CmnTestCase *testCase, long line, void *actual, void *expected, size_t dataLen)
+int CmnTest_AssertData(CmnTestCase *testCase, long line, void *actual, void *expected, size_t dataLen)
 {
 	CMNLOG_TRACE_START();
 
@@ -315,7 +315,7 @@ _Bool CmnTest_AssertData(CmnTestCase *testCase, long line, void *actual, void *e
  * @param line 検証処理を記述している行番号（__LINE__を指定する）
  * @return 常にFalse
  */
-_Bool CmnTest_AssertNG(CmnTestCase *testCase, long line)
+int CmnTest_AssertNG(CmnTestCase *testCase, long line)
 {
 	CMNLOG_TRACE_START();
 

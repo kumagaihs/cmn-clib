@@ -22,7 +22,7 @@ help [command-name]
 )";
 	}
 
-	int execute(std::vector<std::string> args);
+	int execute(std::vector<std::string>& args);
 
 };
 
