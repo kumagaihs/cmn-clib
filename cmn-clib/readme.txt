@@ -97,6 +97,19 @@ cmn-clibのビルド方法や使い方、その他メモなど
 	＜関数マクロ名＞
 		検討中
 
+	＜enum名＞
+		Enum名
+			構造体名と同じ
+			[ライブラリ名][固有名]
+		Enumメンバ
+			定数マクロ名と同じ
+			[ライブラリ名]_[固有名]_[名詞]
+		例：
+			typedef enum {
+				CMN_TIME_FORMAT_ALL,
+				CMN_TIME_FORMAT_DATE,
+			} CmnTimeFormatType
+
 	＜禁止事項＞
 		・stdbool.hと_Boolは使用禁止（VC++から本ライブラリのヘッダファイルを読み込んだ際にエラーが発生するため（C++では_Bool定義がスキップされ型不正になる））
 

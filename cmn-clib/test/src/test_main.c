@@ -26,12 +26,14 @@ extern void test_CommonNet_AddCase(CmnTestPlan *plan);
 int main(int argc, char **argv)
 {
 	CmnTestPlan plan;
+	CmnTimeDateTime now;
 	char timeBuf[64];
 	char logFileName[128] = "cmn-clib_test_";
 
 	printf("### Start test ###\n");
 
-	CmnTime_Format(CMN_TIME_FORMAT_ALL_SHORT, timeBuf);
+	CmnTimeDateTime_SetNow(&now);
+	CmnTime_Format(&now, CMN_TIME_FORMAT_ALL_SHORT, timeBuf);
 	CmnLog_Init(strcat(strcat(logFileName, timeBuf), ".log"), CMN_LOG_LEVEL_TRACE, NULL);
 	CmnLog_InitCmnClibLog(NULL, CMN_LOG_LEVEL_TRACE);
 

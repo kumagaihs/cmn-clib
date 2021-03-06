@@ -26,7 +26,7 @@
  */
 char *CmnString_RTrim(char *str)
 {
-	int len;
+	size_t len;
 	CMNLOG_TRACE_START();
 
 	if ( ! str) {
@@ -346,8 +346,8 @@ int CmnString_StartWith(const char *str, const char *mark)
  */
 int CmnString_EndWith(const char *str, const char *mark)
 {
-	int strLen;
-	int markLen;
+	size_t strLen;
+	size_t markLen;
 	int ret = 0;
 	CMNLOG_TRACE_START();
 

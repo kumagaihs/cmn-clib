@@ -244,13 +244,13 @@ char* CmnTimeDateTime_ToString(const CmnTimeDateTime *datetime, char *buf)
 }
 
 
-/* TODO : CmnTime_DateTimeを渡して任意の時間の文字列を生成できるよう修正 */
 /**
  * @brief 現在時刻文字列生成
  *
  *  現在時刻を指定されたフォーマットに従ってバッファに出力する。<BR>
  *  指定可能なフォーマットについては、引数typeの項を参照のこと。
  *
+ * @param datetime  (I)   フォーマットする日付時刻
  * @param type      (I)   フォーマットタイプ。以下のものを指定すること
  *                    <UL>
  *                      <LI>CMN_TIME_FORMAT_ALL        &nbsp;&nbsp; --形式：yyyy/mm/dd hh:mm:ss</LI>
@@ -277,57 +277,47 @@ char* CmnTimeDateTime_ToString(const CmnTimeDateTime *datetime, char *buf)
  * @note この関数は<time.h>のlocaltime関数を使用している。<BR>
  *       そのため、2038年問題の影響を受ける。
  */
-char *CmnTime_Format(int type, char *buf)
+char* CmnTime_Format(const CmnTimeDateTime *datetime, const CmnTimeFormatType type, char *buf)
 {
-	struct tm *ptime;
-	time_t now;
 	CMNLOG_TRACE_START();
 
-	time(&now);
-	ptime = localtime(&now);
-
-	/* 年、月情報の修正 */
-	ptime->tm_year += BASE_YEAR;
-	ptime->tm_mon  += BASE_MON;
-
-	/* TODO 暇があったら、この部分を外出しする */
 	switch (type) {
 		/* 形式：yyyy/mm/dd hh:mm:ss */
 		case CMN_TIME_FORMAT_ALL:
 			sprintf(buf, "%04d/%02d/%02d %02d:%02d:%02d",
-			        ptime->tm_year, ptime->tm_mon, ptime->tm_mday,
-			        ptime->tm_hour, ptime->tm_min, ptime->tm_sec);
+				datetime->year, datetime->month, datetime->dayOfMonth,
+				datetime->hour, datetime->minute, datetime->second);
 			break;
 
 		/* 形式：yyyymmddhhmmss */
 		case CMN_TIME_FORMAT_ALL_SHORT:
 			sprintf(buf, "%04d%02d%02d%02d%02d%02d",
-			        ptime->tm_year, ptime->tm_mon, ptime->tm_mday,
-			        ptime->tm_hour, ptime->tm_min, ptime->tm_sec);
+				datetime->year, datetime->month, datetime->dayOfMonth,
+				datetime->hour, datetime->minute, datetime->second);
 			break;
 
 		/* 形式：yyyy/mm/dd */
 		case CMN_TIME_FORMAT_DATE:
 			sprintf(buf, "%04d/%02d/%02d",
-			        ptime->tm_year, ptime->tm_mon, ptime->tm_mday);
+				datetime->year, datetime->month, datetime->dayOfMonth);
 			break;
 
 		/* 形式：yyyymmdd */
 		case CMN_TIME_FORMAT_DATE_SHORT:
 			sprintf(buf, "%04d%02d%02d",
-			        ptime->tm_year, ptime->tm_mon, ptime->tm_mday);
+				datetime->year, datetime->month, datetime->dayOfMonth);
 			break;
 
 		/* 形式：hh:mm:ss */
 		case CMN_TIME_FORMAT_TIME:
 			sprintf(buf, "%02d:%02d:%02d",
-			        ptime->tm_hour, ptime->tm_min, ptime->tm_sec);
+				datetime->hour, datetime->minute, datetime->second);
 			break;
 
 		/* 形式：hhmmss */
 		case CMN_TIME_FORMAT_TIME_SHORT:
 			sprintf(buf, "%02d%02d%02d",
-			        ptime->tm_hour, ptime->tm_min, ptime->tm_sec);
+				datetime->hour, datetime->minute, datetime->second);
 			break;
 
 		default:

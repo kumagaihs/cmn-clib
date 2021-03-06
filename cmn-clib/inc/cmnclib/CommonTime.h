@@ -32,14 +32,14 @@ typedef struct tag_CmnTimeDateTime {
 } CmnTimeDateTime;
 
 /** 現在時刻文字列のフォーマットタイプ */
-enum {
+typedef enum {
 	CMN_TIME_FORMAT_ALL,			/**< 形式：yyyy/mm/dd hh:mm:ss */
 	CMN_TIME_FORMAT_ALL_SHORT,		/**< 形式：yyyymmddhhmmss */
 	CMN_TIME_FORMAT_DATE,			/**< 形式：yyyy/mm/dd */
 	CMN_TIME_FORMAT_DATE_SHORT,		/**< 形式：yyyymmdd */
 	CMN_TIME_FORMAT_TIME,			/**< 形式：hh:mm:ss */
 	CMN_TIME_FORMAT_TIME_SHORT		/**< 形式：hhmmss */
-};
+} CmnTimeFormatType;
 
 /** フォーマット後の日付/時刻文字列長 */
 #define CMN_TIME_FORMAT_SIZE_ALL			(19 + 1)	/**< 形式：yyyy/mm/dd hh:mm:ss */
@@ -66,7 +66,7 @@ D_EXTERN CmnTimeDateTime* CmnTimeDateTime_AddBySerial(CmnTimeDateTime *datetime,
 /* CmnTimeDateTimeを文字列に変換する */
 D_EXTERN char* CmnTimeDateTime_ToString(const CmnTimeDateTime *datetime, char *buf);
 /* 現在時刻文字列生成 */
-D_EXTERN char *CmnTime_Format(int type, char *buf);
+D_EXTERN char* CmnTime_Format(const CmnTimeDateTime *datetime, const CmnTimeFormatType type, char *buf);
 /* 指定ミリ秒スリープする */
 D_EXTERN void CmnTime_Sleep(unsigned long long msec);
 
