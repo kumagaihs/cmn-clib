@@ -16,6 +16,11 @@
 
 #if IS_PRATFORM_WINDOWS()
 #include<windows.h>
+#else
+#include <dirent.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #endif
 
 #define BUF_SIZE 4096
@@ -277,10 +282,88 @@ static CmnDataList* ListForWindows(const char *path, CmnDataList *list, CHARSET 
 
 static CmnDataList* ListForLinux(const char *path, CmnDataList *list)
 {
+	char newpath[CMN_FILE_MAX_PATH + CMN_FILE_MAX_FILE_NAME] = "";
+	DIR *dir;
+	struct dirent *dp;
+
 	CMNLOG_TRACE_START();
-	/* TODO */
+
+	/* TODO:最後の文字がパス区切りなら除去 */
+	if (CmnString_EndWith(path, CMN_FILE_PATH_DELIMITER)) {
+		strcpy(newpath, path);
+		newpath[strlen(path) -1] = '\0';
+		path = newpath;
+	}
+
+	/* TODO:readdirはスレッドセーフではない。readdir_rがスレッドセーフだが最新のgccでは非推奨となっているためmutexによる排他制御を行うこと。 */
+
+	dir = opendir(path);
+	if (dir == NULL) {
+		CMNLOG_DEBUG("opendir return NULL, path is not exists or not permited. path=%s", path);
+		CMNLOG_TRACE_END();
+		return NULL;
+	}
+
+	dp = readdir(dir);
+	while (dp != NULL) {
+		struct stat childStat;
+		char childPath[CMN_FILE_MAX_PATH + CMN_FILE_MAX_FILE_NAME] = "";
+		CmnFileInfo *info;
+
+		/* 「.」と「..」はスキップ */
+		if (strcmp(dp->d_name, ".") == 0 || strcmp(dp->d_name, "..") == 0) {
+			dp = readdir(dir);
+			continue;
+		}
+
+		/* ファイル属性を取得 */
+		strcat(childPath, path);
+		strcat(childPath, CMN_FILE_PATH_DELIMITER);
+		strcat(childPath, dp->d_name);
+		if (stat(childPath, &childStat) < 0) {
+			CMNLOG_DEBUG("get stat failed, path=%s", childPath);
+			dp = readdir(dir);
+			continue;
+		}
+
+		info = calloc(1, sizeof(CmnFileInfo));
+
+		/* パス、ファイル名 */
+		strcpy(info->dir, path);
+		strcpy(info->name, dp->d_name);
+
+		/* ファイルサイズ */
+		info->size = childStat.st_size;
+
+		/* 最終更新日時 */
+		CmnTimeDateTime_SetBySerial(&(info->lastUpdateTime), childStat.st_mtime);
+
+		/* ファイル属性 */
+		if (S_ISDIR(childStat.st_mode)) {
+			info->isDirectory = True;
+		} else {
+			info->isFile = True;
+		}
+		if (S_ISLNK(childStat.st_mode)) {
+			info->isSymbolicLink = True;
+		}
+		if (CmnString_StartWith(info->name, ".")) {
+			info->isHiddenFile = True;
+		}
+		if (!S_ISREG(childStat.st_mode) && !S_ISDIR(childStat.st_mode) && !S_ISLNK(childStat.st_mode)) {
+			info->isSystemFile = True;
+		}
+
+		CmnDataList_Add(list, info);
+		dp = readdir(dir);
+	}
+
+	if (dir != NULL) {
+		closedir(dir);
+	}
+
 	CMNLOG_TRACE_END();
-	return NULL;
+	return list;
 }
 
 #endif
