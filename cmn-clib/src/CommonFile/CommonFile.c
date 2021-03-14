@@ -212,10 +212,16 @@ static CmnDataList* ListForWindows(const char *path, CmnDataList *list, CHARSET 
 
 	CmnFileInfo *info;
 	CmnTimeDateTime cmnTime;
+	char newpath[CMN_FILE_MAX_PATH + CMN_FILE_MAX_FILE_NAME] = "";
 
 	CMNLOG_TRACE_START();
 
-	/* TODO:最後の文字がパス区切りなら除去 */
+	/* 最後の文字がパス区切りなら除去 */
+	if (CmnString_EndWith(path, CMN_FILE_PATH_DELIMITER)) {
+		strcpy(newpath, path);
+		newpath[strlen(path) - 1] = '\0';
+		path = newpath;
+	}
 
 	/* TODO:pathの存在確認して、存在しなければNULLリターン */
 
@@ -288,7 +294,7 @@ static CmnDataList* ListForLinux(const char *path, CmnDataList *list)
 
 	CMNLOG_TRACE_START();
 
-	/* TODO:最後の文字がパス区切りなら除去 */
+	/* 最後の文字がパス区切りなら除去 */
 	if (CmnString_EndWith(path, CMN_FILE_PATH_DELIMITER)) {
 		strcpy(newpath, path);
 		newpath[strlen(path) -1] = '\0';
