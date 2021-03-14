@@ -28,7 +28,7 @@ cmn-clibはWindows/Linuxで動作するC言語ライブラリです。
 　・Windowsの場合
 　　　プロジェクトフォルダ直下に移動してdoxygen.exeを実行する。
 　・Linuxの場合
-　　　$ cd プロジェクトフォルダ
+　　　$ cd {git}/cmn-clib
 　　　$ doxygen
 
 ＜その他＞
@@ -57,12 +57,16 @@ cmn-clibはWindows/Linuxで動作するC言語ライブラリです。
 
 ■Linux
 　gcc+makeでビルドします。
-　$ cd {git}/cmn-clibプロジェクトフォルダ
+　$ cd {git}/cmn-clib
 　$ make
 
 　{git}/cmn-clib/build に実行ファイルが生成されます。
 　・test_main     # テスト実行ファイルです。実行するとテストモードで起動します。
 　・cmn-clib.a    # スタティックライブラリです。
+
+　テスト実行手順
+　$ {git}/cmn-clib
+　$ build/test_main      # カレントディレクトリはcmn-clibで実行してください。
 
 ■挙動を変えるマクロ
 　・Common.h：CMN_CLIB_HI_PERFORMANCE
