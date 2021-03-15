@@ -35,32 +35,37 @@ static CmnDataList* ListForLinux(const char *path, CmnDataList *list);
 /**
  * @brief ファイルをテキストデータとして全て読み込む
  *
- *  ファイルサイズ+1のメモリをmallocし、ファイルから読み込んだデータをコピーして返却する。また末尾には'\0'を格納する。<br>
- *  返却したポインタは呼び出し側でfreeすること。<br>
- *  なお、ファイルはバイナリモードで読み込む。改行コードの変換が必要であれば呼び出し側で行うこと。
+ *  ファイルから読み込んだデータをbufにコピーして返却する。<br>
+ *  ファイルはバイナリモードで読み込む。改行コードの変換が必要であれば呼び出し側で行うこと。
  *
  * @param filePath ファイルパス
- * @return 読み込んだデータ（呼び出し元でfreeすること）。読み込みに失敗した場合はNULLを返却する。
+ * @param buf 読み込んだデータを格納する文字列バッファ
+ * @return 読み込みに成功した場合はbufを返す。失敗した場合はNULLを返却する。
  */
-char* CmnFile_ReadAllText(const char *filePath)
+CmnStringBuffer* CmnFile_ReadAllText(const char *filePath, CmnStringBuffer *buf)
 {
-	char *ret;
-	CmnDataBuffer *buf;
+	CmnStringBuffer *ret;
+	CmnDataBuffer *dat;
 	CMNLOG_TRACE_START();
 
-	buf = CmnFile_ReadAll(filePath);
-	if (buf == NULL) {
+	dat = CmnDataBuffer_Create(0);
+	if (dat == NULL) {
 		CMNLOG_TRACE_END();
 		return NULL;
 	}
 
-	if ((ret = malloc(buf->size + 1)) == NULL) {
+	if (CmnFile_ReadAll(filePath, dat) == NULL) {
+		CmnDataBuffer_Free(dat);
 		CMNLOG_TRACE_END();
 		return NULL;
 	}
-	strncpy(ret, buf->data, buf->size);
-	ret[buf->size] = '\0';
-	CmnDataBuffer_Free(buf);
+
+	ret = NULL;
+	if (CmnStringBuffer_SetByCmnDataBuffer(buf, dat) == 0) {
+		/* 処理正常 */
+		ret = buf;
+	}
+	CmnDataBuffer_Free(dat);
 
 	CMNLOG_TRACE_END();
 	return ret;
@@ -73,12 +78,12 @@ char* CmnFile_ReadAllText(const char *filePath)
  *  返却したポインタは呼び出し側でCmnDataBuffer_Freeで解放すること。<br>
  *
  * @param filePath ファイルパス
+ * @param buf 読み込んだデータを格納するバッファ
  * @return 読み込んだデータ。読み込みに失敗した場合はNULLを返却する。
  */
-CmnDataBuffer* CmnFile_ReadAll(const char *filePath)
+CmnDataBuffer* CmnFile_ReadAll(const char *filePath, CmnDataBuffer *buf)
 {
 	FILE *fp;
-	CmnDataBuffer *buf;
 	char tmp[BUF_SIZE];
 	int readLen;
 	CMNLOG_TRACE_START();
@@ -88,19 +93,13 @@ CmnDataBuffer* CmnFile_ReadAll(const char *filePath)
 		return NULL;
 	}
 
-	if ((buf = CmnDataBuffer_Create(0)) == NULL) {
-		fclose(fp);
-		CMNLOG_TRACE_END();
-		return NULL;
-	}
-
 	while ((readLen = fread(tmp, sizeof(tmp[0]), BUF_SIZE, fp)) > 0) {
 		if (CmnDataBuffer_Append(buf, tmp, readLen) != 0) {
 			CmnDataBuffer_Free(buf);
+			fclose(fp);
 			CMNLOG_TRACE_END();
 			return NULL;
 		}
-
 	}
 
 	fclose(fp);

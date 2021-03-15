@@ -12,7 +12,10 @@
 
 static void test_CmnFile_ReadAll(CmnTestCase *t)
 {
-	CmnDataBuffer *buf = CmnFile_ReadAll("test/resources/CmnFile/ReadAll.txt");
+	CmnDataBuffer *buf = CmnDataBuffer_Create(0);
+	if (CmnFile_ReadAll("test/resources/CmnFile/ReadAll.txt", buf) == NULL) {
+		CmnTest_AssertNG(t, __LINE__);
+	}
 
 	CmnTest_AssertNumber(t, __LINE__, buf->size, 5010);
 	CmnTest_AssertData(t, __LINE__, buf->data, "START", 5);
@@ -23,13 +26,19 @@ static void test_CmnFile_ReadAll(CmnTestCase *t)
 
 static void test_CmnFile_ReadAllText(CmnTestCase *t)
 {
-	CmnDataBuffer *buf = CmnFile_ReadAll("test/resources/CmnFile/ReadAll.txt");
-	char *txt = CmnFile_ReadAllText("test/resources/CmnFile/ReadAll.txt");
+	CmnDataBuffer *buf = CmnDataBuffer_Create(0);
+	if (CmnFile_ReadAll("test/resources/CmnFile/ReadAll.txt", buf) == NULL) {
+		CmnTest_AssertNG(t, __LINE__);
+	}
+	CmnStringBuffer *txt = CmnStringBuffer_Create("");
+	if (CmnFile_ReadAllText("test/resources/CmnFile/ReadAll.txt", txt) == NULL) {
+		CmnTest_AssertNG(t, __LINE__);
+	}
 
 	/* 末尾に'\0'追加 */
 	CmnDataBuffer_Append(buf, "", 1);
 
-	CmnTest_AssertString(t, __LINE__, buf->data, txt);
+	CmnTest_AssertString(t, __LINE__, buf->data, txt->string);
 
 	CmnDataBuffer_Free(buf);
 	free(txt);

@@ -54,6 +54,7 @@ D_EXTERN char *CmnStringList_Get(CmnStringList *list, int index);
 D_EXTERN CmnStringBuffer* CmnStringBuffer_Create(const char *str);
 D_EXTERN int CmnStringBuffer_Append(CmnStringBuffer *buf, const char *str);
 D_EXTERN int CmnStringBuffer_Set(CmnStringBuffer *buf, const char *str);
+D_EXTERN int CmnStringBuffer_SetByCmnDataBuffer(CmnStringBuffer *buf, const CmnDataBuffer *dat);
 D_EXTERN void CmnStringBuffer_Free(CmnStringBuffer *buf);
 
 

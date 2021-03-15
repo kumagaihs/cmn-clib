@@ -53,8 +53,8 @@ typedef struct _tag_CmnFileInfo {
 } CmnFileInfo;
 
 /* --- CommonFile.c --- */
-D_EXTERN char* CmnFile_ReadAllText(const char *filePath);
-D_EXTERN CmnDataBuffer* CmnFile_ReadAll(const char *filePath);
+D_EXTERN CmnStringBuffer* CmnFile_ReadAllText(const char *filePath, CmnStringBuffer *buf);
+D_EXTERN CmnDataBuffer* CmnFile_ReadAll(const char *filePath, CmnDataBuffer *buf);
 D_EXTERN int CmnFile_WriteNew(const char *filePath, void *data, size_t len);
 D_EXTERN int CmnFile_WriteHead(const char *filePath, void *data, size_t len);
 D_EXTERN int CmnFile_WriteTail(const char *filePath, void *data, size_t len);
