@@ -13,11 +13,11 @@
 #include "cmnclib/CommonLog.h"
 
 /**
- * @brief 自動領域拡張バッファ作成
+ * @brief 文字列バッファ作成
  *
- *  自動領域拡張バッファを新規に作成する。
+ *  自動領域拡張をする文字列バッファを新規に作成する。
  *
- * @param str バッファに格納する文字列。NULLを指定した場合は空文字列を設定する。
+ * @param str 文字列バッファに格納する文字列。NULLを指定した場合は空文字列を設定する。
  * @return 作成したバッファへのポインタ。作成に失敗した場合はNULLを返す。
  */
 CmnStringBuffer* CmnStringBuffer_Create(const char *str)
@@ -52,11 +52,11 @@ CmnStringBuffer* CmnStringBuffer_Create(const char *str)
 }
 
 /**
- * @brief 自動領域拡張バッファへのデータ追加
+ * @brief 文字列バッファへのデータ追加
  *
- *  自動領域拡張バッファの末尾にデータを追加する。
+ *  文字列バッファの末尾にデータを追加する。
  *
- * @param buf 自動拡張バッファ
+ * @param buf 文字列バッファ
  * @param str 追加する文字列
  * @return 正常:0, エラー:-1
  */
@@ -83,12 +83,12 @@ int CmnStringBuffer_Append(CmnStringBuffer *buf, const char *str)
 }
 
 /**
- * @brief 自動領域拡張バッファへのデータ設定
+ * @brief 文字列バッファへのデータ設定
  *
- *  自動領域拡張バッファにデータを設定する。もとのデータは上書かれる。
+ *  文字列バッファにデータを設定する。もとのデータは上書かれる。
  *
- * @param buf 自動拡張バッファ
- * @param str 設定するデータ
+ * @param buf 文字列バッファ
+ * @param str 設定する文字列
  * @return 正常:0, エラー:-1
  */
 int CmnStringBuffer_Set(CmnStringBuffer *buf, const char *str)
@@ -112,11 +112,39 @@ int CmnStringBuffer_Set(CmnStringBuffer *buf, const char *str)
 }
 
 /**
- * @brief 自動領域拡張バッファの解放
+ * @brief 文字列バッファへのデータ設定（by CmnDataBuffer）
  *
- *  自動領域拡張バッファが不要になった場合、メモリ解放のために必ず本関数を呼び出すこと。
+ *  CmnDataBufferのデータを文字列として設定する。もとのbufのデータは上書かれる。
  *
  * @param buf 自動拡張バッファ
+ * @param dat 設定するデータ
+ * @return 正常:0, エラー:-1
+ */
+int CmnStringBuffer_SetByCmnDataBuffer(CmnStringBuffer *buf, const CmnDataBuffer *dat)
+{
+	CMNLOG_TRACE_START();
+
+	/* 文字列を設定 */
+	if (CmnDataBuffer_Set(buf->_buf, dat->data, dat->size) != 0) {
+		CMNLOG_TRACE_END();
+		return -1;
+	}
+	/* 終端文字を設定 */
+	CmnDataBuffer_Append(buf->_buf, "", 1);
+
+	buf->string = buf->_buf->data;
+	buf->length = dat->size;
+
+	CMNLOG_TRACE_END();
+	return 0;
+}
+
+/**
+ * @brief 文字列バッファの解放
+ *
+ *  文字列バッファが不要になった場合、メモリ解放のために必ず本関数を呼び出すこと。
+ *
+ * @param buf 文字列バッファ
  */
 void CmnStringBuffer_Free(CmnStringBuffer *buf)
 {
