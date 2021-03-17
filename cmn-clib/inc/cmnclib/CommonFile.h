@@ -41,7 +41,8 @@ typedef enum {
 
 /** ファイル情報構造体 */
 typedef struct _tag_CmnFileInfo {
-	char dir[CMN_FILE_MAX_PATH];			/**< ファイル格納先ディレクトリ */
+	/* TODO : パス長を無制限にしたい。char[]からCmnStringBufferに差し替えたいがメモリ解放がネック。メモリマネージャを実装したら差し替えすること。 */
+	char parentDir[CMN_FILE_MAX_PATH];		/**< 親ディレクトリ */
 	char name[CMN_FILE_MAX_FILE_NAME];		/**< ファイル名/ディレクトリ名 */
 	size_t size;							/**< ファイルサイズ。ディレクトリの場合は常にゼロ */
 	CmnTimeDateTime lastUpdateTime;			/**< 最終更新日時 */
@@ -61,7 +62,7 @@ D_EXTERN int CmnFile_WriteTail(const char *filePath, void *data, size_t len);
 D_EXTERN CmnDataList* CmnFile_List(const char *path, CmnDataList *list, CHARSET pathCharset);
 /* TODO:絶対パス変換 */
 D_EXTERN char* CmnFile_ToAbsolutePath(const char *path, char *buf);
-/* TODO:ファイルの情報取得 */
+D_EXTERN int CmnFile_Exists(const char *path);
 D_EXTERN CmnFileInfo* CmnFile_GetFileInfo(const char *path, CmnFileInfo *info);
 D_EXTERN char* CmnFileInfo_ToString(const CmnFileInfo *info, char *buf);
 

@@ -128,6 +128,65 @@ static void test_CmnString_Split(CmnTestCase *t)
 
 }
 
+static void test_CmnString_SplitAsList(CmnTestCase *t)
+{
+
+	/* 区切り文字なし */
+	{
+		CmnStringList *list = CmnStringList_Create();
+		if (CmnString_SplitAsList(list, " 123 456 789 ", ",") == NULL) {
+			CmnTest_AssertNG(t, __LINE__);
+		}
+		else if (list->size != 1) {
+			CmnTest_AssertNG(t, __LINE__);
+		}
+		else {
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 0), " 123 456 789 ");
+		}
+		CmnStringList_Free(list, free);
+	}
+
+	/* 区切り１文字 */
+	{
+		CmnStringList *list = CmnStringList_Create();
+		if (CmnString_SplitAsList(list, " 123 456  789 ", " ") == NULL) {
+			CmnTest_AssertNG(t, __LINE__);
+		}
+		else if (list->size != 6) {
+			CmnTest_AssertNG(t, __LINE__);
+		}
+		else {
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 0), "");
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 1), "123");
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 2), "456");
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 3), "");
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 4), "789");
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 5), "");
+		}
+		CmnStringList_Free(list, free);
+	}
+
+	/* 区切り複数文字 */
+	{
+		CmnStringList *list = CmnStringList_Create();
+		if (CmnString_SplitAsList(list, "123<->456<-><->789<->", "<->") == NULL) {
+			CmnTest_AssertNG(t, __LINE__);
+		}
+		else if (list->size != 5) {
+			CmnTest_AssertNG(t, __LINE__);
+		}
+		else {
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 0), "123");
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 1), "456");
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 2), "");
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 3), "789");
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 4), "");
+		}
+		CmnStringList_Free(list, free);
+	}
+
+}
+
 static void test_CmnString_Lpad(CmnTestCase *t)
 {
 	char buf[64];
@@ -148,12 +207,43 @@ static void test_CmnString_Rpad(CmnTestCase *t)
 
 static void test_CmnString_StartWith(CmnTestCase *t)
 {
-	/* TODO テスト実施すること */
+	CmnTest_AssertNumber(t, __LINE__, CmnString_StartWith(".abc.txt", "."), 1);
+	CmnTest_AssertNumber(t, __LINE__, CmnString_StartWith(".abc.txt", ".abc"), 1);
+	CmnTest_AssertNumber(t, __LINE__, CmnString_StartWith(".abc.txt", ".abc.txt"), 1);
+	CmnTest_AssertNumber(t, __LINE__, CmnString_StartWith(".abc.txt", "a"), 0);
+	CmnTest_AssertNumber(t, __LINE__, CmnString_StartWith(".abc.txt", ".aa"), 0);
+	CmnTest_AssertNumber(t, __LINE__, CmnString_StartWith(".abc.txt", "txt"), 0);
 }
 
 static void test_CmnString_EndWith(CmnTestCase *t)
 {
-	/* TODO テスト実施すること */
+	CmnTest_AssertNumber(t, __LINE__, CmnString_EndWith(".abc.txt", "t"), 1);
+	CmnTest_AssertNumber(t, __LINE__, CmnString_EndWith(".abc.txt", ".txt"), 1);
+	CmnTest_AssertNumber(t, __LINE__, CmnString_EndWith(".abc.txt", ".abc.txt"), 1);
+	CmnTest_AssertNumber(t, __LINE__, CmnString_EndWith(".abc.txt", "x"), 0);
+	CmnTest_AssertNumber(t, __LINE__, CmnString_EndWith(".abc.txt", ".tx"), 0);
+	CmnTest_AssertNumber(t, __LINE__, CmnString_EndWith(".abc.txt", "txx"), 0);
+}
+
+static void test_CmnString_IndexOf(CmnTestCase *t)
+{
+	CmnTest_AssertNumber(t, __LINE__, CmnString_IndexOf("/dir/sub/file.txt", "/"), 0);
+	CmnTest_AssertNumber(t, __LINE__, CmnString_IndexOf("/dir/sub/file.txt", "sub"), 5);
+	CmnTest_AssertNumber(t, __LINE__, CmnString_IndexOf("/dir/sub/file.txz", "z"), 16);
+	CmnTest_AssertNumber(t, __LINE__, CmnString_IndexOf("/dir/sub/file.txt", "_"), -1);
+	CmnTest_AssertNumber(t, __LINE__, CmnString_IndexOf("/dir/sub/file.txt", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"), -1);
+	CmnTest_AssertNumber(t, __LINE__, CmnString_IndexOf("/dir/sub/file.txt", "txta"), -1);
+}
+
+static void test_CmnString_LastIndexOf(CmnTestCase *t)
+{
+	CmnTest_AssertNumber(t, __LINE__, CmnString_LastIndexOf("/dir/sub/file.txt", "/"), 8);
+	CmnTest_AssertNumber(t, __LINE__, CmnString_LastIndexOf("/dir/sub/file.txt", "sub"), 5);
+	CmnTest_AssertNumber(t, __LINE__, CmnString_LastIndexOf("/dir/sub/file.txz", "z"), 16);
+	CmnTest_AssertNumber(t, __LINE__, CmnString_LastIndexOf("Adir/sub/file.txz", "A"), 0);
+	CmnTest_AssertNumber(t, __LINE__, CmnString_LastIndexOf("/dir/sub/file.txt", "_"), -1);
+	CmnTest_AssertNumber(t, __LINE__, CmnString_LastIndexOf("/dir/sub/file.txt", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"), -1);
+	CmnTest_AssertNumber(t, __LINE__, CmnString_LastIndexOf("/dir/sub/file.txt", "txta"), -1);
 }
 
 static void test_CmnString_List(CmnTestCase *t)
@@ -210,10 +300,13 @@ void test_CommonString_AddCase(CmnTestPlan *plan)
 	CmnTest_AddTestCaseEasy(plan, test_CmnString_ReplaceNew);
 	CmnTest_AddTestCaseEasy(plan, test_CmnString_StrcatNew);
 	CmnTest_AddTestCaseEasy(plan, test_CmnString_Split);
+	CmnTest_AddTestCaseEasy(plan, test_CmnString_SplitAsList);
 	CmnTest_AddTestCaseEasy(plan, test_CmnString_Lpad);
 	CmnTest_AddTestCaseEasy(plan, test_CmnString_Rpad);
 	CmnTest_AddTestCaseEasy(plan, test_CmnString_StartWith);
 	CmnTest_AddTestCaseEasy(plan, test_CmnString_EndWith);
+	CmnTest_AddTestCaseEasy(plan, test_CmnString_IndexOf);
+	CmnTest_AddTestCaseEasy(plan, test_CmnString_LastIndexOf);
 	CmnTest_AddTestCaseEasy(plan, test_CmnString_List);
 	CmnTest_AddTestCaseEasy(plan, test_CmnStringBuffer);
 }

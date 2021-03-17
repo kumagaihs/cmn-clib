@@ -265,6 +265,58 @@ int CmnString_Split(char *buf, size_t rowlen, size_t collen, const char *str, co
 }
 
 /**
+ * @brief 文字列分割（into CmnDataList）
+ *
+ *  strをdelimで分割してlistに格納する。
+ *
+ * @param list 分割後の文字列を格納するリスト。リストの要素はmallocしたchar*となる。
+ *             リストのFree時に各要素も合わせてFreeされるため、各要素の個別Freeは不要。
+ * @param str 分割対象の文字列
+ * @param delim 区切り文字(列)
+ * @return listを返す。メモリ確保できなかった場合など異常時はNULLを返す。
+ */
+CmnStringList* CmnString_SplitAsList(CmnStringList *list, const char *str, const char *delim)
+{
+	const char *pos = str;
+	size_t delimlen;
+	char *tmp;
+	CMNLOG_TRACE_START();
+
+	delimlen = strlen(delim);
+
+	while (*str != '\0') {
+		pos = strstr(str, delim);
+		if (pos == NULL) {
+			if ((tmp = calloc(strlen(str) + 1, sizeof(char))) == NULL) {
+				return NULL;
+			}
+			strcpy(tmp, str);
+			CmnStringList_Add(list, tmp);
+			break;
+		}
+
+		if ((tmp = calloc(strlen(str) + 1, sizeof(char))) == NULL) {
+			return NULL;
+		}
+		strncpy(tmp, str, pos - str);
+		CmnStringList_Add(list, tmp);
+
+		str = pos + delimlen;
+
+		/* 最後がdelimで終わっている場合は末尾に空文字列の要素を補充 */
+		if (*str == '\0') {
+			if ((tmp = calloc(1, sizeof(char))) == NULL) {
+				return NULL;
+			}
+			CmnStringList_Add(list, tmp);
+		}
+	}
+
+	CMNLOG_TRACE_END();
+	return list;
+}
+
+/**
  * @brief 文字列の左側パディング
  * @param buf パディング後の文字列を格納するバッファ
  * @param str 元文字列
@@ -331,7 +383,7 @@ int CmnString_StartWith(const char *str, const char *mark)
 	int ret = 0;
 	CMNLOG_TRACE_START();
 
-	if (strstr(str, mark) == EQUAL) {
+	if (strstr(str, mark) == str) {
 		return 1;
 	}
 	CMNLOG_TRACE_END();
@@ -362,3 +414,54 @@ int CmnString_EndWith(const char *str, const char *mark)
 	return ret;
 }
 
+/**
+ * @brief strのなかで最初に出現するmarkの位置（先頭文字をゼロとした文字数）を返す。
+ * @param str ベース文字列
+ * @param mark 検索する文字列
+ * @return 最初にmarkが出現した位置（先頭文字をゼロとした文字数）を返す。markが出現しなかった場合は-1を返す。
+ */
+int CmnString_IndexOf(const char *str, const char *mark)
+{
+	char *pos;
+	CMNLOG_TRACE_START();
+
+	pos = strstr(str, mark);
+	if (pos == NULL) {
+		CMNLOG_TRACE_END();
+		return -1;
+	}
+
+	CMNLOG_TRACE_END();
+	return (int)(pos - str);
+}
+
+/**
+ * @brief strのなかで最後に出現するmarkの位置（先頭文字をゼロとした文字数）を返す。
+ * @param str ベース文字列
+ * @param mark 検索する文字列
+ * @return 最後にmarkが出現した位置（先頭文字をゼロとした文字数）を返す。markが出現しなかった場合は-1を返す。
+ */
+int CmnString_LastIndexOf(const char *str, const char *mark)
+{
+	size_t strLen;
+	size_t markLen;
+	CMNLOG_TRACE_START();
+
+	strLen = strlen(str);
+	markLen = strlen(mark);
+
+	if (strLen < markLen) {
+		return -1;
+	}
+
+	int index = (int)(strLen - markLen);
+	while (index >= 0) {
+		if (strncmp(str + index, mark, markLen) == EQUAL) {
+			return index;
+		}
+		index--;
+	}
+
+	CMNLOG_TRACE_END();
+	return index;
+}
