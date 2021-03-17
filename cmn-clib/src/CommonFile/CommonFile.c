@@ -12,10 +12,10 @@
 #include "cmnclib/Common.h"
 #include "cmnclib/CommonFile.h"
 #include "cmnclib/CommonData.h"
-#include"cmnclib/CommonLog.h"
+#include "cmnclib/CommonLog.h"
 
 #if IS_PRATFORM_WINDOWS()
-#include<windows.h>
+#include <windows.h>
 #else
 #include <dirent.h>
 #include <sys/types.h>
@@ -28,8 +28,10 @@
 
 #if IS_PRATFORM_WINDOWS()
 static CmnDataList* ListForWindows(const char *path, CmnDataList *list, CHARSET pathCharset);
+static void Win32FileAttributeToCmnFileInfo(CmnFileInfo *info, DWORD sizeHigh, DWORD sizeLow, FILETIME *lastUpdateTime, DWORD attributes);
 #else
 static CmnDataList* ListForLinux(const char *path, CmnDataList *list);
+static void FileStatToCmnFileInfo(CmnFileInfo *info, struct stat *stat);
 #endif
 
 /**
@@ -85,7 +87,7 @@ CmnDataBuffer* CmnFile_ReadAll(const char *filePath, CmnDataBuffer *buf)
 {
 	FILE *fp;
 	char tmp[BUF_SIZE];
-	int readLen;
+	size_t readLen;
 	CMNLOG_TRACE_START();
 
 	if ((fp = fopen(filePath, "rb")) == NULL) {
@@ -163,11 +165,125 @@ CmnDataList* CmnFile_List(const char *path, CmnDataList *list, CHARSET pathChars
 	CMNLOG_TRACE_START();
 	CmnDataList *ret;
 
+	/* ファイル存在確認 */
+	if (!CmnFile_Exists(path)) {
+		CMNLOG_DEBUG("Not found, path=%s", path);
+		CMNLOG_TRACE_END();
+		return NULL;
+	}
+
 #if IS_PRATFORM_WINDOWS()
 	ret = ListForWindows(path, list, pathCharset);
 #else
 	ret = ListForLinux(path, list);
 #endif
+
+	CMNLOG_TRACE_END();
+	return ret;
+}
+
+/**
+ * @brief pathが実在するかチェックする
+ * @param path 実在するかチェックするパス。ディレクトリでもファイルでもOK
+ * @return pathが存在する場合はTrue、存在しない場合はFalseを返す
+*/
+int CmnFile_Exists(const char *path)
+{
+	int ret = False;
+	CMNLOG_TRACE_START();
+
+#if IS_PRATFORM_WINDOWS()
+	if (_access(path, 0) != -1) {
+		ret = True;
+	}
+#else
+	{
+		struct stat st;
+		if (stat(path, &st) == 0) {
+			ret = True;
+		}
+	}
+#endif
+
+	CMNLOG_TRACE_END();
+	return ret;
+}
+
+/**
+ * @brief ファイル情報を取得する
+ * @param path ファイルパス
+ * @param info 取得したファイル情報を格納する
+ * @return infoを返す。ファイル情報の取得に失敗した場合はNULLを返す。
+ */
+CmnFileInfo* CmnFile_GetFileInfo(const char *path, CmnFileInfo *info)
+{
+	CmnFileInfo *ret = NULL;
+	char newpath[CMN_FILE_MAX_PATH + CMN_FILE_MAX_FILE_NAME] = "";
+	CMNLOG_TRACE_START();
+
+	/* 最後の文字がパス区切りなら除去 */
+	if (CmnString_EndWith(path, CMN_FILE_PATH_DELIMITER)) {
+		strcpy(newpath, path);
+		newpath[strlen(path) - 1] = '\0';
+		path = newpath;
+	}
+
+	/* ファイル存在確認 */
+	if ( ! CmnFile_Exists(path)) {
+		CMNLOG_DEBUG("Not found, path=%s", path);
+		CMNLOG_TRACE_END();
+		return ret;
+	}
+
+	memset(info, 0, sizeof(CmnFileInfo));
+
+#if IS_PRATFORM_WINDOWS()
+	{
+		WIN32_FILE_ATTRIBUTE_DATA fileInfo;
+		wchar_t pathWide[MAX_PATH_SIZE * 2] = { '\0' };
+
+		MultiByteToWideChar(CP_UTF8, MB_PRECOMPOSED, path, -1, pathWide, ARRAY_LENGTH(pathWide));
+		if (GetFileAttributesExW(pathWide, GetFileExInfoStandard, &fileInfo) == 0) {
+			CMNLOG_DEBUG("Failed to get file info, path=%s", path);	
+		}
+		else {
+			Win32FileAttributeToCmnFileInfo(info, fileInfo.nFileSizeHigh, fileInfo.nFileSizeLow, &(fileInfo.ftLastWriteTime), fileInfo.dwFileAttributes);
+			ret = info;
+		}
+	}
+#else
+	{
+		struct stat st;
+		if (stat(path, &st) < 0) {
+			CMNLOG_DEBUG("get stat failed, path=%s", path);
+		}
+		else {
+			FileStatToCmnFileInfo(info, &st);
+			ret = info;
+		}
+	}
+#endif
+
+	/* dir, nameを設定 */
+	if (ret != NULL) {
+		int pathDelimPos;
+
+		/* 最後のパス区切り文字を検索 */
+		if ((pathDelimPos = CmnString_LastIndexOf(path, CMN_FILE_PATH_DELIMITER)) == -1) {
+			/* パス区切り文字が環境定義と異なりスラッシュを指定しているかもしれないのでスラッシュでも検索 */
+			pathDelimPos = CmnString_LastIndexOf(path, "/");
+		}
+
+		if (pathDelimPos == -1) {
+			strcpy(info->parentDir, ".");
+			strcpy(info->name, path);
+		}
+		else {
+			strncpy(info->parentDir, path, pathDelimPos);
+			info->parentDir[pathDelimPos] = '\0';
+			strcpy(info->name, path + pathDelimPos + 1);
+		}
+	}
 
 	CMNLOG_TRACE_END();
 	return ret;
@@ -179,11 +295,11 @@ char* CmnFileInfo_ToString(const CmnFileInfo *info, char *buf)
 	CMNLOG_TRACE_START();
 
 	*buf = '\0';
-	sprintf(buf, "dir=%s, name=%s, size=%I64d, lastUpdateTime=[%s], isDirectory=%d, isFile=%d, isHiddenFile=%d, isSystemFile=%d, isSymbolicLink=%d",
-			info->dir,
+	sprintf(buf, "parentDir=%s, name=%s, size=%I64d, lastUpdateTime=[%s], isDirectory=%d, isFile=%d, isHiddenFile=%d, isSystemFile=%d, isSymbolicLink=%d",
+			info->parentDir,
 			info->name,
 			info->size,
-			CmnTimeDateTime_ToString(&info->lastUpdateTime, timeBuf),	/*TODO:時刻を見やすい形式に変更する。*/
+			CmnTime_Format(&info->lastUpdateTime, CMN_TIME_FORMAT_ALL, timeBuf),
 			info->isDirectory,
 			info->isFile,
 			info->isHiddenFile,
@@ -206,11 +322,9 @@ static CmnDataList* ListForWindows(const char *path, CmnDataList *list, CHARSET 
 	wchar_t searchPathWide[MAX_PATH_SIZE * 2] = {'\0'};
 	HANDLE hFind;
 	WIN32_FIND_DATA win32fd;
-	SYSTEMTIME win32time;
 	UINT codepage;
 
 	CmnFileInfo *info;
-	CmnTimeDateTime cmnTime;
 	char newpath[CMN_FILE_MAX_PATH + CMN_FILE_MAX_FILE_NAME] = "";
 
 	CMNLOG_TRACE_START();
@@ -221,8 +335,6 @@ static CmnDataList* ListForWindows(const char *path, CmnDataList *list, CHARSET 
 		newpath[strlen(path) - 1] = '\0';
 		path = newpath;
 	}
-
-	/* TODO:pathの存在確認して、存在しなければNULLリターン */
 
 	searchPath = CmnString_StrCatNew(path, CMN_FILE_PATH_DELIMITER "*");
 
@@ -247,29 +359,11 @@ static CmnDataList* ListForWindows(const char *path, CmnDataList *list, CHARSET 
 		info = calloc(1, sizeof(CmnFileInfo));
 
 		/* パス、ファイル名 */
-		strcpy(info->dir, path);
+		strcpy(info->parentDir, path);
 		WideCharToMultiByte(codepage, 0, win32fd.cFileName, -1, info->name, ARRAY_LENGTH(info->name), NULL, NULL);
 
-		/* ファイルサイズ */
-		info->size = (win32fd.nFileSizeHigh * (MAXDWORD + 1)) + win32fd.nFileSizeLow;
-
-		/* 最終更新日時  XXX:タイムゾーンがゼロ（グリニッジ標準時）の時刻が取れるため、日本なら＋9時間してやる必要がある。 */
-		FileTimeToSystemTime(&(win32fd.ftLastWriteTime), &win32time);
-		CmnTimeDateTime_Set(&cmnTime, win32time.wYear, win32time.wMonth, win32time.wDay, win32time.wHour, win32time.wMinute, win32time.wSecond, -1);
-		info->lastUpdateTime = cmnTime;
-
-		/* ファイル属性 */
-		if (win32fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-			info->isDirectory = True;
-		} else {
-			info->isFile = True;
-		}
-		if (win32fd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) {
-			info->isHiddenFile = True;
-		}
-		if (win32fd.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) {
-			info->isSystemFile = True;
-		}
+		/* ファイル情報を設定 */
+		Win32FileAttributeToCmnFileInfo(info, win32fd.nFileSizeHigh, win32fd.nFileSizeLow, &(win32fd.ftLastWriteTime), win32fd.dwFileAttributes);
 
 		CmnDataList_Add(list, info);
 	} while (FindNextFile(hFind, &win32fd));
@@ -278,6 +372,42 @@ static CmnDataList* ListForWindows(const char *path, CmnDataList *list, CHARSET 
 
 	CMNLOG_TRACE_END();
 	return list;
+}
+
+/**
+ * @brief Win32から取得したファイル情報をCmnFileInfoに設定する
+ * @param info CmnFileInfo
+ * @param sizeHigh ファイルサイズ（上位ビット）
+ * @param sizeLow ファイルサイズ（下位ビット）
+ * @param lastUpdateTime 最終更新日時
+ * @param attributes ファイル属性
+ */
+static void Win32FileAttributeToCmnFileInfo(CmnFileInfo *info, DWORD sizeHigh, DWORD sizeLow, FILETIME *lastUpdateTime, DWORD attributes)
+{
+	SYSTEMTIME win32time;
+	CmnTimeDateTime cmnTime;
+
+	/* ファイルサイズ */
+	info->size = (sizeHigh * (MAXDWORD + 1)) + sizeLow;
+
+	/* 最終更新日時  XXX:タイムゾーンがゼロ（グリニッジ標準時）の時刻が取れるため、日本なら＋9時間してやる必要がある。 */
+	FileTimeToSystemTime(lastUpdateTime, &win32time);
+	CmnTimeDateTime_Set(&cmnTime, win32time.wYear, win32time.wMonth, win32time.wDay, win32time.wHour, win32time.wMinute, win32time.wSecond, -1);
+	info->lastUpdateTime = cmnTime;
+
+	/* ファイル属性 */
+	if (attributes & FILE_ATTRIBUTE_DIRECTORY) {
+		info->isDirectory = True;
+	}
+	else {
+		info->isFile = True;
+	}
+	if (attributes & FILE_ATTRIBUTE_HIDDEN) {
+		info->isHiddenFile = True;
+	}
+	if (attributes & FILE_ATTRIBUTE_SYSTEM) {
+		info->isSystemFile = True;
+	}
 }
 
 #else
@@ -334,30 +464,11 @@ static CmnDataList* ListForLinux(const char *path, CmnDataList *list)
 		info = calloc(1, sizeof(CmnFileInfo));
 
 		/* パス、ファイル名 */
-		strcpy(info->dir, path);
+		strcpy(info->parentDir, path);
 		strcpy(info->name, dp->d_name);
 
-		/* ファイルサイズ */
-		info->size = childStat.st_size;
-
-		/* 最終更新日時 */
-		CmnTimeDateTime_SetBySerial(&(info->lastUpdateTime), childStat.st_mtime);
-
-		/* ファイル属性 */
-		if (S_ISDIR(childStat.st_mode)) {
-			info->isDirectory = True;
-		} else {
-			info->isFile = True;
-		}
-		if (S_ISLNK(childStat.st_mode)) {
-			info->isSymbolicLink = True;
-		}
-		if (CmnString_StartWith(info->name, ".")) {
-			info->isHiddenFile = True;
-		}
-		if (!S_ISREG(childStat.st_mode) && !S_ISDIR(childStat.st_mode) && !S_ISLNK(childStat.st_mode)) {
-			info->isSystemFile = True;
-		}
+		/* ファイル情報設定 */
+		FileStatToCmnFileInfo(info, &childStat);
 
 		CmnDataList_Add(list, info);
 		dp = readdir(dir);
@@ -369,6 +480,37 @@ static CmnDataList* ListForLinux(const char *path, CmnDataList *list)
 
 	CMNLOG_TRACE_END();
 	return list;
+}
+
+/**
+ * @brief statから取得したファイル情報をCmnFileInfoに設定する
+ * @param info CmnFileInfo
+ * @param stat ファイル情報
+ */
+static void FileStatToCmnFileInfo(CmnFileInfo *info, struct stat *st)
+{
+	/* ファイルサイズ */
+	info->size = st->st_size;
+
+	/* 最終更新日時 */
+	CmnTimeDateTime_SetBySerial(&(info->lastUpdateTime), st->st_mtime);
+
+	/* ファイル属性 */
+	if (S_ISDIR(st->st_mode)) {
+		info->isDirectory = True;
+	}
+	else {
+		info->isFile = True;
+	}
+	if (S_ISLNK(st->st_mode)) {
+		info->isSymbolicLink = True;
+	}
+	if (CmnString_StartWith(info->name, ".")) {
+		info->isHiddenFile = True;
+	}
+	if (!S_ISREG(st->st_mode) && !S_ISDIR(st->st_mode) && !S_ISLNK(st->st_mode)) {
+		info->isSystemFile = True;
+	}
 }
 
 #endif
