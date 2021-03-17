@@ -16,8 +16,11 @@ static void test_CmnFile_ReadAll(CmnTestCase *t)
 	if (CmnFile_ReadAll("test/resources/CmnFile/ReadAll.txt", buf) == NULL) {
 		CmnTest_AssertNG(t, __LINE__);
 	}
-
+#if IS_PRATFORM_WINDOWS()
 	CmnTest_AssertNumber(t, __LINE__, buf->size, 5010);
+#else
+	CmnTest_AssertNumber(t, __LINE__, buf->size, 4959);
+#endif
 	CmnTest_AssertData(t, __LINE__, buf->data, "START", 5);
 	CmnTest_AssertData(t, __LINE__, ((char*)buf->data) + buf->size - 3, "END", 3);
 
@@ -93,7 +96,11 @@ static void test_CmnFile_GetFileInfo(CmnTestCase *t)
 		CmnTest_AssertString(t, __LINE__, info.name, "ReadAll.txt");
 		CmnTest_AssertNumber(t, __LINE__, info.isDirectory, 0);
 		CmnTest_AssertNumber(t, __LINE__, info.isFile, 1);
+#if IS_PRATFORM_WINDOWS()
 		CmnTest_AssertNumber(t, __LINE__, info.size, 5010);
+#else
+		CmnTest_AssertNumber(t, __LINE__, info.size, 4959);
+#endif
 		printf("%s\n", CmnFileInfo_ToString(&info, buf));
 	}
 
@@ -106,7 +113,6 @@ static void test_CmnFile_GetFileInfo(CmnTestCase *t)
 		CmnTest_AssertString(t, __LINE__, info.name, "test");
 		CmnTest_AssertNumber(t, __LINE__, info.isDirectory, 1);
 		CmnTest_AssertNumber(t, __LINE__, info.isFile, 0);
-		CmnTest_AssertNumber(t, __LINE__, info.size, 0);
 		printf("%s\n", CmnFileInfo_ToString(&info, buf));
 	}
 }

@@ -143,7 +143,7 @@ static void test_CmnString_SplitAsList(CmnTestCase *t)
 		else {
 			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 0), " 123 456 789 ");
 		}
-		CmnStringList_Free(list, free);
+		CmnStringList_Free(list);
 	}
 
 	/* 区切り１文字 */
@@ -163,7 +163,7 @@ static void test_CmnString_SplitAsList(CmnTestCase *t)
 			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 4), "789");
 			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 5), "");
 		}
-		CmnStringList_Free(list, free);
+		CmnStringList_Free(list);
 	}
 
 	/* 区切り複数文字 */
@@ -182,7 +182,7 @@ static void test_CmnString_SplitAsList(CmnTestCase *t)
 			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 3), "789");
 			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 4), "");
 		}
-		CmnStringList_Free(list, free);
+		CmnStringList_Free(list);
 	}
 
 }

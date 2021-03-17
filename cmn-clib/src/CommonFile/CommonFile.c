@@ -253,12 +253,12 @@ CmnFileInfo* CmnFile_GetFileInfo(const char *path, CmnFileInfo *info)
 	}
 #else
 	{
-		struct stat stat;
-		if (stat(path, &stat) < 0) {
+		struct stat st;
+		if (stat(path, &st) < 0) {
 			CMNLOG_DEBUG("get stat failed, path=%s", path);
 		}
 		else {
-			FileStatToCmnFileInfo(info, &stat);
+			FileStatToCmnFileInfo(info, &st);
 			ret = info;
 		}
 	}
@@ -487,28 +487,28 @@ static CmnDataList* ListForLinux(const char *path, CmnDataList *list)
  * @param info CmnFileInfo
  * @param stat ファイル情報
  */
-static void FileStatToCmnFileInfo(CmnFileInfo *info, struct stat *stat)
+static void FileStatToCmnFileInfo(CmnFileInfo *info, struct stat *st)
 {
 	/* ファイルサイズ */
-	info->size = stat.st_size;
+	info->size = st->st_size;
 
 	/* 最終更新日時 */
-	CmnTimeDateTime_SetBySerial(&(info->lastUpdateTime), stat.st_mtime);
+	CmnTimeDateTime_SetBySerial(&(info->lastUpdateTime), st->st_mtime);
 
 	/* ファイル属性 */
-	if (S_ISDIR(stat.st_mode)) {
+	if (S_ISDIR(st->st_mode)) {
 		info->isDirectory = True;
 	}
 	else {
 		info->isFile = True;
 	}
-	if (S_ISLNK(stat.st_mode)) {
+	if (S_ISLNK(st->st_mode)) {
 		info->isSymbolicLink = True;
 	}
 	if (CmnString_StartWith(info->name, ".")) {
 		info->isHiddenFile = True;
 	}
-	if (!S_ISREG(stat.st_mode) && !S_ISDIR(stat.st_mode) && !S_ISLNK(stat.st_mode)) {
+	if (!S_ISREG(st->st_mode) && !S_ISDIR(st->st_mode) && !S_ISLNK(st->st_mode)) {
 		info->isSystemFile = True;
 	}
 }
