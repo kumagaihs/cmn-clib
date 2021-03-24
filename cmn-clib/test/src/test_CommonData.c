@@ -41,7 +41,46 @@ static void test_CmnDataBuffer_small(CmnTestCase *t)
 	CmnTest_AssertNumber(t, __LINE__, buf->size, 8);
 }
 
+static void test_CmnDataBuffer_large(CmnTestCase *t)
+{
+	int i = 0;
+	char testData[10240];
+	for (i = 0; i < 2046; i++) testData[i] = 'A';
+
+	CmnDataBuffer *buf = CmnDataBuffer_Create(2046);
+	CmnTest_AssertNumber(t, __LINE__, buf->bufSize, 2046);
+	CmnTest_AssertNumber(t, __LINE__, buf->size, 0);
+
+	CmnDataBuffer_Set(buf, testData, 2046);
+	CmnTest_AssertData(t, __LINE__, buf->data, testData, 2046);
+	CmnTest_AssertNumber(t, __LINE__, buf->bufSize, 2046);
+	CmnTest_AssertNumber(t, __LINE__, buf->size, 2046);
+
+	testData[i++] = 'B';
+	CmnDataBuffer_Append(buf, "B", 1);
+	CmnTest_AssertData(t, __LINE__, buf->data, testData, 2047);
+	CmnTest_AssertNumber(t, __LINE__, buf->bufSize, 2047);
+	CmnTest_AssertNumber(t, __LINE__, buf->size, 2047);
+
+	testData[i++] = 'C';
+	CmnDataBuffer_Append(buf, "C", 1);
+	CmnTest_AssertData(t, __LINE__, buf->data, testData, 2048);
+	CmnTest_AssertNumber(t, __LINE__, buf->bufSize, 2048);
+	CmnTest_AssertNumber(t, __LINE__, buf->size, 2048);
+
+	testData[i++] = 'D';
+	CmnDataBuffer_Append(buf, "D", 1);
+	CmnTest_AssertData(t, __LINE__, buf->data, testData, 2049);
+	CmnTest_AssertNumber(t, __LINE__, buf->bufSize, 4096);
+	CmnTest_AssertNumber(t, __LINE__, buf->size, 2049);
+
+	CmnDataBuffer_Append(buf, testData, 2049);
+	CmnTest_AssertNumber(t, __LINE__, buf->bufSize, 8192);
+	CmnTest_AssertNumber(t, __LINE__, buf->size, 4098);
+}
+
 void test_CommonData_AddCase(CmnTestPlan *plan)
 {
 	CmnTest_AddTestCaseEasy(plan, test_CmnDataBuffer_small);
+	CmnTest_AddTestCaseEasy(plan, test_CmnDataBuffer_large);
 }

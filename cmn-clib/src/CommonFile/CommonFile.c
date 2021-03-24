@@ -21,6 +21,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <limits.h>
 #endif
 
 #define BUF_SIZE 4096
@@ -33,6 +34,8 @@ static void Win32FileAttributeToCmnFileInfo(CmnFileInfo *info, DWORD sizeHigh, D
 static CmnDataList* ListForLinux(const char *path, CmnDataList *list);
 static void FileStatToCmnFileInfo(CmnFileInfo *info, struct stat *stat);
 #endif
+
+static int WriteDataToFile(const char *path, void *data, size_t len, const char *mode);
 
 /**
  * @brief ファイルをテキストデータとして全て読み込む
@@ -117,11 +120,13 @@ CmnDataBuffer* CmnFile_ReadAll(const char *filePath, CmnDataBuffer *buf)
  */
 int CmnFile_WriteNew(const char *filePath, void *data, size_t len)
 {
+	int ret;
 	CMNLOG_TRACE_START();
 
-	//TODO
+	ret = WriteDataToFile(filePath, data, len, "wb");
+	
 	CMNLOG_TRACE_END();
-	return 0;
+	return ret;
 }
 
 /**
@@ -132,11 +137,30 @@ int CmnFile_WriteNew(const char *filePath, void *data, size_t len)
  */
 int CmnFile_WriteHead(const char *filePath, void *data, size_t len)
 {
+	int ret;
+	CmnDataBuffer *buf;
 	CMNLOG_TRACE_START();
 
-	//TODO
+	if ((buf = CmnDataBuffer_Create(0)) == NULL) {
+		CMNLOG_TRACE_END();
+		return -1;
+	}
+	if (CmnFile_ReadAll(filePath, buf) < 0) {
+		CmnDataBuffer_Free(buf);
+		CMNLOG_TRACE_END();
+		return -1;
+	}
+
+	/* 先頭にデータを書き出し */
+	ret = CmnFile_WriteNew(filePath, data, len);
+	if (ret == 0) {
+		/* 元のデータを後ろに追加 */
+		ret = CmnFile_WriteTail(filePath, buf->data, buf->size);
+	}
+	CmnDataBuffer_Free(buf);
+
 	CMNLOG_TRACE_END();
-	return 0;
+	return ret;
 }
 
 /**
@@ -147,11 +171,76 @@ int CmnFile_WriteHead(const char *filePath, void *data, size_t len)
  */
 int CmnFile_WriteTail(const char *filePath, void *data, size_t len)
 {
+	int ret;
 	CMNLOG_TRACE_START();
 
-	//TODO
+	ret = WriteDataToFile(filePath, data, len, "ab");
+
 	CMNLOG_TRACE_END();
-	return 0;
+	return ret;
+}
+
+/**
+ * @brief ファイルにデータを出力する。
+ * @param path 書き込み対象ファイル
+ * @param data 書き込みデータ
+ * @param len 書き込むデータの長さ
+ * @param mode 書き込みモード（fopen引数。w/a/wb/abなど）
+ * @return 0:正常、-1:エラー
+*/
+static int WriteDataToFile(const char *path, void *data, size_t len, const char *mode)
+{
+	int ret = 0;
+	FILE *fp;
+	CMNLOG_TRACE_START();
+
+	fp = fopen(path, mode);
+	if (fp == NULL) {
+		CMNLOG_DEBUG("Failed to open file, path=%s", path);
+		CMNLOG_TRACE_END();
+		return -1;
+	}
+
+	if (fwrite(data, len, 1, fp) < 0) {
+		CMNLOG_DEBUG("Failed to write data, path=%s", path);
+		CMNLOG_TRACE_END();
+		return -1;
+	}
+
+	fclose(fp);
+
+	CMNLOG_TRACE_END();
+	return ret;
+}
+
+/**
+ * @brief ファイルを削除する
+ * @param filePath 削除するファイル
+ * @return True:削除成功、False:削除失敗
+*/
+int CmnFile_Remove(const char *path)
+{
+	int ret;
+	CMNLOG_TRACE_START();
+
+#if IS_PRATFORM_WINDOWS()
+	{
+		WCHAR pathWide[MAX_PATH];
+
+		/* charをWCHARに変換 */ /*TODO 文字コードを引数でもらうこと*/
+		MultiByteToWideChar(CP_UTF8, MB_PRECOMPOSED, path, -1, pathWide, ARRAY_LENGTH(pathWide));
+
+		/* ファイル削除 */
+		ret = DeleteFile(pathWide) ? True : False;
+	}
+#else
+	{
+		ret = remove(path) ? False : True;
+	}
+#endif
+
+	CMNLOG_TRACE_END();
+	return ret;
 }
 
 /**
@@ -162,8 +251,8 @@ int CmnFile_WriteTail(const char *filePath, void *data, size_t len)
  */
 CmnDataList* CmnFile_List(const char *path, CmnDataList *list, CHARSET pathCharset)
 {
-	CMNLOG_TRACE_START();
 	CmnDataList *ret;
+	CMNLOG_TRACE_START();
 
 	/* ファイル存在確認 */
 	if (!CmnFile_Exists(path)) {
@@ -183,6 +272,102 @@ CmnDataList* CmnFile_List(const char *path, CmnDataList *list, CHARSET pathChars
 }
 
 /**
+ * @brief 絶対パスを取得する
+ * @param path 絶対パスに変換するパス
+ * @param buf 取得した絶対パスを格納するバッファ
+ * @param buflen bufの長さ
+ * @param pathCharset パスの文字セット（ファイルシステムの文字セット）。Windowsの場合のみ必要。
+ * @return 
+*/
+char* CmnFile_ToAbsolutePath(const char *path, char *buf, size_t buflen, CHARSET pathCharset)
+{
+	char *ret;
+	CMNLOG_TRACE_START();
+
+#if IS_PRATFORM_WINDOWS()
+	{
+		WCHAR pathWide[MAX_PATH];
+		WCHAR fullPath[MAX_PATH];
+		WCHAR *fileName;
+		DWORD fullPathBufSize = ARRAY_LENGTH(fullPath);
+		UINT codepage;
+		char chFullPath[MAX_PATH * 2 + MAX_PATH];
+
+		/* charをWCHARに変換（UTF-8以外は環境文字コード（SJIS）と判定） */
+		codepage = (pathCharset == CHARSET_UTF8) ? CP_UTF8 : CP_THREAD_ACP;
+		MultiByteToWideChar(codepage, MB_PRECOMPOSED, path, -1, pathWide, ARRAY_LENGTH(pathWide));
+
+		/* 絶対パスを取得 */ /*TODO fullPathとfileNameの中身を検証*/
+		if (GetFullPathName(pathWide, fullPathBufSize, fullPath, &fileName) > fullPathBufSize) {
+			CMNLOG_DEBUG("Insufficient buffer, path=%s", path);
+			CMNLOG_TRACE_END();
+			return NULL;
+		}
+
+		/* WCHARをcharに変換 */
+		WideCharToMultiByte(codepage, 0, fullPath, -1, chFullPath, ARRAY_LENGTH(chFullPath), NULL, NULL);
+		strncpy(buf, chFullPath, buflen);
+		buf[buflen - 1] = '\0';
+
+		ret = buf;
+	}
+#else
+	{
+		char tmp[PATH_MAX + 1];
+		if (realpath(path, tmp) == NULL) {
+			CMNLOG_DEBUG("Failed to real path, path=%s", path);
+			CMNLOG_TRACE_END();
+			return NULL;
+		}
+		strncpy(buf, tmp, buflen);
+		buf[buflen - 1] = '\0';
+
+		ret = buf;
+	}
+#endif
+
+	CMNLOG_TRACE_END();
+	return ret;
+}
+
+/**
+ * @brief カレントディレクトリを取得する
+ * @param buf カレントディレクトリを格納するバッファ
+ * @param buflen bufのサイズ
+ * @return bufへのポインタ。取得に失敗した場合はNULLを返す。
+*/
+char* CmnFile_GetCurrentDirectory(char *buf, size_t buflen)
+{
+	char *ret;
+	CMNLOG_TRACE_START();
+
+#if IS_PRATFORM_WINDOWS()
+	{
+		WCHAR tmp[MAX_PATH];
+
+		if (GetCurrentDirectory(ARRAY_LENGTH(tmp), tmp) == 0) {
+			CMNLOG_DEBUG("Failed to get current directory", "");
+			CMNLOG_TRACE_END();
+			return NULL;
+		}
+
+		/* WCHARをcharに変換 */  /*TODO 文字コードを引数でもらうこと*/
+		WideCharToMultiByte(CP_UTF8, 0, tmp, -1, buf, (int)buflen, NULL, NULL);
+		buf[buflen - 1] = '\0';
+
+		ret = buf;
+	}
+#else
+	{
+		ret = getcwd(buf, buflen);
+	}
+#endif
+
+	CMNLOG_TRACE_END();
+	return ret;
+}
+
+/**
  * @brief pathが実在するかチェックする
  * @param path 実在するかチェックするパス。ディレクトリでもファイルでもOK
  * @return pathが存在する場合はTrue、存在しない場合はFalseを返す
@@ -193,6 +378,7 @@ int CmnFile_Exists(const char *path)
 	CMNLOG_TRACE_START();
 
 #if IS_PRATFORM_WINDOWS()
+	/*文字コードを引数でもらい、_waccessを使うこと。引数はTCHAR*/
 	if (_access(path, 0) != -1) {
 		ret = True;
 	}
@@ -241,7 +427,7 @@ CmnFileInfo* CmnFile_GetFileInfo(const char *path, CmnFileInfo *info)
 	{
 		WIN32_FILE_ATTRIBUTE_DATA fileInfo;
 		wchar_t pathWide[MAX_PATH_SIZE * 2] = { '\0' };
-
+		/* TODO:文字コードを引数でもらうこと */
 		MultiByteToWideChar(CP_UTF8, MB_PRECOMPOSED, path, -1, pathWide, ARRAY_LENGTH(pathWide));
 		if (GetFileAttributesExW(pathWide, GetFileExInfoStandard, &fileInfo) == 0) {
 			CMNLOG_DEBUG("Failed to get file info, path=%s", path);	

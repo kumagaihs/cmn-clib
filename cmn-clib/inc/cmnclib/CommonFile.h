@@ -59,9 +59,10 @@ D_EXTERN CmnDataBuffer* CmnFile_ReadAll(const char *filePath, CmnDataBuffer *buf
 D_EXTERN int CmnFile_WriteNew(const char *filePath, void *data, size_t len);
 D_EXTERN int CmnFile_WriteHead(const char *filePath, void *data, size_t len);
 D_EXTERN int CmnFile_WriteTail(const char *filePath, void *data, size_t len);
+D_EXTERN int CmnFile_Remove(const char *path);
 D_EXTERN CmnDataList* CmnFile_List(const char *path, CmnDataList *list, CHARSET pathCharset);
-/* TODO:絶対パス変換 */
-D_EXTERN char* CmnFile_ToAbsolutePath(const char *path, char *buf);
+D_EXTERN char* CmnFile_ToAbsolutePath(const char *path, char *buf, size_t buflen, CHARSET pathCharset);
+D_EXTERN char* CmnFile_GetCurrentDirectory(char *buf, size_t buflen);
 D_EXTERN int CmnFile_Exists(const char *path);
 D_EXTERN CmnFileInfo* CmnFile_GetFileInfo(const char *path, CmnFileInfo *info);
 D_EXTERN char* CmnFileInfo_ToString(const CmnFileInfo *info, char *buf);
