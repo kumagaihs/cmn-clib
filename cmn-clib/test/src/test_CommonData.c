@@ -45,7 +45,7 @@ static void test_CmnDataBuffer_large(CmnTestCase *t)
 {
 	int i = 0;
 	char testData[10240];
-	for (i = 0; i < 2046; i++) testData[i] = "A";
+	for (i = 0; i < 2046; i++) testData[i] = 'A';
 
 	CmnDataBuffer *buf = CmnDataBuffer_Create(2046);
 	CmnTest_AssertNumber(t, __LINE__, buf->bufSize, 2046);

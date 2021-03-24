@@ -24,7 +24,7 @@ all: $(LIB_TARGET) $(TEST_TARGET)
 $(LIB_TARGET): $(OBJS)
 	$(AR) $(ARFLAG) $(LIB_TARGET) $(OBJS)
 
-$(TEST_TARGET): $(TEST_OBJS)
+$(TEST_TARGET): $(TEST_OBJS) $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIB_TARGET)
 
 $(OUTDIR)/%.o:%.c
