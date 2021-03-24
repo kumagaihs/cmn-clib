@@ -67,9 +67,9 @@ int CmnDataBuffer_Append(CmnDataBuffer *buf, const void *data, size_t len)
 	/* 領域が不足する場合は拡張 */
 	if (oldBufSize < newBufSize) {
 
-		/* すでにある程度大きい領域の場合は少し多めに拡張する */
-		if (DEFAULT_BUFFER_SIZE < oldBufSize) {
-			newBufSize += (newBufSize / 10);
+		/* 領域がデフォルトバッファサイズの半分以上になったらデフォルトバッファサイズ単位に拡張する */
+		if ((DEFAULT_BUFFER_SIZE / 2) < newBufSize) {
+			newBufSize += DEFAULT_BUFFER_SIZE - (newBufSize % DEFAULT_BUFFER_SIZE);
 		}
 
 		buftmp = realloc(buf->data, newBufSize);

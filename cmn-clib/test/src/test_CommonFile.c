@@ -5,6 +5,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "cmnclib/CommonTest.h"
 #include "cmnclib/CommonFile.h"
@@ -47,6 +48,37 @@ static void test_CmnFile_ReadAllText(CmnTestCase *t)
 	free(txt);
 }
 
+static void test_CmnFile_Write_AndRemove(CmnTestCase *t)
+{
+	char *file = "test/resources/CmnFile/WriteTest.txt";
+	CmnDataBuffer *buf = CmnDataBuffer_Create(0);
+	int ret = 0;
+
+	/* ファイル書き込みテスト */
+	ret += CmnFile_WriteNew(file, "ZZZ", 3);
+	ret += CmnFile_WriteNew(file, " 123 ", 5);
+	ret += CmnFile_WriteTail(file, "XYZ", 3);
+	ret += CmnFile_WriteHead(file, "abc", 3);
+	if (ret != 0) {
+		CmnTest_AssertNG(t, __LINE__);
+	}
+
+	/* 書き込んだデータを読み出し */
+	if (CmnFile_ReadAll(file, buf) == NULL) {
+		CmnTest_AssertNG(t, __LINE__);
+	}
+
+	/* 検証 */
+	CmnTest_AssertData(t, __LINE__, buf->data, "abc 123 XYZ", 11);
+
+	/* バッファ開放とファイル削除 */
+	CmnDataBuffer_Free(buf);
+	CmnFile_Remove(file);
+	if (CmnFile_Exists(file)) {
+		CmnTest_AssertNG(t, __LINE__);
+	}
+}
+
 static void test_CmnFile_List(CmnTestCase *t)
 {
 	int i;
@@ -68,6 +100,32 @@ static void test_CmnFile_List(CmnTestCase *t)
 	}
 
 	CmnDataList_Free(list, free);
+}
+
+static void test_CmnFile_ToAbsolutePath(CmnTestCase *t)
+{
+	char target[] = "test/resources/CmnFile/ReadAll.txt";
+	char cnvDelimTarget[CMN_FILE_MAX_PATH];
+	char absPath[CMN_FILE_MAX_PATH];
+	char pwdAndTarget[CMN_FILE_MAX_PATH];
+
+	/* フルパスを取得 */
+	if (CmnFile_ToAbsolutePath(target, absPath, ARRAY_LENGTH(absPath), CHARSET_UTF8) == NULL) {
+		CmnTest_AssertNG(t, __LINE__);
+	}
+
+	/* カレントディレクトリを取得 */
+	if (CmnFile_GetCurrentDirectory(pwdAndTarget, ARRAY_LENGTH(pwdAndTarget)) == NULL) {
+		CmnTest_AssertNG(t, __LINE__);
+	}
+
+	/* ファイル名の/は環境の区切り文字に統一する */
+	CmnString_Replace(target, "/", CMN_FILE_PATH_DELIMITER, cnvDelimTarget);
+
+	/* 取得したフルパスをカレントディレクトリ＋相対パスで比較 */
+	strcat(pwdAndTarget, CMN_FILE_PATH_DELIMITER);
+	strcat(pwdAndTarget, cnvDelimTarget);
+	CmnTest_AssertString(t, __LINE__, absPath, pwdAndTarget);
 }
 
 static void test_CmnFile_Exists(CmnTestCase *t)
@@ -121,11 +179,9 @@ void test_CommonFile_AddCase(CmnTestPlan *plan)
 {
 	CmnTest_AddTestCaseEasy(plan, test_CmnFile_ReadAll);
 	CmnTest_AddTestCaseEasy(plan, test_CmnFile_ReadAllText);
-	/*TODO CmnFile_WriteNew*/
-	/*TODO CmnFile_WriteHead*/
-	/*TODO CmnFile_WriteTail*/
+	CmnTest_AddTestCaseEasy(plan, test_CmnFile_Write_AndRemove);
 	CmnTest_AddTestCaseEasy(plan, test_CmnFile_List);
+	CmnTest_AddTestCaseEasy(plan, test_CmnFile_ToAbsolutePath);
 	CmnTest_AddTestCaseEasy(plan, test_CmnFile_Exists);
 	CmnTest_AddTestCaseEasy(plan, test_CmnFile_GetFileInfo);
-	/*TODO CmnFile_ToAbsolutePath*/
 }
