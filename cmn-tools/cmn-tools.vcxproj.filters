@@ -36,6 +36,9 @@
     <ClCompile Include="src\commands\SetclipCommand.cpp">
       <Filter>ソース ファイル\commands</Filter>
     </ClCompile>
+    <ClCompile Include="src\commands\GrepCommand.cpp">
+      <Filter>ソース ファイル\commands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\cmn-tools\Command.hpp">
@@ -52,6 +55,9 @@
     </ClInclude>
     <ClInclude Include="inc\cmn-tools\CommandException.hpp">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\cmn-tools\commands\GrepCommand.hpp">
+      <Filter>ヘッダー ファイル\commands</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

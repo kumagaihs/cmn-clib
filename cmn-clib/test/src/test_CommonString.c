@@ -187,6 +187,64 @@ static void test_CmnString_SplitAsList(CmnTestCase *t)
 
 }
 
+static void test_CmnString_SplitLine(CmnTestCase *t)
+{
+
+	/* 区切り文字なし */
+	{
+		CmnStringList *list = CmnStringList_Create();
+		if (CmnString_SplitLine(list, " 123 456 789 ") == NULL) {
+			CmnTest_AssertNG(t, __LINE__);
+		}
+		else if (list->size != 1) {
+			CmnTest_AssertNG(t, __LINE__);
+		}
+		else {
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 0), " 123 456 789 ");
+		}
+		CmnStringList_Free(list);
+	}
+
+	/* 区切り１文字 */
+	{
+		CmnStringList *list = CmnStringList_Create();
+		if (CmnString_SplitLine(list, " 123 456\r\n  789 ") == NULL) {
+			CmnTest_AssertNG(t, __LINE__);
+		}
+		else if (list->size != 2) {
+			CmnTest_AssertNG(t, __LINE__);
+		}
+		else {
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 0), " 123 456");
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 1), "  789 ");
+		}
+		CmnStringList_Free(list);
+	}
+
+	/* 区切り複数文字 */
+	{
+		CmnStringList *list = CmnStringList_Create();
+		if (CmnString_SplitLine(list, "\r\n123\r\n456\n\n789\rabc\n\rdef\n") == NULL) {
+			CmnTest_AssertNG(t, __LINE__);
+		}
+		else if (list->size != 9) {
+			CmnTest_AssertNG(t, __LINE__);
+		}
+		else {
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 0), "");
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 1), "123");
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 2), "456");
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 3), "");
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 4), "789");
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 5), "abc");
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 6), "");
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 7), "def");
+			CmnTest_AssertString(t, __LINE__, CmnStringList_Get(list, 8), "");
+		}
+		CmnStringList_Free(list);
+	}
+}
+
 static void test_CmnString_Lpad(CmnTestCase *t)
 {
 	char buf[64];
@@ -301,6 +359,7 @@ void test_CommonString_AddCase(CmnTestPlan *plan)
 	CmnTest_AddTestCaseEasy(plan, test_CmnString_StrcatNew);
 	CmnTest_AddTestCaseEasy(plan, test_CmnString_Split);
 	CmnTest_AddTestCaseEasy(plan, test_CmnString_SplitAsList);
+	CmnTest_AddTestCaseEasy(plan, test_CmnString_SplitLine);
 	CmnTest_AddTestCaseEasy(plan, test_CmnString_Lpad);
 	CmnTest_AddTestCaseEasy(plan, test_CmnString_Rpad);
 	CmnTest_AddTestCaseEasy(plan, test_CmnString_StartWith);
