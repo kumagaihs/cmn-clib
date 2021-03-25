@@ -148,7 +148,9 @@
     <ClCompile Include="src\commands\GrepCommand.cpp" />
     <ClCompile Include="src\commands\HelpCommand.cpp" />
     <ClCompile Include="src\commands\SetclipCommand.cpp" />
+    <ClCompile Include="src\commands\Win32SkeletonCommand.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\win32\Skeleton.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\cmn-tools\Command.hpp" />
@@ -157,6 +159,8 @@
     <ClInclude Include="inc\cmn-tools\commands\GrepCommand.hpp" />
     <ClInclude Include="inc\cmn-tools\commands\HelpCommand.hpp" />
     <ClInclude Include="inc\cmn-tools\commands\SetclipCommand.hpp" />
+    <ClInclude Include="inc\cmn-tools\commands\Win32SkeletonCommand.hpp" />
+    <ClInclude Include="inc\cmn-tools\win32\Skeleton.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

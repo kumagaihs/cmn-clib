@@ -8,6 +8,7 @@
 #include "cmn-tools/commands/GetclipCommand.hpp"
 #include "cmn-tools/commands/SetclipCommand.hpp"
 #include "cmn-tools/commands/GrepCommand.hpp"
+#include "cmn-tools/commands/Win32SkeletonCommand.hpp"
 
 namespace cmd = cmnclib::tools::command;
 
@@ -18,12 +19,14 @@ cmd::HelpCommand cmd_help;
 cmd::GetclipCommand cmd_getclip;
 cmd::SetclipCommand cmd_setclip;
 cmd::GrepCommand cmd_grep;
+cmd::Win32SkeletonCommand cmd_win32skeleton;
 
 void setupCommand() {
 	cmd::Command::registCommand(&cmd_help);
 	cmd::Command::registCommand(&cmd_getclip);
 	cmd::Command::registCommand(&cmd_setclip);
 	cmd::Command::registCommand(&cmd_grep);
+	cmd::Command::registCommand(&cmd_win32skeleton);
 }
 //################################################
 
