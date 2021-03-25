@@ -215,6 +215,36 @@ char* CmnString_StrCopyNew(const char* str)
 }
 
 /**
+ * @brief 改行コード（End Of Line：CRLF(\r\n) or LF(\n) or CR(\r)）を検索する。
+ * @param str 検索対象の文字列
+ * @param delim 一番最初に見つかった改行コード（\r\n or \n or \r）を設定する。3bytes以上のバッファとすること。
+ * @return 一番最初に見つかった改行コードの位置。改行コードが見つからなかった場合はNULL。
+*/
+char* CmnString_StrEol(const char *str, char *delim)
+{
+	CMNLOG_TRACE_START();
+
+	/* CRかLFが見つかるまで進める */
+	for (; *str != '\0' && *str != '\r' && *str != '\n'; str++) {}
+
+	/* 改行コードなし */
+	if (*str == '\0') {
+		str = NULL;
+	}
+	/* 改行コードがCRの場合はCRLFかCRかを判定 */
+	else if (*str == '\r') {
+		(*(str + 1) == '\n') ? strcpy(delim, "\r\n") : strcpy(delim, "\r");
+	}
+	/* 改行コードがLF */
+	else {
+		strcpy(delim, "\n");
+	}
+
+	CMNLOG_TRACE_END();
+	return (char*)str;
+}
+
+/**
  * @brief 文字列分割（into配列）
  *
  *  strをdelimで分割してbufに格納する。
@@ -231,7 +261,7 @@ int CmnString_Split(char *buf, size_t rowlen, size_t collen, const char *str, co
 {
 	const char *pos = str;
 	size_t delimlen;
-	size_t row = 0;
+	int row = 0;
 	CMNLOG_TRACE_START();
 
 	delimlen = strlen(delim);
@@ -302,6 +332,52 @@ CmnStringList* CmnString_SplitAsList(CmnStringList *list, const char *str, const
 		CmnStringList_Add(list, tmp);
 
 		str = pos + delimlen;
+
+		/* 最後がdelimで終わっている場合は末尾に空文字列の要素を補充 */
+		if (*str == '\0') {
+			if ((tmp = calloc(1, sizeof(char))) == NULL) {
+				return NULL;
+			}
+			CmnStringList_Add(list, tmp);
+		}
+	}
+
+	CMNLOG_TRACE_END();
+	return list;
+}
+
+/**
+ * @brief 文字列を改行コード（CRLF/LF/CRの何れか）で分解してlistに格納する。
+ * @param list １行１要素に分解したリスト。空行には""（空文字列）が入る。
+ * @param str 対象文字列
+ * @return listを返す。メモリ確保できなかった場合など異常時はNULLを返す。
+*/
+CmnStringList* CmnString_SplitLine(CmnStringList *list, const char *str)
+{
+	const char *pos = str;
+	char *tmp;
+	char delim[3];
+	CMNLOG_TRACE_START();
+
+	while (*str != '\0') {
+		/* 改行コード検索 */
+		if ((pos = CmnString_StrEol(str, delim)) == NULL) {
+			if ((tmp = calloc(strlen(str) + 1, sizeof(char))) == NULL) {
+				return NULL;
+			}
+			strcpy(tmp, str);
+			CmnStringList_Add(list, tmp);
+			break;
+		}
+
+		/* 改行コードまでをリストにコピー */
+		if ((tmp = calloc(strlen(str) + 1, sizeof(char))) == NULL) {
+			return NULL;
+		}
+		strncpy(tmp, str, pos - str);
+		CmnStringList_Add(list, tmp);
+
+		str = pos + strlen(delim);
 
 		/* 最後がdelimで終わっている場合は末尾に空文字列の要素を補充 */
 		if (*str == '\0') {

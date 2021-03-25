@@ -38,8 +38,10 @@ D_EXTERN char* CmnString_Replace(const char *src, const char *befor, const char 
 D_EXTERN char* CmnString_ReplaceNew(const char *src, const char *befor, const char *after);
 D_EXTERN char* CmnString_StrCatNew(const char *left, const char *right);
 D_EXTERN char* CmnString_StrCopyNew(const char *str);
+D_EXTERN char* CmnString_StrEol(const char *str, char *delim);
 D_EXTERN int CmnString_Split(char *buf, size_t rowlen, size_t collen, const char *str, const char *delim);
 D_EXTERN CmnStringList* CmnString_SplitAsList(CmnStringList *list, const char *str, const char *delim);
+D_EXTERN CmnStringList* CmnString_SplitLine(CmnStringList *list, const char *str); 
 D_EXTERN char* CmnString_Lpad(char *buf, const char *str, char padch, size_t digit);
 D_EXTERN char* CmnString_Rpad(char *buf, const char *str, char padch, size_t digit);
 D_EXTERN int CmnString_StartWith(const char *str, const char *mark);

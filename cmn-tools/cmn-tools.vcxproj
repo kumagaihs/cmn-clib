@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClCompile Include="src\Command.cpp" />
     <ClCompile Include="src\commands\GetclipCommand.cpp" />
+    <ClCompile Include="src\commands\GrepCommand.cpp" />
     <ClCompile Include="src\commands\HelpCommand.cpp" />
     <ClCompile Include="src\commands\SetclipCommand.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="inc\cmn-tools\Command.hpp" />
     <ClInclude Include="inc\cmn-tools\CommandException.hpp" />
     <ClInclude Include="inc\cmn-tools\commands\GetclipCommand.hpp" />
+    <ClInclude Include="inc\cmn-tools\commands\GrepCommand.hpp" />
     <ClInclude Include="inc\cmn-tools\commands\HelpCommand.hpp" />
     <ClInclude Include="inc\cmn-tools\commands\SetclipCommand.hpp" />
   </ItemGroup>
