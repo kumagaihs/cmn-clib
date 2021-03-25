@@ -19,6 +19,12 @@
     <Filter Include="ヘッダー ファイル\commands">
       <UniqueIdentifier>{56f08f10-54b4-4f68-bb1d-81b0cbb2f86d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\win32">
+      <UniqueIdentifier>{d45bcc75-b823-4eec-99b9-d877c29629f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\win32">
+      <UniqueIdentifier>{cf4ccd8c-c90b-468f-a4eb-df29e2a933ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Command.cpp">
@@ -39,6 +45,12 @@
     <ClCompile Include="src\commands\GrepCommand.cpp">
       <Filter>ソース ファイル\commands</Filter>
     </ClCompile>
+    <ClCompile Include="src\win32\Skeleton.cpp">
+      <Filter>ソース ファイル\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\commands\Win32SkeletonCommand.cpp">
+      <Filter>ソース ファイル\commands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\cmn-tools\Command.hpp">
@@ -57,6 +69,12 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="inc\cmn-tools\commands\GrepCommand.hpp">
+      <Filter>ヘッダー ファイル\commands</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\cmn-tools\win32\Skeleton.hpp">
+      <Filter>ヘッダー ファイル\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\cmn-tools\commands\Win32SkeletonCommand.hpp">
       <Filter>ヘッダー ファイル\commands</Filter>
     </ClInclude>
   </ItemGroup>
