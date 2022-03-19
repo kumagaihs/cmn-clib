@@ -38,3 +38,5 @@ Windows/Linuxのマルチ環境で開発／利用が可能です。
   CUIベースのツール群を作成していく予定です。（まだあんまりない）  
   C++で開発しています。
 
+## Documents
+https://ityorozu.net/dev/cmn-clib/doc/html/index.html
