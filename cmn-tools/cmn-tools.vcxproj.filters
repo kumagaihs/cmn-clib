@@ -51,6 +51,12 @@
     <ClCompile Include="src\commands\Win32SkeletonCommand.cpp">
       <Filter>ソース ファイル\commands</Filter>
     </ClCompile>
+    <ClCompile Include="src\commands\XargsCommand.cpp">
+      <Filter>ソース ファイル\commands</Filter>
+    </ClCompile>
+    <ClCompile Include="src\commands\TailCommand.cpp">
+      <Filter>ソース ファイル\commands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\cmn-tools\Command.hpp">
@@ -75,6 +81,12 @@
       <Filter>ヘッダー ファイル\win32</Filter>
     </ClInclude>
     <ClInclude Include="inc\cmn-tools\commands\Win32SkeletonCommand.hpp">
+      <Filter>ヘッダー ファイル\commands</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\cmn-tools\commands\XargsCommand.hpp">
+      <Filter>ヘッダー ファイル\commands</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\cmn-tools\commands\TailCommand.hpp">
       <Filter>ヘッダー ファイル\commands</Filter>
     </ClInclude>
   </ItemGroup>
