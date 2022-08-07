@@ -44,10 +44,14 @@ D_EXTERN void CmnTest_Run(CmnTestPlan *plan, int realtimeReport);
 D_EXTERN void CmnTest_DestroyTest(CmnTestPlan *plan);
 /** 整数値検証 */
 D_EXTERN int CmnTest_AssertNumber(CmnTestCase *testCase, long line, long long actual, long long expected);
+/** ポインタ検証 */
+D_EXTERN int CmnTest_AssertPointer(CmnTestCase *testCase, long line, void *actual, void *expected);
 /** 文字列検証 */
 D_EXTERN int CmnTest_AssertString(CmnTestCase *testCase, long line, char *actual, char *expected);
 /** データ検証 */
 D_EXTERN int CmnTest_AssertData(CmnTestCase *testCase, long line, void *actual, void *expected, size_t dataLen);
+/** 検証OKを記録する */
+D_EXTERN int CmnTest_AssertOK(CmnTestCase *testCase, long line);
 /** 検証NGを記録する */
 D_EXTERN int CmnTest_AssertNG(CmnTestCase *testCase, long line);
 

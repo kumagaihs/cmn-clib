@@ -78,7 +78,14 @@ static void test_CmnThread_Mutex(CmnTestCase *t)
 
 	CmnThreadMutex_Free(mutex);
 
-	CmnTest_AssertString(t, __LINE__, data->string, expected->string);
+	/* AとBが混ざりあわず、どちらかが先に全て処理される。 */
+	if (strcmp(data->string, "AAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBB") == 0
+		|| strcmp(data->string, "BBBBBBBBBBBBBBBBBBBBAAAAAAAAAAAAAAAAAAAA") == 0) {
+		CmnTest_AssertOK(t, __LINE__);
+	}
+	else {
+		CmnTest_AssertNG(t, __LINE__);
+	}
 }
 
 void test_CommonThread_AddCase(CmnTestPlan *plan)

@@ -211,6 +211,40 @@ int CmnTest_AssertNumber(CmnTestCase *testCase, long line, long long actual, lon
 }
 
 /*
+ * @brief ポインターを検証する
+ * @param testCase テストケース
+ * @param line 検証処理を記述している行番号（__LINE__を指定する）
+ * @param actual 実測値
+ * @param expected 期待値
+ * @return 検証OK：True、検証NG：False
+ */
+int CmnTest_AssertPointer(CmnTestCase *testCase, long line, void *actual, void *expected)
+{
+	CMNLOG_TRACE_START();
+
+	/* すでに検証NGの場合は検証しない */
+	if (!testCase->result) {
+		CMNLOG_TRACE_END();
+		return False;
+	}
+
+	if (actual != expected) {
+		char buf[64];
+		testCase->result = False;
+		testCase->lineOfNg = line;
+		sprintf(buf, "%p", actual);
+		testCase->actual = CmnString_StrCatNew(buf, "");
+		sprintf(buf, "%p", expected);
+		testCase->expected = CmnString_StrCatNew(buf, "");
+		CMNLOG_TRACE_END();
+		return False;
+	}
+
+	CMNLOG_TRACE_END();
+	return True;
+}
+
+/*
  * @brief 文字列を検証する
  * @param testCase テストケース
  * @param line 検証処理を記述している行番号（__LINE__を指定する）
@@ -310,6 +344,22 @@ int CmnTest_AssertData(CmnTestCase *testCase, long line, void *actual, void *exp
 }
 
 /*
+ * @brief 検証OKを記録する
+ * @param testCase テストケース
+ * @param line 検証処理を記述している行番号（__LINE__を指定する）
+ * @return 常にTrue
+ */
+int CmnTest_AssertOK(CmnTestCase *testCase, long line)
+{
+	CMNLOG_TRACE_START();
+
+	/* 常にTrueを返却する */
+
+	CMNLOG_TRACE_END();
+	return True;
+}
+
+/*
  * @brief 検証NGを記録する
  * @param testCase テストケース
  * @param line 検証処理を記述している行番号（__LINE__を指定する）
@@ -320,7 +370,7 @@ int CmnTest_AssertNG(CmnTestCase *testCase, long line)
 	CMNLOG_TRACE_START();
 
 	/* すでに検証NGの場合は検証しない */
-	if ( ! testCase->result) {
+	if (!testCase->result) {
 		CMNLOG_TRACE_END();
 		return False;
 	}

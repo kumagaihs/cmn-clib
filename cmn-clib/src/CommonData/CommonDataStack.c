@@ -134,7 +134,9 @@ void* CmnDataStack_Pop(CmnDataStack *stack)
 	}
 	item = stack->last;
 	stack->last = stack->last->prev;
-	stack->last->next = NULL;		//XXX 最後の要素をPopしたときにNullpo発生。
+	if (stack->last != NULL) {
+		stack->last->next = NULL;
+	}
 	stack->size--;
 
 	char *ret = item->data;

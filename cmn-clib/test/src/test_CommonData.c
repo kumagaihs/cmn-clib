@@ -79,8 +79,20 @@ static void test_CmnDataBuffer_large(CmnTestCase *t)
 	CmnTest_AssertNumber(t, __LINE__, buf->size, 4098);
 }
 
+void test_CmnDataStack_normal(CmnTestCase *t)
+{
+	CmnDataStack *stack = CmnDataStack_Create();
+	CmnDataStack_Push(stack, "1");
+	CmnDataStack_Push(stack, "2");
+
+	CmnTest_AssertString(t, __LINE__, CmnDataStack_Pop(stack), "2");
+	CmnTest_AssertString(t, __LINE__, CmnDataStack_Pop(stack), "1");
+	CmnTest_AssertPointer(t, __LINE__, CmnDataStack_Pop(stack), NULL);
+}
+
 void test_CommonData_AddCase(CmnTestPlan *plan)
 {
 	CmnTest_AddTestCaseEasy(plan, test_CmnDataBuffer_small);
 	CmnTest_AddTestCaseEasy(plan, test_CmnDataBuffer_large);
+	CmnTest_AddTestCaseEasy(plan, test_CmnDataStack_normal);
 }
