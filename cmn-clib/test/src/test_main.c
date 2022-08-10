@@ -7,20 +7,20 @@
 #include<stdio.h>
 #include<string.h>
 
-#include"cmnclib/CommonTest.h"
-#include"cmnclib/CommonLog.h"
-#include"cmnclib/CommonTime.h"
+#include"cmnclib/CmnTest.h"
+#include"cmnclib/CmnLog.h"
+#include"cmnclib/CmnTime.h"
 
-extern void test_CommonConf_AddCase(CmnTestPlan *plan);
-extern void test_CommonData_AddCase(CmnTestPlan *plan);
-extern void test_CommonFile_AddCase(CmnTestPlan *plan);
-extern void test_CommonLog_AddCase(CmnTestPlan *plan);
-extern void test_CommonString_AddCase(CmnTestPlan *plan);
-extern void test_CommonTime_AddCase(CmnTestPlan *plan);
-extern void test_CommonThread_AddCase(CmnTestPlan *plan);
-extern void test_CommonNet_AddCase(CmnTestPlan *plan);
+extern void test_CmnConf_AddCase(CmnTestPlan *plan);
+extern void test_CmnData_AddCase(CmnTestPlan *plan);
+extern void test_CmnFile_AddCase(CmnTestPlan *plan);
+extern void test_CmnLog_AddCase(CmnTestPlan *plan);
+extern void test_CmnString_AddCase(CmnTestPlan *plan);
+extern void test_CmnTime_AddCase(CmnTestPlan *plan);
+extern void test_CmnThread_AddCase(CmnTestPlan *plan);
+extern void test_CmnNet_AddCase(CmnTestPlan *plan);
 #if IS_PRATFORM_WINDOWS()
-  extern void test_CommonWin32_AddCase(CmnTestPlan *plan);
+  extern void test_CmnWin32_AddCase(CmnTestPlan *plan);
 #endif
 
 int main(int argc, char **argv)
@@ -39,25 +39,25 @@ int main(int argc, char **argv)
 
 	CmnTest_InitializeTestPlan(&plan);
 
-	/* CommonConf */
-	test_CommonConf_AddCase(&plan);
-	/* CommonData */
-	test_CommonData_AddCase(&plan);
-	/* CommonFile */
-	test_CommonFile_AddCase(&plan);
-	/* CommonLog */
-	test_CommonLog_AddCase(&plan);
-	/* CommonString */
-	test_CommonString_AddCase(&plan);
-	/* CommonTime */
-	test_CommonTime_AddCase(&plan);
-	/* CommonThread */
-	test_CommonThread_AddCase(&plan);
-	/* CommonNet */
-	test_CommonNet_AddCase(&plan);
-	/* CommonWin32 */
+	/* CmnConf */
+	test_CmnConf_AddCase(&plan);
+	/* CmnData */
+	test_CmnData_AddCase(&plan);
+	/* CmnFile */
+	test_CmnFile_AddCase(&plan);
+	/* CmnLog */
+	test_CmnLog_AddCase(&plan);
+	/* CmnString */
+	test_CmnString_AddCase(&plan);
+	/* CmnTime */
+	test_CmnTime_AddCase(&plan);
+	/* CmnThread */
+	test_CmnThread_AddCase(&plan);
+	/* CmnNet */
+	test_CmnNet_AddCase(&plan);
+	/* CmnWin32 */
 	#if IS_PRATFORM_WINDOWS()
-	test_CommonWin32_AddCase(&plan);
+	test_CmnWin32_AddCase(&plan);
 	#endif
 
 	CmnTest_Run(&plan, True);
@@ -91,10 +91,10 @@ int main(int argc, char **argv)
 //		printf("Pratform is linux\n");
 //	}
 //
-//	/* CommonTime test */
+//	/* CmnTime test */
 //	printf("%s\n", CmnTime_GetFormatTime(CMN_TIME_FORMAT_ALL, buf));
 //
-//	/* CommonString test */
+//	/* CmnString test */
 //	printf("[%s]\n", CmnString_RTrim(trimstr));
 //	printf("[%s]\n", CmnString_LTrim(trimstr));
 //	printf("[%s]\n", CmnString_Trim(trimstr));
@@ -106,7 +106,7 @@ int main(int argc, char **argv)
 //	printf("size=[%d], str=[%s]\n", strList->size, CmnString_ListGetItem(strList, 1));
 //	CmnString_FreeList(strList);
 //
-//	/* CommonLog test */
+//	/* CmnLog test */
 //	if ( ! CmnLog_Init("test/conf/message.conf", CMN_LOG_LEVEL_DETAIL)) {
 //		printf("標準ログ初期化失敗\n");
 //		return 0;
@@ -126,7 +126,7 @@ int main(int argc, char **argv)
 //	CmnLog_PutEx(logex, CMN_LOG_LEVEL_DEBUG, "TEST01", "です");
 //	CmnLog_EndEx(logex);
 //
-//	/* CommonConf test */
+//	/* CmnConf test */
 //	prop = CmnConf_GetPropertyList("test/conf/property.conf");
 //	if (prop == NULL) {
 //		printf("プロパティファイル読み込み失敗\n");
@@ -136,7 +136,7 @@ int main(int argc, char **argv)
 //	printf("TEST2 = %s\n", CmnConf_GetProperty(prop, "TEST2"));
 //	CmnConf_FreePropertyList(prop);
 //
-//	/* CommonData test */
+//	/* CmnData test */
 //	list = CmnData_CreateList();
 //	printf("size=[%d], data=[%s]\n", list->size, (char*)CmnData_ListGetItem(list, 0));
 //

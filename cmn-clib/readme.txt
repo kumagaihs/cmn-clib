@@ -81,9 +81,9 @@ cmn-clibはWindows/Linuxで動作するC言語ライブラリです。
 ■ヘッダーファイルのコピー
 　cmn-clib/inc/配下のヘッダーファイルを自プロジェクトに取り込んでincludeしてください。
 　「cmnclib.h」でcmn-clibのすべての関数群が利用できます。（例：include "cmnclib.h"）
-　個別機能のみ読み込む場合はcmnclibフォルダ配下の個別ヘッダを読み込んでください。（例：#include "cmnclib/CommonData.h"）
+　個別機能のみ読み込む場合はcmnclibフォルダ配下の個別ヘッダを読み込んでください。（例：#include "cmnclib/CmnData.h"）
 　★注意点
-　　・WindowsでCommonNetを利用する場合、Windows.hよりも本プロジェクトのヘッダファイルを先に読み込んで下さい。
+　　・WindowsでCmnNetを利用する場合、Windows.hよりも本プロジェクトのヘッダファイルを先に読み込んで下さい。
 　　　（Windows.hよりもWinSock2.hを読み込まないといけない関係上です）
 
 ■スタティックライブラリのリンク
