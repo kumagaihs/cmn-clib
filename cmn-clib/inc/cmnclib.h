@@ -12,16 +12,16 @@
 #define _CMNCLIB_H_
 
 #include "cmnclib/Common.h"
-#include "cmnclib/CommonConf.h"
-#include "cmnclib/CommonData.h"
-#include "cmnclib/CommonDllImport.h"
-#include "cmnclib/CommonFile.h"
-#include "cmnclib/CommonLog.h"
-#include "cmnclib/CommonNet.h"
-#include "cmnclib/CommonString.h"
-#include "cmnclib/CommonTest.h"
-#include "cmnclib/CommonThread.h"
-#include "cmnclib/CommonTime.h"
-#include "cmnclib/CommonWin32.h"
+#include "cmnclib/CmnConf.h"
+#include "cmnclib/CmnData.h"
+#include "cmnclib/CmnDllImport.h"
+#include "cmnclib/CmnFile.h"
+#include "cmnclib/CmnLog.h"
+#include "cmnclib/CmnNet.h"
+#include "cmnclib/CmnString.h"
+#include "cmnclib/CmnTest.h"
+#include "cmnclib/CmnThread.h"
+#include "cmnclib/CmnTime.h"
+#include "cmnclib/CmnWin32.h"
 
 #endif /* _CMNCLIB_H_ */

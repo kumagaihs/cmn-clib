@@ -9,8 +9,8 @@
  * $Revision: 1.2 $
  *****************************************************************************/
 
-#ifndef _COMMON_H
-#define _COMMON_H
+#ifndef CMNCLIB_COMMON_H
+#define CMNCLIB_COMMON_H
 
 #include <stddef.h>
 
@@ -56,7 +56,7 @@ typedef enum enmCHARSET {
 /** OSがLinuxかを判定（Linuxの場合：True */
 #define IS_PRATFORM_LINUX()    (PRATFORM == PRATFORM_LINUX)
 
-/* Winsock2のための設定。CommonNetでwinsock2.hを使用するため、windows.hから旧バージョンのwinsock.hが読み込まれないようにする。 */
+/* Winsock2のための設定。CmnNetでwinsock2.hを使用するため、windows.hから旧バージョンのwinsock.hが読み込まれないようにする。 */
 #if IS_PRATFORM_WINDOWS()
   #define _WINSOCKAPI_ /* Prevent includsion of winsock.h in windows.h */
 #endif
@@ -75,5 +75,5 @@ typedef enum enmCHARSET {
   #endif
 #endif
 
-#endif /* _COMMON_H */
+#endif /* CMNCLIB_COMMON_H */
 
